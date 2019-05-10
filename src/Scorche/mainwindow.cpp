@@ -11,9 +11,9 @@
 // Copyright (c) Petr Bena 2019
 
 #include "mainwindow.h"
-#include "engine.h"
+#include <PixelEngine/engine.h>
 #include "ui_mainwindow.h"
-#include "qimagerenderer.h"
+#include <PixelEngine/qimagerenderer.h>
 #include "game.h"
 #include <QImage>
 #include <QDesktopWidget>

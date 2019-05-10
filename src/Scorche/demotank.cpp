@@ -11,8 +11,8 @@
 // Copyright (c) Petr Bena 2019
 
 #include "demotank.h"
-#include "renderer.h"
-#include "rigidbody.h"
+#include <PixelEngine/renderer.h>
+#include <PixelEngine/rigidbody.h>
 
 DemoTank::DemoTank()
 {

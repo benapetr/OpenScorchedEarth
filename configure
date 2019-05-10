@@ -55,7 +55,7 @@ do
     if [ "$var" = "--help" ] || [ "$var" = "-h" ];then
         echo "Configure script for Scorche, parameters:"
         echo "=========================================="
-        echo " --debug: build a debuggable grumpy"
+        echo " --debug: build a debuggable Scorche"
         echo " --disable-dependency-tracking: skip all package checks"
         echo " --extension: will build all extensions as well"
         echo " --unit-test: will build unit tests"
@@ -283,7 +283,7 @@ CMAKE_ARGS="$CMAKE_ARGS"$PROFILER
 cd "$BUILD" || exit 1
 echo "CMake args: $CMAKE_ARGS $UNIT_TESTS -Wno-dev"
 cmake ../src $CMAKE_ARGS $UNIT_TESTS -Wno-dev || exit 1
-echo "Everything is ready, you can build grumpy by entering "$BUILD" and typing"
+echo "Everything is ready, you can build Scorche by entering "$BUILD" and typing"
 echo "make"
 
 # this isn't normally needed but ensure we return 0 here

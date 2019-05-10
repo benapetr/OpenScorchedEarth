@@ -13,7 +13,7 @@
 #ifndef TANKBASE_H
 #define TANKBASE_H
 
-#include "pawn.h"
+#include <PixelEngine/pawn.h>
 
 class TankBase : public PE::Pawn
 {

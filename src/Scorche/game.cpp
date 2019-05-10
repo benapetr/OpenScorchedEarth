@@ -11,9 +11,9 @@
 // Copyright (c) Petr Bena 2019
 
 #include "game.h"
-#include "renderer.h"
-#include "world.h"
-#include "worldgenerator.h"
+#include <PixelEngine/renderer.h>
+#include <PixelEngine/world.h>
+#include <PixelEngine/worldgenerator.h>
 #include "demotank.h"
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
