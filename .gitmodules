@@ -1,0 +1,3 @@
+[submodule "src/PixelEngine"]
+	path = src/PixelEngine
+	url = https://gogs.insw.cz/pixel/PixelEngine
