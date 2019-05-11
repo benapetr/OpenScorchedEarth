@@ -19,7 +19,11 @@ class DemoTank : public TankBase
 {
     public:
         DemoTank();
+        DemoTank(double x, double y);
         void Render(PE::Renderer *r) override;
+    private:
+        int width = 20;
+        int height = 10;
 };
 
 #endif // DEMOTANK_H

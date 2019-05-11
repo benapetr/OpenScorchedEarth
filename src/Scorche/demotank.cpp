@@ -11,6 +11,7 @@
 // Copyright (c) Petr Bena 2019
 
 #include "demotank.h"
+#include <PixelEngine/boxcollider.h>
 #include <PixelEngine/renderer.h>
 #include <PixelEngine/rigidbody.h>
 
@@ -18,10 +19,23 @@ DemoTank::DemoTank()
 {
     this->RigidBody = new PE::Rigidbody();
     this->RigidBody->Weight = 0.1;
+
+    this->AddChildren(new PE::BoxCollider(0, 0, this->width, this->height));
+}
+
+DemoTank::DemoTank(double x, double y)
+{
+    this->Position.X = x;
+    this->Position.Y = y;
+
+    this->RigidBody = new PE::Rigidbody();
+    this->RigidBody->Weight = 0.1;
+
+    this->AddChildren(new PE::BoxCollider(0, 0, this->width, this->height));
 }
 
 void DemoTank::Render(PE::Renderer *r)
 {
     // Draw a demo tank
-    r->DrawRect(static_cast<int>(this->Position.X), static_cast<int>(this->Position.Y), 20, 10, 4, QColor("red"));
+    r->DrawRect(static_cast<int>(this->Position.X), static_cast<int>(this->Position.Y), this->width, this->height, 4, QColor("red"));
 }

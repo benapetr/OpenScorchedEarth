@@ -44,6 +44,9 @@ class MainWindow : public QMainWindow
     public slots:
         void OnRender();
 
+    private slots:
+        void on_actionRendering_triggered();
+
     private:
         QTimer *renderTimer;
         Game *game;

@@ -57,6 +57,13 @@ int MainWindow::GetHeight()
 
 void MainWindow::OnRender()
 {
+    if (!this->ui->actionRendering->isChecked())
+        return;
     if (this->se_renderer->HasUpdate)
         this->ui->viewPort->setPixmap(this->se_renderer->GetPixmap());
+}
+
+void MainWindow::on_actionRendering_triggered()
+{
+    this->se_renderer->Enabled = !this->se_renderer->Enabled;
 }

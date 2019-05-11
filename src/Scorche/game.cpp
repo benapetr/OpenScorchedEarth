@@ -12,6 +12,7 @@
 
 #include "game.h"
 #include <PixelEngine/renderer.h>
+#include <PixelEngine/boxcollider.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/worldgenerator.h>
 #include "demotank.h"
@@ -25,9 +26,17 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->timer = new QTimer(this);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnUpdate()));
     this->timer->start(10);
+
+    // Create floor
+    PE::BoxCollider *floor = new PE::BoxCollider(-100, 0, 2000, 20);
+    this->world->RegisterCollider(floor);
+
     DemoTank *tank = new DemoTank();
     tank->Position = PE::Vector(40, 600);
     this->world->RegisterActor(tank);
+    this->world->RegisterActor(new DemoTank(80, 670));
+    this->world->RegisterActor(new DemoTank(10, 630));
+    this->world->RegisterActor(new DemoTank(200, 620));
 }
 
 Game::~Game()
