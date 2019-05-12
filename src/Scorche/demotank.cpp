@@ -15,16 +15,10 @@
 #include <PixelEngine/renderer.h>
 #include <PixelEngine/rigidbody.h>
 
-DemoTank::DemoTank()
+DemoTank::DemoTank(double x, double y, const QColor& color)
 {
-    this->RigidBody = new PE::Rigidbody();
-    this->RigidBody->Weight = 0.1;
+    this->tankColor = color;
 
-    this->AddChildren(new PE::BoxCollider(0, 0, this->width, this->height));
-}
-
-DemoTank::DemoTank(double x, double y)
-{
     this->Position.X = x;
     this->Position.Y = y;
 
@@ -32,10 +26,20 @@ DemoTank::DemoTank(double x, double y)
     this->RigidBody->Weight = 0.1;
 
     this->AddChildren(new PE::BoxCollider(0, 0, this->width, this->height));
+    this->AddChildren(new PE::BoxCollider(5, 10, 10, 6));
+
+    this->SetPosition(this->Position);
 }
 
 void DemoTank::Render(PE::Renderer *r)
 {
     // Draw a demo tank
-    r->DrawRect(static_cast<int>(this->Position.X), static_cast<int>(this->Position.Y), this->width, this->height, 4, QColor("red"));
+    r->DrawRect(static_cast<int>(this->Position.X), static_cast<int>(this->Position.Y), this->width, this->height, 2, this->tankColor);
+    r->DrawRect(static_cast<int>(this->Position.X + 5), static_cast<int>(this->Position.Y + 10), 10, 6, 1, this->tankColor);
+    r->DrawLine(this->getCanonRoot(), this->getCanonB(), 1, this->tankColor);
+}
+
+PE::Vector DemoTank::getCanonRoot()
+{
+    return this->Position + PE::Vector(10, 14);
 }

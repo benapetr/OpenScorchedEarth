@@ -18,9 +18,12 @@
 class DemoTank : public TankBase
 {
     public:
-        DemoTank();
-        DemoTank(double x, double y);
+        DemoTank(double x, double y, const QColor &color);
         void Render(PE::Renderer *r) override;
+
+    protected:
+        PE::Vector getCanonRoot() override;
+
     private:
         int width = 20;
         int height = 10;

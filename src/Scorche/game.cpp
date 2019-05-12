@@ -28,15 +28,42 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->timer->start(10);
 
     // Create floor
-    PE::BoxCollider *floor = new PE::BoxCollider(-100, 0, 2000, 20);
+    PE::BoxCollider *floor = new PE::BoxCollider(-100, -15, 2000, 20);
     this->world->RegisterCollider(floor);
 
-    DemoTank *tank = new DemoTank();
-    tank->Position = PE::Vector(40, 600);
-    this->world->RegisterActor(tank);
-    this->world->RegisterActor(new DemoTank(80, 670));
-    this->world->RegisterActor(new DemoTank(10, 630));
-    this->world->RegisterActor(new DemoTank(200, 620));
+    this->world->RegisterActor(new DemoTank(10, 30, Qt::darkRed));
+    this->world->RegisterActor(new DemoTank(40, 50, Qt::darkBlue));
+
+    /*int Y = 80;
+    while (Y < 700)
+    {
+        this->world->RegisterActor(new DemoTank(10, Y));
+        this->world->RegisterActor(new DemoTank(40, Y));
+        this->world->RegisterActor(new DemoTank(80, Y));
+        this->world->RegisterActor(new DemoTank(120, Y));
+        this->world->RegisterActor(new DemoTank(150, Y));
+        this->world->RegisterActor(new DemoTank(180, Y));
+        this->world->RegisterActor(new DemoTank(230, Y));
+        this->world->RegisterActor(new DemoTank(250, Y));
+        this->world->RegisterActor(new DemoTank(280, Y));
+        this->world->RegisterActor(new DemoTank(330, Y));
+        this->world->RegisterActor(new DemoTank(360, Y));
+        this->world->RegisterActor(new DemoTank(400, Y));
+        this->world->RegisterActor(new DemoTank(450, Y));
+        this->world->RegisterActor(new DemoTank(500, Y));
+        this->world->RegisterActor(new DemoTank(550, Y));
+        this->world->RegisterActor(new DemoTank(600, Y));
+        this->world->RegisterActor(new DemoTank(630, Y));
+        this->world->RegisterActor(new DemoTank(660, Y));
+        this->world->RegisterActor(new DemoTank(700, Y));
+        this->world->RegisterActor(new DemoTank(730, Y));
+        this->world->RegisterActor(new DemoTank(760, Y));
+        this->world->RegisterActor(new DemoTank(800, Y));
+        this->world->RegisterActor(new DemoTank(830, Y));
+        this->world->RegisterActor(new DemoTank(860, Y));
+        Y = Y + 50;
+    } */
+
 }
 
 Game::~Game()

@@ -11,8 +11,26 @@
 // Copyright (c) Petr Bena 2019
 
 #include "tankbase.h"
+#include <cmath>
+#include <PixelEngine/definitions.h>
 
 TankBase::TankBase()
 {
 
+}
+
+PE::Vector TankBase::getCanonB()
+{
+    if (this->canonAngle < 0)
+        this->canonAngle = 0;
+
+    if (this->canonAngle > 180)
+        this->canonAngle = 180;
+
+    // angle math
+    double radians = this->canonAngle * PE_PI_RAD_CNV;
+    PE::Vector result = this->getCanonRoot();
+    result.X += (12 * cos(radians));
+    result.Y += (12 * sin(radians));
+    return result;
 }

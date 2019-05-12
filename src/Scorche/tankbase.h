@@ -14,11 +14,19 @@
 #define TANKBASE_H
 
 #include <PixelEngine/pawn.h>
+#include <PixelEngine/vector.h>
+#include <QColor>
 
 class TankBase : public PE::Pawn
 {
     public:
         TankBase();
+        QColor tankColor;
+
+    protected:
+        virtual PE::Vector getCanonRoot()=0;
+        virtual PE::Vector getCanonB();
+        double canonAngle = 0;
 };
 
 #endif // TANKBASE_H
