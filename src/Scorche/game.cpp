@@ -33,8 +33,8 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     PE::BoxCollider *floor = new PE::BoxCollider(-100, -15, 2000, 20);
     this->world->RegisterCollider(floor);
 
-    this->world->RegisterActor(new DemoTank(10, 30, Qt::darkRed));
-    this->world->RegisterActor(new DemoTank(40, 50, Qt::darkBlue));
+    this->world->RegisterActor(new DemoTank(10, 700, Qt::darkRed));
+    this->world->RegisterActor(new DemoTank(40, 700, Qt::darkBlue));
 
     /*int Y = 80;
     while (Y < 700)
