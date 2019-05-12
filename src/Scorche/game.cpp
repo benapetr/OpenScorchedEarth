@@ -21,7 +21,9 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
     this->renderer = r;
     this->renderer->ManualUpdate = true;
-    this->world = PE::WorldGenerator::GenerateRandom(w_width, w_height);
+    this->world = new PE::World(w_width, w_height);
+    this->world->BackgroundColor = QColor(204, 221, 255);
+    this->world->RegisterTerrain(PE::WorldGenerator::GenerateRandom(static_cast<int>(w_width), static_cast<int>(w_height)));
     this->world->Render(r);
     this->timer = new QTimer(this);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnUpdate()));

@@ -34,8 +34,8 @@ DemoTank::DemoTank(double x, double y, const QColor& color)
 void DemoTank::Render(PE::Renderer *r)
 {
     // Draw a demo tank
-    r->DrawRect(static_cast<int>(this->Position.X), static_cast<int>(this->Position.Y), this->width, this->height, 2, this->tankColor);
-    r->DrawRect(static_cast<int>(this->Position.X + 5), static_cast<int>(this->Position.Y + 10), 10, 6, 1, this->tankColor);
+    r->DrawRect(static_cast<int>(this->Position.X), static_cast<int>(this->Position.Y), this->width, this->height, 2, this->tankColor, true);
+    r->DrawRect(static_cast<int>(this->Position.X + 5), static_cast<int>(this->Position.Y + 10), 10, 6, 1, this->tankColor, true);
     r->DrawLine(this->getCanonRoot(), this->getCanonB(), 1, this->tankColor);
 }
 
