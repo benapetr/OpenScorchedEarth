@@ -43,6 +43,8 @@ class MainWindow : public QMainWindow
 
     public slots:
         void OnRender();
+        void keyPressEvent(QKeyEvent* e) override;
+        void keyReleaseEvent(QKeyEvent* e) override;
 
     private slots:
         void on_actionRendering_triggered();

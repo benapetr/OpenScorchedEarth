@@ -11,12 +11,14 @@
 // Copyright (c) Petr Bena 2019
 
 #include "mainwindow.h"
-#include <PixelEngine/engine.h>
 #include "ui_mainwindow.h"
-#include <PixelEngine/qimagerenderer.h>
 #include "game.h"
+#include <QKeyEvent>
 #include <QImage>
 #include <QDesktopWidget>
+#include <PixelEngine/engine.h>
+#include <PixelEngine/world.h>
+#include <PixelEngine/qimagerenderer.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -62,6 +64,16 @@ void MainWindow::OnRender()
         return;
     if (this->se_renderer->HasUpdate)
         this->ui->viewPort->setPixmap(this->se_renderer->GetPixmap());
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    this->game->GetWorld()->ProcessKeyPress(e->key());
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *e)
+{
+    this->game->GetWorld()->ProcessKeyRelease(e->key());
 }
 
 void MainWindow::on_actionRendering_triggered()
