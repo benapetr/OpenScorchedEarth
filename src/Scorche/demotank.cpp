@@ -39,6 +39,16 @@ void DemoTank::Render(PE::Renderer *r)
     r->DrawLine(this->getCanonRoot(), this->getCanonB(), 1, this->tankColor);
 }
 
+void DemoTank::Event_KeyPress(int key)
+{
+
+}
+
+void DemoTank::Event_KeyRelease(int key)
+{
+
+}
+
 PE::Vector DemoTank::getCanonRoot()
 {
     return this->Position + PE::Vector(10, 14);

@@ -20,6 +20,8 @@ class DemoTank : public TankBase
     public:
         DemoTank(double x, double y, const QColor &color);
         void Render(PE::Renderer *r) override;
+        void Event_KeyPress(int key) override;
+        void Event_KeyRelease(int key) override;
 
     protected:
         PE::Vector getCanonRoot() override;
