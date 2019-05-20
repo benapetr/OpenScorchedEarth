@@ -31,9 +31,14 @@ TankBase::TankBase(double x, double y, const QColor &color)
 void TankBase::Update(qint64 time)
 {
     (void)time;
-    if (this->canonAdjust == 0)
+    if (this->canonAdjust == 0 && this->powerAdjust == 0)
         return;
     this->canonAngle += this->canonAdjust;
+    this->Power += this->powerAdjust;
+    if (this->Power < 1)
+        this->Power = 1;
+    if (this->Power > 100)
+        this->Power = 100;
     this->RedrawNeeded = true;
 }
 
@@ -45,10 +50,20 @@ void TankBase::Event_KeyPress(int key)
     switch (key)
     {
         case Qt::Key_A:
+        case Qt::Key_Left:
             this->canonAdjust = 0.006;
             return;
         case Qt::Key_D:
+        case Qt::Key_Right:
             this->canonAdjust = -0.006;
+            return;
+        case Qt::Key_Up:
+        case Qt::Key_W:
+            this->powerAdjust = 1;
+            return;
+        case Qt::Key_S:
+        case Qt::Key_Down:
+            this->powerAdjust = -1;
             return;
     }
 }
@@ -62,7 +77,15 @@ void TankBase::Event_KeyRelease(int key)
     {
         case Qt::Key_A:
         case Qt::Key_D:
+        case Qt::Key_Left:
+        case Qt::Key_Right:
             this->canonAdjust = 0;
+            return;
+        case Qt::Key_Up:
+        case Qt::Key_W:
+        case Qt::Key_S:
+        case Qt::Key_Down:
+            this->powerAdjust = 0;
             return;
     }
 }

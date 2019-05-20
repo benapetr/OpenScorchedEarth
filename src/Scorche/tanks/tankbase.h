@@ -29,11 +29,13 @@ class TankBase : public PE::Pawn
         double GetCanonAngle();
         bool IsPlayer = false;
         double Health = 100;
-        double Power = 1000;
+        double Power = 100;
+        double Fuel = 100;
 
     protected:
         virtual PE::Vector getCanonRoot(const PE::Vector &source)=0;
         virtual PE::Vector getCanonB(const PE::Vector &source);
+        double powerAdjust = 0;
         double canonAdjust = 0;
         double canonAngle = 0;
         QColor tankColor;

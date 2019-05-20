@@ -31,4 +31,10 @@ Makefile*
 *.qmlproject.user
 *.qmlproject.user.*
 
+build-src-*/
+release/
 
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts

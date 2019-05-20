@@ -15,7 +15,7 @@
 #include <PixelEngine/boxcollider.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/worldgenerator.h>
-#include "demotank.h"
+#include "tanks/demotank.h"
 #include "hud.h"
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
@@ -46,22 +46,6 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
 
     this->world->RegisterActor(player);
     this->world->RegisterActor(new DemoTank(800, 700, Qt::darkBlue));
-
-    int Y = 680;
-    while (Y < 700)
-    {
-        this->world->RegisterActor(new DemoTank(40, Y, Qt::darkCyan));
-        this->world->RegisterActor(new DemoTank(80, Y, Qt::darkCyan));
-        this->world->RegisterActor(new DemoTank(120, Y, Qt::darkCyan));
-        this->world->RegisterActor(new DemoTank(150, Y, Qt::darkCyan));
-        this->world->RegisterActor(new DemoTank(180, Y, Qt::darkCyan));
-        this->world->RegisterActor(new DemoTank(230, Y, Qt::darkCyan));
-        this->world->RegisterActor(new DemoTank(250, Y, Qt::darkCyan));
-        this->world->RegisterActor(new DemoTank(280, Y, Qt::darkCyan));
-        this->world->RegisterActor(new DemoTank(330, Y, Qt::darkCyan));
-        Y = Y + 50;
-    }
-
 }
 
 Game::~Game()
