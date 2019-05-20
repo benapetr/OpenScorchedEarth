@@ -25,49 +25,42 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->world = new PE::World(w_width, w_height);
     this->world->BackgroundColor = QColor(204, 221, 255);
     this->world->RegisterObject(new HUD(), 10);
-    this->world->RegisterTerrain(PE::WorldGenerator::GenerateRandom(static_cast<int>(w_width), static_cast<int>(w_height)));
+    PE::Collectable_SmartPtr<PE::Terrain> terrain = PE::WorldGenerator::GenerateRandom(static_cast<int>(w_width), static_cast<int>(w_height) - 20);
+    // Move the terrain little bit higher, so there is space for HUD
+    PE::Vector terrain_position = terrain->Position;
+    terrain_position.Y += 20;
+    terrain->SetPosition(terrain_position);
+    this->world->RegisterTerrain(terrain);
     this->world->Render(r);
     this->timer = new QTimer(this);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnUpdate()));
     this->timer->start(10);
 
     // Create floor
-    PE::Collectable_SmartPtr<PE::BoxCollider> floor = new PE::BoxCollider(-100, -15, 2000, 20);
+    PE::Collectable_SmartPtr<PE::BoxCollider> floor = new PE::BoxCollider(-100, 0, 2000, 20);
     this->world->RegisterCollider(floor);
+
     DemoTank *player = new DemoTank(10, 700, Qt::darkRed);
+    TankBase::PlayerTank = player;
     player->IsPlayer = true;
+
     this->world->RegisterActor(player);
     this->world->RegisterActor(new DemoTank(800, 700, Qt::darkBlue));
 
-    /*int Y = 80;
+    int Y = 680;
     while (Y < 700)
     {
-        this->world->RegisterActor(new DemoTank(10, Y));
-        this->world->RegisterActor(new DemoTank(40, Y));
-        this->world->RegisterActor(new DemoTank(80, Y));
-        this->world->RegisterActor(new DemoTank(120, Y));
-        this->world->RegisterActor(new DemoTank(150, Y));
-        this->world->RegisterActor(new DemoTank(180, Y));
-        this->world->RegisterActor(new DemoTank(230, Y));
-        this->world->RegisterActor(new DemoTank(250, Y));
-        this->world->RegisterActor(new DemoTank(280, Y));
-        this->world->RegisterActor(new DemoTank(330, Y));
-        this->world->RegisterActor(new DemoTank(360, Y));
-        this->world->RegisterActor(new DemoTank(400, Y));
-        this->world->RegisterActor(new DemoTank(450, Y));
-        this->world->RegisterActor(new DemoTank(500, Y));
-        this->world->RegisterActor(new DemoTank(550, Y));
-        this->world->RegisterActor(new DemoTank(600, Y));
-        this->world->RegisterActor(new DemoTank(630, Y));
-        this->world->RegisterActor(new DemoTank(660, Y));
-        this->world->RegisterActor(new DemoTank(700, Y));
-        this->world->RegisterActor(new DemoTank(730, Y));
-        this->world->RegisterActor(new DemoTank(760, Y));
-        this->world->RegisterActor(new DemoTank(800, Y));
-        this->world->RegisterActor(new DemoTank(830, Y));
-        this->world->RegisterActor(new DemoTank(860, Y));
+        this->world->RegisterActor(new DemoTank(40, Y, Qt::darkCyan));
+        this->world->RegisterActor(new DemoTank(80, Y, Qt::darkCyan));
+        this->world->RegisterActor(new DemoTank(120, Y, Qt::darkCyan));
+        this->world->RegisterActor(new DemoTank(150, Y, Qt::darkCyan));
+        this->world->RegisterActor(new DemoTank(180, Y, Qt::darkCyan));
+        this->world->RegisterActor(new DemoTank(230, Y, Qt::darkCyan));
+        this->world->RegisterActor(new DemoTank(250, Y, Qt::darkCyan));
+        this->world->RegisterActor(new DemoTank(280, Y, Qt::darkCyan));
+        this->world->RegisterActor(new DemoTank(330, Y, Qt::darkCyan));
         Y = Y + 50;
-    } */
+    }
 
 }
 

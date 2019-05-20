@@ -15,6 +15,8 @@
 #include <PixelEngine/definitions.h>
 #include <PixelEngine/rigidbody.h>
 
+TankBase *TankBase::PlayerTank = nullptr;
+
 TankBase::TankBase(double x, double y, const QColor &color)
 {
     this->tankColor = color;
@@ -32,6 +34,7 @@ void TankBase::Update(qint64 time)
     if (this->canonAdjust == 0)
         return;
     this->canonAngle += this->canonAdjust;
+    this->RedrawNeeded = true;
 }
 
 void TankBase::Event_KeyPress(int key)
@@ -62,6 +65,12 @@ void TankBase::Event_KeyRelease(int key)
             this->canonAdjust = 0;
             return;
     }
+}
+
+double TankBase::GetCanonAngle()
+{
+    // Simple radian to degree conversion
+    return (this->canonAngle * PE_PI_RAD_CNV) * PE_RAD_DEG_CNV;
 }
 
 PE::Vector TankBase::getCanonB(const PE::Vector &source)

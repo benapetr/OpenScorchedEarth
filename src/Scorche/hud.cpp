@@ -11,6 +11,7 @@
 // Copyright (c) Petr Bena 2019
 
 #include "hud.h"
+#include "tankbase.h"
 #include <PixelEngine/renderer.h>
 
 HUD::HUD()
@@ -23,5 +24,10 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     // HUD is using absolute position
     (void)c;
 
+    r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("white"), true);
     r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("black"));
+    if (!TankBase::PlayerTank)
+        return;
+    r->DrawText(10, 6, "HP: " + QString::number(TankBase::PlayerTank->Health), QColor("black"));
+    r->DrawText(60, 6, "Angle: " + QString::number(TankBase::PlayerTank->GetCanonAngle()), QColor("black"));
 }
