@@ -11,35 +11,30 @@
 // Copyright (c) Petr Bena 2019
 
 #include "demotank.h"
+#include <PixelEngine/camera.h>
 #include <PixelEngine/boxcollider.h>
 #include <PixelEngine/renderer.h>
 #include <PixelEngine/rigidbody.h>
 
-DemoTank::DemoTank(double x, double y, const QColor& color)
+DemoTank::DemoTank(double x, double y, const QColor& color) : TankBase (x, y, color)
 {
-    this->tankColor = color;
-
-    this->Position.X = x;
-    this->Position.Y = y;
-
-    this->RigidBody = new PE::Rigidbody();
-    this->RigidBody->Weight = 0.1;
-
     this->AddChildren(new PE::BoxCollider(0, 0, this->width, this->height));
     this->AddChildren(new PE::BoxCollider(5, 10, 10, 6));
 
     this->SetPosition(this->Position);
 }
 
-void DemoTank::Render(PE::Renderer *r)
+void DemoTank::Render(PE::Renderer *r, PE::Camera *c)
 {
+    // Get position to render on
+    PE::Vector position = c->ProjectedPosition(this->Position);
     // Draw a demo tank
-    r->DrawRect(static_cast<int>(this->Position.X), static_cast<int>(this->Position.Y), this->width, this->height, 2, this->tankColor, true);
-    r->DrawRect(static_cast<int>(this->Position.X + 5), static_cast<int>(this->Position.Y + 10), 10, 6, 1, this->tankColor, true);
-    r->DrawLine(this->getCanonRoot(), this->getCanonB(), 1, this->tankColor);
+    r->DrawRect(static_cast<int>(position.X), static_cast<int>(position.Y), this->width, this->height, 2, this->tankColor, true);
+    r->DrawRect(static_cast<int>(position.X + 5), static_cast<int>(position.Y + 10), 10, 6, 1, this->tankColor, true);
+    r->DrawLine(this->getCanonRoot(position), this->getCanonB(position), 1, this->tankColor);
 }
 
-PE::Vector DemoTank::getCanonRoot()
+PE::Vector DemoTank::getCanonRoot(const PE::Vector &source)
 {
-    return this->Position + PE::Vector(10, 14);
+    return PE::Vector(source) + PE::Vector(10, 14);
 }

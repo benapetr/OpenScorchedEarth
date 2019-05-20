@@ -16,6 +16,7 @@
 #include <PixelEngine/world.h>
 #include <PixelEngine/worldgenerator.h>
 #include "demotank.h"
+#include "hud.h"
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
@@ -23,6 +24,7 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->renderer->ManualUpdate = true;
     this->world = new PE::World(w_width, w_height);
     this->world->BackgroundColor = QColor(204, 221, 255);
+    this->world->RegisterObject(new HUD(), 10);
     this->world->RegisterTerrain(PE::WorldGenerator::GenerateRandom(static_cast<int>(w_width), static_cast<int>(w_height)));
     this->world->Render(r);
     this->timer = new QTimer(this);
@@ -32,8 +34,9 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     // Create floor
     PE::Collectable_SmartPtr<PE::BoxCollider> floor = new PE::BoxCollider(-100, -15, 2000, 20);
     this->world->RegisterCollider(floor);
-
-    this->world->RegisterActor(new DemoTank(10, 700, Qt::darkRed));
+    DemoTank *player = new DemoTank(10, 700, Qt::darkRed);
+    player->IsPlayer = true;
+    this->world->RegisterActor(player);
     this->world->RegisterActor(new DemoTank(800, 700, Qt::darkBlue));
 
     /*int Y = 80;

@@ -20,13 +20,20 @@
 class TankBase : public PE::Pawn
 {
     public:
-        TankBase();
-        QColor tankColor;
+        TankBase(double x, double y, const QColor &color);
+        void Update(qint64 time = 0) override;
+        void Event_KeyPress(int key) override;
+        void Event_KeyRelease(int key) override;
+        bool IsPlayer = false;
+        double Health = 100;
+        double Power = 1000;
 
     protected:
-        virtual PE::Vector getCanonRoot()=0;
-        virtual PE::Vector getCanonB();
+        virtual PE::Vector getCanonRoot(const PE::Vector &source)=0;
+        virtual PE::Vector getCanonB(const PE::Vector &source);
+        double canonAdjust = 0;
         double canonAngle = 0;
+        QColor tankColor;
 };
 
 #endif // TANKBASE_H

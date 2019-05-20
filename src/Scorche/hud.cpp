@@ -10,23 +10,18 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef DEMOTANK_H
-#define DEMOTANK_H
+#include "hud.h"
+#include <PixelEngine/renderer.h>
 
-#include "tankbase.h"
-
-class DemoTank : public TankBase
+HUD::HUD()
 {
-    public:
-        DemoTank(double x, double y, const QColor &color);
-        void Render(PE::Renderer *r, PE::Camera *c) override;
 
-    protected:
-        PE::Vector getCanonRoot(const PE::Vector &source) override;
+}
 
-    private:
-        int width = 20;
-        int height = 10;
-};
+void HUD::Render(PE::Renderer *r, PE::Camera *c)
+{
+    // HUD is using absolute position
+    (void)c;
 
-#endif // DEMOTANK_H
+    r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("black"));
+}
