@@ -10,9 +10,11 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include <PixelEngine/boxcollider.h>
-#include <PixelEngine/rigidbody.h>
+#include <PixelEngine/world.h>
+#include <PixelEngine/Physics/boxcollider.h>
+#include <PixelEngine/Physics/rigidbody.h>
 #include "../tanks/tankbase.h"
+#include "../game.h"
 #include "projectile.h"
 
 Projectile::Projectile(const PE::Vector &position)
@@ -20,4 +22,10 @@ Projectile::Projectile(const PE::Vector &position)
     this->Position = position;
     this->RigidBody = new PE::Rigidbody();
     this->RigidBody->Weight = 0.1;
+}
+
+void Projectile::Event_OnCollision(PE::Collider *collider)
+{
+    (void)collider;
+    Game::CurrentGame->GetWorld()->DestroyObject(this);
 }

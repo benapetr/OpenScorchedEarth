@@ -13,8 +13,9 @@
 #include "cannon.h"
 #include "smallrocket.h"
 #include "../game.h"
+#include "../tanks/tankbase.h"
 #include <cmath>
-#include <PixelEngine/rigidbody.h>
+#include <PixelEngine/Physics/rigidbody.h>
 #include <PixelEngine/world.h>
 
 Cannon::Cannon(TankBase *pawn) : Weapon(pawn)
@@ -45,6 +46,7 @@ void Cannon::Fire(const PE::Vector &source, double angle, double power)
 
     // Instantiate a projectile in front of cannon
     PE::Collectable_SmartPtr<SmallRocket> rocket = new SmallRocket(position);
+    rocket->Owner = this->Owner;
     rocket->DestroyAfter = Game::CurrentGame->GetWorld()->GetTime() + 20000;
     rocket->RigidBody->AddForce(force);
     Game::CurrentGame->GetWorld()->RegisterActor(rocket);

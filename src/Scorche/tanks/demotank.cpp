@@ -12,9 +12,9 @@
 
 #include "demotank.h"
 #include <PixelEngine/camera.h>
-#include <PixelEngine/boxcollider.h>
-#include <PixelEngine/renderer.h>
-#include <PixelEngine/rigidbody.h>
+#include <PixelEngine/Physics/boxcollider.h>
+#include <PixelEngine/Graphics/renderer.h>
+#include <PixelEngine/Physics/rigidbody.h>
 
 DemoTank::DemoTank(double x, double y, const QColor& color) : TankBase (x, y, color)
 {

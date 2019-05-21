@@ -23,6 +23,7 @@ class Projectile : public PE::Actor
 {
     public:
         Projectile(const PE::Vector &position);
+        void Event_OnCollision(PE::Collider *collider) override;
         PE::Collectable_SmartPtr<TankBase> Owner;
 };
 

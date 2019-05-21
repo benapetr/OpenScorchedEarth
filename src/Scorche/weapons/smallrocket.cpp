@@ -11,15 +11,15 @@
 // Copyright (c) Petr Bena 2019
 
 #include <PixelEngine/camera.h>
-#include <PixelEngine/rigidbody.h>
-#include <PixelEngine/renderer.h>
-#include <PixelEngine/boxcollider.h>
+#include <PixelEngine/Physics/rigidbody.h>
+#include <PixelEngine/Graphics/renderer.h>
+#include <PixelEngine/Physics/pixelcollider.h>
 #include "smallrocket.h"
 #include "../tanks/tankbase.h"
 
 SmallRocket::SmallRocket(const PE::Vector &position) : Projectile (position)
 {
-    this->AddChildren(new PE::BoxCollider(0, 0, 2, 2));
+    this->AddChildren(new PE::PixelCollider(0, 0));
 }
 
 void SmallRocket::Render(PE::Renderer *r, PE::Camera *c)

@@ -12,7 +12,7 @@
 
 #include "hud.h"
 #include "tanks/tankbase.h"
-#include <PixelEngine/renderer.h>
+#include <PixelEngine/Graphics/renderer.h>
 
 HUD::HUD()
 {

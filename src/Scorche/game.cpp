@@ -11,8 +11,8 @@
 // Copyright (c) Petr Bena 2019
 
 #include "game.h"
-#include <PixelEngine/renderer.h>
-#include <PixelEngine/boxcollider.h>
+#include <PixelEngine/Graphics/renderer.h>
+#include <PixelEngine/Physics/boxcollider.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/worldgenerator.h>
 #include "tanks/demotank.h"

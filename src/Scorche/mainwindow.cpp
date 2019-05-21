@@ -18,7 +18,7 @@
 #include <QDesktopWidget>
 #include <PixelEngine/engine.h>
 #include <PixelEngine/world.h>
-#include <PixelEngine/qimagerenderer.h>
+#include <PixelEngine/Graphics/qimagerenderer.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {

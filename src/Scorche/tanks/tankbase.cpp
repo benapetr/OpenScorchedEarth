@@ -14,7 +14,7 @@
 #include "../weapons/cannon.h"
 #include <cmath>
 #include <PixelEngine/definitions.h>
-#include <PixelEngine/rigidbody.h>
+#include <PixelEngine/Physics/rigidbody.h>
 
 TankBase *TankBase::PlayerTank = nullptr;
 
