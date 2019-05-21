@@ -18,8 +18,11 @@
 #include "tanks/demotank.h"
 #include "hud.h"
 
+Game *Game::CurrentGame = nullptr;
+
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
+    Game::CurrentGame = this;
     this->renderer = r;
     this->renderer->ManualUpdate = true;
     this->world = new PE::World(w_width, w_height);

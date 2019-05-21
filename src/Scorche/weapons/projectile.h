@@ -14,11 +14,16 @@
 #define PROJECTILE_H
 
 #include <PixelEngine/actor.h>
+#include <PixelEngine/vector.h>
+#include <PixelEngine/GC/collectable_smartptr.h>
+
+class TankBase;
 
 class Projectile : public PE::Actor
 {
     public:
-        Projectile();
+        Projectile(const PE::Vector &position);
+        PE::Collectable_SmartPtr<TankBase> Owner;
 };
 
 #endif // PROJECTILE_H

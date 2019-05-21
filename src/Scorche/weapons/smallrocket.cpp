@@ -10,14 +10,25 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include <PixelEngine/boxcollider.h>
+#include <PixelEngine/camera.h>
 #include <PixelEngine/rigidbody.h>
+#include <PixelEngine/renderer.h>
+#include <PixelEngine/boxcollider.h>
+#include "smallrocket.h"
 #include "../tanks/tankbase.h"
-#include "projectile.h"
 
-Projectile::Projectile(const PE::Vector &position)
+SmallRocket::SmallRocket(const PE::Vector &position) : Projectile (position)
 {
-    this->Position = position;
-    this->RigidBody = new PE::Rigidbody();
-    this->RigidBody->Weight = 0.1;
+    this->AddChildren(new PE::BoxCollider(0, 0, 2, 2));
+}
+
+void SmallRocket::Render(PE::Renderer *r, PE::Camera *c)
+{
+    PE::Vector position = c->ProjectedPosition(this->Position);
+    r->DrawEllipse(position.X2int(), position.Y2int(), 4, 4, QColor("black"), 2);
+}
+
+void SmallRocket::SetForce(const PE::Vector &force)
+{
+    this->RigidBody->AddForce(force);
 }

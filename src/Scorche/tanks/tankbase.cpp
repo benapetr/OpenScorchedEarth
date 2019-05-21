@@ -11,6 +11,7 @@
 // Copyright (c) Petr Bena 2019
 
 #include "tankbase.h"
+#include "../weapons/cannon.h"
 #include <cmath>
 #include <PixelEngine/definitions.h>
 #include <PixelEngine/rigidbody.h>
@@ -26,6 +27,16 @@ TankBase::TankBase(double x, double y, const QColor &color)
 
     this->RigidBody = new PE::Rigidbody();
     this->RigidBody->Weight = 0.1;
+
+    this->SelectedWeapon = new Cannon(this);
+}
+
+void TankBase::Fire()
+{
+    if (this->SelectedWeapon == nullptr)
+        return;
+
+    this->SelectedWeapon->Fire(this->getCanonB(this->Position), this->GetCanonAngle(), this->Power);
 }
 
 void TankBase::Update(qint64 time)
@@ -65,6 +76,9 @@ void TankBase::Event_KeyPress(int key)
         case Qt::Key_Down:
             this->powerAdjust = -1;
             return;
+        case Qt::Key_Space:
+            this->Fire();
+            return;
     }
 }
 
@@ -90,13 +104,13 @@ void TankBase::Event_KeyRelease(int key)
     }
 }
 
-double TankBase::GetCanonAngle()
+double TankBase::GetCanonAngleDegree()
 {
     // Simple radian to degree conversion
     return (this->canonAngle * PE_PI_RAD_CNV) * PE_RAD_DEG_CNV;
 }
 
-PE::Vector TankBase::getCanonB(const PE::Vector &source)
+double TankBase::GetCanonAngle()
 {
     if (this->canonAngle < 0)
         this->canonAngle = 0;
@@ -104,8 +118,13 @@ PE::Vector TankBase::getCanonB(const PE::Vector &source)
     if (this->canonAngle > PE_PI_RAD_CNV)
         this->canonAngle = PE_PI_RAD_CNV;
 
+    return this->canonAngle;
+}
+
+PE::Vector TankBase::getCanonB(const PE::Vector &source)
+{
     // angle math
-    double radians = this->canonAngle * PE_PI_RAD_CNV;
+    double radians = this->GetCanonAngle() * PE_PI_RAD_CNV;
     PE::Vector result = this->getCanonRoot(source);
     result.X += (12 * cos(radians));
     result.Y += (12 * sin(radians));

@@ -17,16 +17,21 @@
 #include <PixelEngine/vector.h>
 #include <QColor>
 
+class Weapon;
+
 class TankBase : public PE::Pawn
 {
     public:
         static TankBase *PlayerTank;
 
         TankBase(double x, double y, const QColor &color);
+        virtual void Fire();
         void Update(qint64 time = 0) override;
         void Event_KeyPress(int key) override;
         void Event_KeyRelease(int key) override;
+        double GetCanonAngleDegree();
         double GetCanonAngle();
+        Weapon *SelectedWeapon;
         bool IsPlayer = false;
         double Health = 100;
         double Power = 100;

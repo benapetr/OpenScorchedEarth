@@ -10,14 +10,18 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include <PixelEngine/boxcollider.h>
-#include <PixelEngine/rigidbody.h>
-#include "../tanks/tankbase.h"
+#ifndef SMALLROCKET_H
+#define SMALLROCKET_H
+
+#include <PixelEngine/vector.h>
 #include "projectile.h"
 
-Projectile::Projectile(const PE::Vector &position)
+class SmallRocket : public Projectile
 {
-    this->Position = position;
-    this->RigidBody = new PE::Rigidbody();
-    this->RigidBody->Weight = 0.1;
-}
+    public:
+        SmallRocket(const PE::Vector &position);
+        void Render(PE::Renderer *r, PE::Camera *c) override;
+        void SetForce(const PE::Vector &force);
+};
+
+#endif // SMALLROCKET_H

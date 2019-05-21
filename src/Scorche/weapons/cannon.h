@@ -10,14 +10,18 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include <PixelEngine/boxcollider.h>
-#include <PixelEngine/rigidbody.h>
-#include "../tanks/tankbase.h"
-#include "projectile.h"
+#ifndef CANNON_H
+#define CANNON_H
 
-Projectile::Projectile(const PE::Vector &position)
+#include "weapon.h"
+
+class Cannon : public Weapon
 {
-    this->Position = position;
-    this->RigidBody = new PE::Rigidbody();
-    this->RigidBody->Weight = 0.1;
-}
+    public:
+        Cannon(TankBase *pawn);
+        WeaponType GetWeaponType() override;
+        QString GetName() override;
+        void Fire(const PE::Vector &source, double angle, double power) override;
+};
+
+#endif // CANNON_H

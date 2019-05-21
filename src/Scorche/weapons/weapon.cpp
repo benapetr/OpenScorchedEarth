@@ -11,8 +11,14 @@
 // Copyright (c) Petr Bena 2019
 
 #include "weapon.h"
+#include "../tanks/tankbase.h"
 
-Weapon::Weapon()
+Weapon::Weapon(TankBase *owner)
+{
+    this->Owner = owner;
+}
+
+Weapon::~Weapon()
 {
 
 }

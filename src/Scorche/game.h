@@ -27,6 +27,7 @@ class Game : public QObject
 {
         Q_OBJECT
     public:
+        static Game *CurrentGame;
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;
         void GenerateRandomWorld();
