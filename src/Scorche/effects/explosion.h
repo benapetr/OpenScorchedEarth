@@ -15,14 +15,19 @@
 
 #include "generic.h"
 
+class TankBase;
+
 class Explosion : public Generic
 {
     public:
         Explosion(TankBase *p, double size);
         void Update(qint64 time) override;
         void Render(PE::Renderer *r, PE::Camera *c) override;
+        double Damage = 1000;
 
     private:
+        void destroyTerrain();
+        QList<TankBase*> untouchedTanks;
         double maxSize;
         double currentSize = 0;
         unsigned int stage = 0;

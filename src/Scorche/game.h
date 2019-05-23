@@ -15,6 +15,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QList>
 #include <PixelEngine/terrain.h>
 
 namespace PE
@@ -23,6 +24,8 @@ namespace PE
     class WorldGenerator;
     class Renderer;
 }
+
+class TankBase;
 
 class Game : public QObject
 {

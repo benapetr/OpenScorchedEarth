@@ -14,11 +14,14 @@
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/camera.h>
 #include <PixelEngine/terrain.h>
+#include <cmath>
+#include "../tanks/tankbase.h"
 #include "../game.h"
 
 Explosion::Explosion(TankBase *p, double size) : Generic(p)
 {
     this->maxSize = size;
+    this->untouchedTanks = TankBase::Players;
 }
 
 void Explosion::Update(qint64 time)
@@ -27,19 +30,11 @@ void Explosion::Update(qint64 time)
     if (this->currentSize < this->maxSize)
     {
         this->currentSize += 1;
+        this->destroyTerrain();
+        Game::CurrentGame->Terrain->LastMovementUpdate = time;
         this->RedrawNeeded = true;
     } else
     {
-        PE::Vector p = this->Position;
-        Game::CurrentGame->Terrain->DestroyPixel(p);
-        p.X += 1;
-        Game::CurrentGame->Terrain->DestroyPixel(p);
-        p.Y += 1;
-        Game::CurrentGame->Terrain->DestroyPixel(p);
-        p.X -= 2;
-        Game::CurrentGame->Terrain->DestroyPixel(p);
-        p.Y -= 2;
-        Game::CurrentGame->Terrain->RefreshPixmap();
         this->Destroy();
     }
 }
@@ -50,4 +45,42 @@ void Explosion::Render(PE::Renderer *r, PE::Camera *c)
     PE::Vector position = c->ProjectedPosition(this->Position);
     int shift = static_cast<int>(this->currentSize / 2);
     r->DrawEllipse(position.X2int() - shift, position.Y2int() - shift, static_cast<int>(this->currentSize), static_cast<int>(this->currentSize), QColor("red"), this->currentSize);
+}
+
+void Explosion::destroyTerrain()
+{
+    int x = this->Position.X2int();
+    int y = this->Position.Y2int();
+
+    // Get all points of circle
+
+    double angle = 0;
+    int old_x = 0;
+    int old_y = 0;
+
+    while (angle < (PE_PI_RAD_CNV * 4))
+    {
+        int circle_x = x + static_cast<int>(this->currentSize * std::cos(angle));
+        int circle_y = y + static_cast<int>(this->currentSize * std::sin(angle));
+        angle = angle + (0.3 / this->currentSize);
+        // Optimization
+        if (circle_x == old_x && circle_y == old_y)
+            continue;
+
+        old_x = circle_x;
+        old_y = circle_y;
+
+        // These functions are expensive
+        Game::CurrentGame->Terrain->DestroyPixel(circle_x, circle_y);
+        PE::Vector p(static_cast<double>(circle_x), static_cast<double>(circle_y));
+        foreach (TankBase *v, this->untouchedTanks)
+        {
+            if (v->CheckCollision(p))
+            {
+                v->TakeDamage(this->owner, this->Damage / this->currentSize);
+                this->untouchedTanks.removeOne(v);
+            }
+        }
+    }
+    Game::CurrentGame->Terrain->RefreshPixmap();
 }

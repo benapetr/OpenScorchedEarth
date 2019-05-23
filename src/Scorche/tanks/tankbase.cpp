@@ -15,14 +15,17 @@
 #include "../weapons/cannon.h"
 #include <cmath>
 #include <PixelEngine/camera.h>
+#include <PixelEngine/Physics/collider.h>
 #include <PixelEngine/definitions.h>
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/Physics/rigidbody.h>
 
+QList<TankBase*> TankBase::Players;
 TankBase *TankBase::PlayerTank = nullptr;
 
 TankBase::TankBase(double x, double y, const QColor &color, const QString &player_name, bool bot)
 {
+    Players.append(this);
     this->tankColor = color;
     this->PlayerName = player_name;
     if (bot)
@@ -39,6 +42,7 @@ TankBase::TankBase(double x, double y, const QColor &color, const QString &playe
 
 TankBase::~TankBase()
 {
+    Players.removeOne(this);
     delete this->ai;
 }
 
@@ -166,6 +170,16 @@ void TankBase::Kill(TankBase *source)
 bool TankBase::IsAlive()
 {
     return (this->Health > 0);
+}
+
+bool TankBase::CheckCollision(const PE::Vector &point)
+{
+    foreach (PE::Collider *c, this->colliders)
+    {
+        if (c->PositionMatch(point))
+            return true;
+    }
+    return false;
 }
 
 void TankBase::InitializeBot()

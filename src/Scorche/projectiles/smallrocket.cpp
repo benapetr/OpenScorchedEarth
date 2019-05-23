@@ -41,7 +41,7 @@ void SmallRocket::on_Terrain(PE::Collider *collider)
 {
     (void)collider;
     // Explode
-    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 20);
+    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 10);
     explosion->Position = this->Position;
     Game::CurrentGame->GetWorld()->RegisterActor(explosion, 2);
 }

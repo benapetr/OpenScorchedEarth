@@ -32,6 +32,8 @@ void Projectile::Event_OnCollision(PE::Collider *collider)
             this->on_Vehicle(t);
         else
             this->on_Terrain(collider);
+    } else {
+        this->on_Terrain(collider);
     }
     this->Destroy();
 }

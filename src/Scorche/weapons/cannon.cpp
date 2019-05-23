@@ -36,16 +36,19 @@ QString Cannon::GetName()
 void Cannon::Fire(const PE::Vector &source, double angle, double power)
 {
     PE::Vector position = source;
+    PE::Vector spawn_position = source;
 
     // angle math
     double radians = angle * PE_PI_RAD_CNV;
     position.X += (2 * std::cos(radians));
     position.Y += (2 * std::sin(radians));
+    spawn_position.X += (1 * std::cos(radians));
+    spawn_position.Y += (1 * std::sin(radians));
 
     PE::Vector force = (position - source) * (power / 15);
 
     // Instantiate a projectile in front of cannon
-    PE::Collectable_SmartPtr<SmallRocket> rocket = new SmallRocket(position);
+    PE::Collectable_SmartPtr<SmallRocket> rocket = new SmallRocket(spawn_position);
     rocket->Owner = this->Owner;
     rocket->Destroy(20000);
     rocket->RigidBody->AddForce(force);

@@ -15,6 +15,7 @@
 
 #include <PixelEngine/pawn.h>
 #include <PixelEngine/vector.h>
+#include <QList>
 #include <QColor>
 
 class AI;
@@ -23,6 +24,7 @@ class Weapon;
 class TankBase : public PE::Pawn
 {
     public:
+        static QList<TankBase*> Players;
         static TankBase *PlayerTank;
 
         TankBase(double x, double y, const QColor &color, const QString &player_name, bool bot);
@@ -37,6 +39,7 @@ class TankBase : public PE::Pawn
         virtual void TakeDamage(TankBase *source, double damage);
         virtual void Kill(TankBase *source);
         virtual bool IsAlive();
+        bool CheckCollision(const PE::Vector &point);
         void InitializeBot();
         QString PlayerName;
         Weapon *SelectedWeapon;
