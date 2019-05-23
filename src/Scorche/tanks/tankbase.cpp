@@ -13,7 +13,9 @@
 #include "tankbase.h"
 #include "../weapons/cannon.h"
 #include <cmath>
+#include <PixelEngine/camera.h>
 #include <PixelEngine/definitions.h>
+#include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/Physics/rigidbody.h>
 
 TankBase *TankBase::PlayerTank = nullptr;
@@ -119,6 +121,42 @@ double TankBase::GetCanonAngle()
         this->canonAngle = PE_PI_RAD_CNV;
 
     return this->canonAngle;
+}
+
+void TankBase::Render(PE::Renderer *r, PE::Camera *c)
+{
+    // Get position to render on
+    PE::Vector position = c->ProjectedPosition(this->Position);
+    position.Y += 50;
+
+    if (!this->PlayerName.isEmpty())
+    {
+        // Render name information
+        r->DrawText(position.X2int(), position.Y2int(), this->PlayerName, QColor("black"));
+    }
+
+    // Render HP information
+    r->DrawText(position.X2int(), position.Y2int() - 20, QString::number(this->Health), QColor("black"));
+}
+
+void TankBase::TakeDamage(TankBase *source, double damage)
+{
+    this->Health -= damage;
+    if (this->Health < 0)
+        this->Health = 0;
+
+    if (!this->IsAlive())
+        this->Kill(source);
+}
+
+void TankBase::Kill(TankBase *source)
+{
+
+}
+
+bool TankBase::IsAlive()
+{
+    return (this->Health > 0);
 }
 
 PE::Vector TankBase::getCanonB(const PE::Vector &source)

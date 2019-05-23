@@ -10,21 +10,15 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef PROJECTILE_H
-#define PROJECTILE_H
+#ifndef GENERIC_H
+#define GENERIC_H
 
-#include <PixelEngine/actor.h>
-#include <PixelEngine/vector.h>
-#include <PixelEngine/GC/collectable_smartptr.h>
+#include <PixelEngine/object.h>
 
-class TankBase;
-
-class Projectile : public PE::Actor
+class Generic : public PE::Object
 {
     public:
-        Projectile(const PE::Vector &position);
-        void Event_OnCollision(PE::Collider *collider) override;
-        PE::Collectable_SmartPtr<TankBase> Owner;
+        Generic();
 };
 
-#endif // PROJECTILE_H
+#endif // GENERIC_H

@@ -10,19 +10,9 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef SMALLROCKET_H
-#define SMALLROCKET_H
+#include "generic.h"
 
-#include <PixelEngine/vector.h>
-#include "projectile.h"
-
-class SmallRocket : public Projectile
+Generic::Generic()
 {
-    public:
-        SmallRocket(const PE::Vector &position);
-        void Render(PE::Renderer *r, PE::Camera *c) override;
-        void SetForce(const PE::Vector &force);
 
-};
-
-#endif // SMALLROCKET_H
+}

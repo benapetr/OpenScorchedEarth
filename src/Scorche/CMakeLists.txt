@@ -19,8 +19,8 @@ else()
 endif()
 
 file (GLOB ui "*.ui")
-file (GLOB headers "*.h" "weapons/*.h" "tanks/*.h")
-file (GLOB src "*.cpp" "tanks/*.cpp" "weapons/*.cpp")
+file (GLOB headers "*.h" "*/*.h")
+file (GLOB src "*.cpp" "*/*.cpp")
 file (GLOB resources "*.qrc")
 
 if(QT5_BUILD)

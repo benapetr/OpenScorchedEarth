@@ -32,6 +32,8 @@ void DemoTank::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawRect(static_cast<int>(position.X), static_cast<int>(position.Y), this->width, this->height, 2, this->tankColor, true);
     r->DrawRect(static_cast<int>(position.X + 5), static_cast<int>(position.Y + 10), 10, 6, 1, this->tankColor, true);
     r->DrawLine(this->getCanonRoot(position), this->getCanonB(position), 1, this->tankColor);
+
+    TankBase::Render(r, c);
 }
 
 PE::Vector DemoTank::getCanonRoot(const PE::Vector &source)

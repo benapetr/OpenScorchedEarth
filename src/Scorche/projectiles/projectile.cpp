@@ -26,6 +26,24 @@ Projectile::Projectile(const PE::Vector &position)
 
 void Projectile::Event_OnCollision(PE::Collider *collider)
 {
-    (void)collider;
+    if (collider->GetParent() != nullptr)
+    {
+        // Check if this is a tank
+        TankBase *t = dynamic_cast<TankBase*>(collider->GetParent());
+        if (t != nullptr)
+            this->on_Vehicle(t);
+        else
+            this->on_Terrain(collider);
+    }
     Game::CurrentGame->GetWorld()->DestroyObject(this);
+}
+
+void Projectile::on_Terrain(PE::Collider *collider)
+{
+
+}
+
+void Projectile::on_Vehicle(TankBase *tank)
+{
+
 }

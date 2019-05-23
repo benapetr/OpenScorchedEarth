@@ -31,6 +31,11 @@ class TankBase : public PE::Pawn
         void Event_KeyRelease(int key) override;
         double GetCanonAngleDegree();
         double GetCanonAngle();
+        void Render(PE::Renderer *r, PE::Camera *c) override;
+        virtual void TakeDamage(TankBase *source, double damage);
+        virtual void Kill(TankBase *source);
+        virtual bool IsAlive();
+        QString PlayerName;
         Weapon *SelectedWeapon;
         bool IsPlayer = false;
         double Health = 100;

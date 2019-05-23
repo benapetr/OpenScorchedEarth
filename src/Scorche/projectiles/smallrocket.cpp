@@ -32,3 +32,14 @@ void SmallRocket::SetForce(const PE::Vector &force)
 {
     this->RigidBody->AddForce(force);
 }
+
+void SmallRocket::on_Terrain(PE::Collider *collider)
+{
+
+}
+
+void SmallRocket::on_Vehicle(TankBase *tank)
+{
+    // Damage
+    tank->TakeDamage(this->Owner, 60);
+}

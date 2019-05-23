@@ -11,7 +11,7 @@
 // Copyright (c) Petr Bena 2019
 
 #include "cannon.h"
-#include "smallrocket.h"
+#include "../projectiles/smallrocket.h"
 #include "../game.h"
 #include "../tanks/tankbase.h"
 #include <cmath>
@@ -43,6 +43,9 @@ void Cannon::Fire(const PE::Vector &source, double angle, double power)
     position.Y += (2 * std::sin(radians));
 
     PE::Vector force = (position - source) * (power / 10);
+
+    // Boost the Y
+    force.Y *= 1.2;
 
     // Instantiate a projectile in front of cannon
     PE::Collectable_SmartPtr<SmallRocket> rocket = new SmallRocket(position);
