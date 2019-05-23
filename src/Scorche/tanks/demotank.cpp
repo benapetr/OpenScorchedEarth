@@ -16,10 +16,10 @@
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/Physics/rigidbody.h>
 
-DemoTank::DemoTank(double x, double y, const QColor& color) : TankBase (x, y, color)
+DemoTank::DemoTank(double x, double y, const QColor& color, const QString &player_name, bool bot) : TankBase (x, y, color, player_name, bot)
 {
-    this->AddChildren(new PE::BoxCollider(0, 0, this->width, this->height));
-    this->AddChildren(new PE::BoxCollider(5, 10, 10, 6));
+    this->AddChildren(new PE::BoxCollider(0, 0, this->width, this->height, this));
+    this->AddChildren(new PE::BoxCollider(5, 10, 10, 6, this));
 
     this->SetPosition(this->Position);
 }

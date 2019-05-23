@@ -15,6 +15,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <PixelEngine/terrain.h>
 
 namespace PE
 {
@@ -32,6 +33,7 @@ class Game : public QObject
         ~Game() override;
         void GenerateRandomWorld();
         PE::World *GetWorld() { return this->world; }
+        PE::Collectable_SmartPtr<PE::Terrain> Terrain;
 
     protected slots:
         void OnUpdate();

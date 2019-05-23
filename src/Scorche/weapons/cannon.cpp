@@ -42,15 +42,12 @@ void Cannon::Fire(const PE::Vector &source, double angle, double power)
     position.X += (2 * std::cos(radians));
     position.Y += (2 * std::sin(radians));
 
-    PE::Vector force = (position - source) * (power / 10);
-
-    // Boost the Y
-    force.Y *= 1.2;
+    PE::Vector force = (position - source) * (power / 15);
 
     // Instantiate a projectile in front of cannon
     PE::Collectable_SmartPtr<SmallRocket> rocket = new SmallRocket(position);
     rocket->Owner = this->Owner;
-    rocket->DestroyAfter = Game::CurrentGame->GetWorld()->GetTime() + 20000;
+    rocket->Destroy(20000);
     rocket->RigidBody->AddForce(force);
     Game::CurrentGame->GetWorld()->RegisterActor(rocket);
 }

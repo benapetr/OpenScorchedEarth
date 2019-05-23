@@ -15,10 +15,17 @@
 
 #include "generic.h"
 
-class Explosion
+class Explosion : public Generic
 {
     public:
-        Explosion();
+        Explosion(TankBase *p, double size);
+        void Update(qint64 time) override;
+        void Render(PE::Renderer *r, PE::Camera *c) override;
+
+    private:
+        double maxSize;
+        double currentSize = 0;
+        unsigned int stage = 0;
 };
 
 #endif // EXPLOSION_H

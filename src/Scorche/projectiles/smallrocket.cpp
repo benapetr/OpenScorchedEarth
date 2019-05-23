@@ -12,10 +12,14 @@
 
 #include <PixelEngine/camera.h>
 #include <PixelEngine/Physics/rigidbody.h>
+#include <PixelEngine/world.h>
 #include <PixelEngine/Graphics/renderer.h>
+#include <PixelEngine/terrain.h>
 #include <PixelEngine/Physics/pixelcollider.h>
 #include "smallrocket.h"
+#include "../effects/explosion.h"
 #include "../tanks/tankbase.h"
+#include "../game.h"
 
 SmallRocket::SmallRocket(const PE::Vector &position) : Projectile (position)
 {
@@ -35,7 +39,11 @@ void SmallRocket::SetForce(const PE::Vector &force)
 
 void SmallRocket::on_Terrain(PE::Collider *collider)
 {
-
+    (void)collider;
+    // Explode
+    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 20);
+    explosion->Position = this->Position;
+    Game::CurrentGame->GetWorld()->RegisterActor(explosion, 2);
 }
 
 void SmallRocket::on_Vehicle(TankBase *tank)

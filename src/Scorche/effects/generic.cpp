@@ -12,7 +12,7 @@
 
 #include "generic.h"
 
-Generic::Generic()
+Generic::Generic(TankBase *p)
 {
-
+    this->owner = p;
 }

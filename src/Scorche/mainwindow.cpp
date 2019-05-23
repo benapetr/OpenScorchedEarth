@@ -43,27 +43,28 @@ MainWindow::~MainWindow()
 
 void MainWindow::Render()
 {
-    this->ui->viewPort->setPixmap(this->se_renderer->GetPixmap());
+    this->game->GetWorld()->Render(this->se_renderer);
+    if (this->se_renderer->HasUpdate)
+        this->ui->viewPort->setPixmap(this->se_renderer->GetPixmap());
 }
 
 int MainWindow::GetWidth()
 {
     //return this->ui->viewPort->width() * QApplication::desktop()->devicePixelRatio() * 2;
-    return 1024;
+    return 1200;
 }
 
 int MainWindow::GetHeight()
 {
     //return this->ui->viewPort->height() * QApplication::desktop()->devicePixelRatio() * 2;
-    return 768;
+    return 900;
 }
 
 void MainWindow::OnRender()
 {
     if (!this->ui->actionRendering->isChecked())
         return;
-    if (this->se_renderer->HasUpdate)
-        this->ui->viewPort->setPixmap(this->se_renderer->GetPixmap());
+    this->Render();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)

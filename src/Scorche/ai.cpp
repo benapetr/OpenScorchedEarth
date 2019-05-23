@@ -10,26 +10,10 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef GENERIC_H
-#define GENERIC_H
+#include "ai.h"
+#include "tanks/tankbase.h"
 
-#include <PixelEngine/actor.h>
-#include <PixelEngine/terrain.h>
-
-namespace PE
+AI::AI(TankBase *t)
 {
-    class Terrain;
+    this->tank = t;
 }
-
-class TankBase;
-
-class Generic : public PE::Actor
-{
-    public:
-        Generic(TankBase *p);
-
-    protected:
-        TankBase *owner;
-};
-
-#endif // GENERIC_H

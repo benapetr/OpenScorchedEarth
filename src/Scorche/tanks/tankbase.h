@@ -17,6 +17,7 @@
 #include <PixelEngine/vector.h>
 #include <QColor>
 
+class AI;
 class Weapon;
 
 class TankBase : public PE::Pawn
@@ -24,7 +25,8 @@ class TankBase : public PE::Pawn
     public:
         static TankBase *PlayerTank;
 
-        TankBase(double x, double y, const QColor &color);
+        TankBase(double x, double y, const QColor &color, const QString &player_name, bool bot);
+        ~TankBase() override;
         virtual void Fire();
         void Update(qint64 time = 0) override;
         void Event_KeyPress(int key) override;
@@ -35,6 +37,7 @@ class TankBase : public PE::Pawn
         virtual void TakeDamage(TankBase *source, double damage);
         virtual void Kill(TankBase *source);
         virtual bool IsAlive();
+        void InitializeBot();
         QString PlayerName;
         Weapon *SelectedWeapon;
         bool IsPlayer = false;
@@ -45,6 +48,7 @@ class TankBase : public PE::Pawn
     protected:
         virtual PE::Vector getCanonRoot(const PE::Vector &source)=0;
         virtual PE::Vector getCanonB(const PE::Vector &source);
+        AI *ai = nullptr;
         double powerAdjust = 0;
         double canonAdjust = 0;
         double canonAngle = 0;

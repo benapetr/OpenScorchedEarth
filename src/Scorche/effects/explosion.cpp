@@ -11,8 +11,43 @@
 // Copyright (c) Petr Bena 2019
 
 #include "explosion.h"
+#include <PixelEngine/Graphics/renderer.h>
+#include <PixelEngine/camera.h>
+#include <PixelEngine/terrain.h>
+#include "../game.h"
 
-Explosion::Explosion()
+Explosion::Explosion(TankBase *p, double size) : Generic(p)
 {
+    this->maxSize = size;
+}
 
+void Explosion::Update(qint64 time)
+{
+    (void)time;
+    if (this->currentSize < this->maxSize)
+    {
+        this->currentSize += 1;
+        this->RedrawNeeded = true;
+    } else
+    {
+        PE::Vector p = this->Position;
+        Game::CurrentGame->Terrain->DestroyPixel(p);
+        p.X += 1;
+        Game::CurrentGame->Terrain->DestroyPixel(p);
+        p.Y += 1;
+        Game::CurrentGame->Terrain->DestroyPixel(p);
+        p.X -= 2;
+        Game::CurrentGame->Terrain->DestroyPixel(p);
+        p.Y -= 2;
+        Game::CurrentGame->Terrain->RefreshPixmap();
+        this->Destroy();
+    }
+}
+
+void Explosion::Render(PE::Renderer *r, PE::Camera *c)
+{
+    // Get position to render on
+    PE::Vector position = c->ProjectedPosition(this->Position);
+    int shift = static_cast<int>(this->currentSize / 2);
+    r->DrawEllipse(position.X2int() - shift, position.Y2int() - shift, static_cast<int>(this->currentSize), static_cast<int>(this->currentSize), QColor("red"), this->currentSize);
 }

@@ -28,12 +28,12 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->world = new PE::World(w_width, w_height);
     this->world->BackgroundColor = QColor(204, 221, 255);
     this->world->RegisterObject(new HUD(), 10);
-    PE::Collectable_SmartPtr<PE::Terrain> terrain = PE::WorldGenerator::GenerateRandom(static_cast<int>(w_width), static_cast<int>(w_height) - 20);
+    this->Terrain = PE::WorldGenerator::GenerateRandom(static_cast<int>(w_width), static_cast<int>(w_height) - 20);
     // Move the terrain little bit higher, so there is space for HUD
-    PE::Vector terrain_position = terrain->Position;
+    PE::Vector terrain_position = this->Terrain->Position;
     terrain_position.Y += 20;
-    terrain->SetPosition(terrain_position);
-    this->world->RegisterTerrain(terrain);
+    this->Terrain->SetPosition(terrain_position);
+    this->world->RegisterTerrain(this->Terrain);
     this->world->Render(r);
     this->timer = new QTimer(this);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnUpdate()));
@@ -43,12 +43,12 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     PE::Collectable_SmartPtr<PE::BoxCollider> floor = new PE::BoxCollider(-100, 0, 2000, 20);
     this->world->RegisterCollider(floor);
 
-    DemoTank *player = new DemoTank(10, 700, Qt::darkRed);
+    DemoTank *player = new DemoTank(10, 700, Qt::darkRed, "Player", false);
     TankBase::PlayerTank = player;
     player->IsPlayer = true;
 
     this->world->RegisterActor(player);
-    this->world->RegisterActor(new DemoTank(800, 700, Qt::darkBlue));
+    this->world->RegisterActor(new DemoTank(800, 700, Qt::darkBlue, "Bot", true));
 }
 
 Game::~Game()
@@ -65,5 +65,4 @@ void Game::GenerateRandomWorld()
 void Game::OnUpdate()
 {
     this->world->Update();
-    this->world->Render(this->renderer);
 }

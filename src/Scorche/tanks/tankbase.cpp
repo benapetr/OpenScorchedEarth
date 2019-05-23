@@ -11,6 +11,7 @@
 // Copyright (c) Petr Bena 2019
 
 #include "tankbase.h"
+#include "../ai.h"
 #include "../weapons/cannon.h"
 #include <cmath>
 #include <PixelEngine/camera.h>
@@ -20,9 +21,12 @@
 
 TankBase *TankBase::PlayerTank = nullptr;
 
-TankBase::TankBase(double x, double y, const QColor &color)
+TankBase::TankBase(double x, double y, const QColor &color, const QString &player_name, bool bot)
 {
     this->tankColor = color;
+    this->PlayerName = player_name;
+    if (bot)
+        this->ai = new AI(this);
 
     this->Position.X = x;
     this->Position.Y = y;
@@ -31,6 +35,11 @@ TankBase::TankBase(double x, double y, const QColor &color)
     this->RigidBody->Weight = 0.1;
 
     this->SelectedWeapon = new Cannon(this);
+}
+
+TankBase::~TankBase()
+{
+    delete this->ai;
 }
 
 void TankBase::Fire()
@@ -157,6 +166,11 @@ void TankBase::Kill(TankBase *source)
 bool TankBase::IsAlive()
 {
     return (this->Health > 0);
+}
+
+void TankBase::InitializeBot()
+{
+
 }
 
 PE::Vector TankBase::getCanonB(const PE::Vector &source)

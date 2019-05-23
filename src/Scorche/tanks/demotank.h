@@ -18,7 +18,7 @@
 class DemoTank : public TankBase
 {
     public:
-        DemoTank(double x, double y, const QColor &color);
+        DemoTank(double x, double y, const QColor &color, const QString &player_name, bool bot);
         void Render(PE::Renderer *r, PE::Camera *c) override;
 
     protected:

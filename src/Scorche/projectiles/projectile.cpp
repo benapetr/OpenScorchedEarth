@@ -10,11 +10,9 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include <PixelEngine/world.h>
 #include <PixelEngine/Physics/boxcollider.h>
 #include <PixelEngine/Physics/rigidbody.h>
 #include "../tanks/tankbase.h"
-#include "../game.h"
 #include "projectile.h"
 
 Projectile::Projectile(const PE::Vector &position)
@@ -35,7 +33,7 @@ void Projectile::Event_OnCollision(PE::Collider *collider)
         else
             this->on_Terrain(collider);
     }
-    Game::CurrentGame->GetWorld()->DestroyObject(this);
+    this->Destroy();
 }
 
 void Projectile::on_Terrain(PE::Collider *collider)
