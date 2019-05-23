@@ -50,7 +50,7 @@ void Cannon::Fire(const PE::Vector &source, double angle, double power)
     // Instantiate a projectile in front of cannon
     PE::Collectable_SmartPtr<SmallRocket> rocket = new SmallRocket(spawn_position);
     rocket->Owner = this->Owner;
-    rocket->Destroy(20000);
+    rocket->Destroy(8000);
     rocket->RigidBody->AddForce(force);
     Game::CurrentGame->GetWorld()->RegisterActor(rocket);
 }

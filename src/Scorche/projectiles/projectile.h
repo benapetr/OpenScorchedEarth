@@ -24,6 +24,8 @@ class Projectile : public PE::Actor
     public:
         Projectile(const PE::Vector &position);
         void Event_OnCollision(PE::Collider *collider) override;
+        void Event_OnImpact(const PE::Vector &v) override;
+        void Event_Destroyed() override;
         PE::Collectable_SmartPtr<TankBase> Owner;
     protected:
         virtual void on_Terrain(PE::Collider *collider);

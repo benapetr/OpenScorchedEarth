@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Scorche</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -51,7 +51,14 @@
     </property>
     <addaction name="actionRendering"/>
    </widget>
+   <widget class="QMenu" name="menuGame">
+    <property name="title">
+     <string>Game</string>
+    </property>
+    <addaction name="actionBots_enable_quick_aim"/>
+   </widget>
    <addaction name="menuSystem"/>
+   <addaction name="menuGame"/>
   </widget>
   <action name="actionRendering">
    <property name="checkable">
@@ -62,6 +69,17 @@
    </property>
    <property name="text">
     <string>Rendering</string>
+   </property>
+  </action>
+  <action name="actionBots_enable_quick_aim">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bots - enable quick aim</string>
    </property>
   </action>
  </widget>

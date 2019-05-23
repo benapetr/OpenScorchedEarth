@@ -26,6 +26,8 @@ DemoTank::DemoTank(double x, double y, const QColor& color, const QString &playe
 
 void DemoTank::Render(PE::Renderer *r, PE::Camera *c)
 {
+    if (!this->IsAlive())
+        return;
     // Get position to render on
     PE::Vector position = c->ProjectedPosition(this->Position);
     // Draw a demo tank

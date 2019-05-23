@@ -24,12 +24,17 @@ class Weapon;
 class TankBase : public PE::Pawn
 {
     public:
+        static TankBase *GetActivePlayer();
+        static TankBase *RotatePlayers();
         static QList<TankBase*> Players;
+        static TankBase *ActivePlayer;
         static TankBase *PlayerTank;
+        static bool ControlsFrozen;
 
         TankBase(double x, double y, const QColor &color, const QString &player_name, bool bot);
         ~TankBase() override;
         virtual void Fire();
+        virtual void Pass();
         void Update(qint64 time = 0) override;
         void Event_KeyPress(int key) override;
         void Event_KeyRelease(int key) override;
@@ -41,12 +46,20 @@ class TankBase : public PE::Pawn
         virtual bool IsAlive();
         bool CheckCollision(const PE::Vector &point);
         void InitializeBot();
+        void SetCanonAdjustLeft();
+        void SetCanonAdjustRight();
+        void ResetCanonAdjust();
+        void SetPower(double p);
+        void SetAngle(double a);
+        void IncreasePower(double p);
         QString PlayerName;
         Weapon *SelectedWeapon;
         bool IsPlayer = false;
         double Health = 100;
         double Power = 100;
         double Fuel = 100;
+        PE::Vector LastHit;
+        PE::Vector LastHit_Velocity;
 
     protected:
         virtual PE::Vector getCanonRoot(const PE::Vector &source)=0;

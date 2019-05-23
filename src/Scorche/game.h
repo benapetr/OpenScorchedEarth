@@ -32,11 +32,14 @@ class Game : public QObject
         Q_OBJECT
     public:
         static Game *CurrentGame;
+        static bool AIQuickAim;
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;
         void GenerateRandomWorld();
         PE::World *GetWorld() { return this->world; }
         PE::Collectable_SmartPtr<PE::Terrain> Terrain;
+        double MapWidth;
+        bool Frozen = false;
 
     protected slots:
         void OnUpdate();

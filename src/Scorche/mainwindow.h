@@ -49,6 +49,8 @@ class MainWindow : public QMainWindow
     private slots:
         void on_actionRendering_triggered();
 
+        void on_actionBots_enable_quick_aim_triggered();
+
     private:
         QTimer *renderTimer;
         Game *game;

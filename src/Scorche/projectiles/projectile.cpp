@@ -24,6 +24,7 @@ Projectile::Projectile(const PE::Vector &position)
 
 void Projectile::Event_OnCollision(PE::Collider *collider)
 {
+    this->Owner->LastHit = this->Position;
     if (collider->GetParent() != nullptr)
     {
         // Check if this is a tank
@@ -36,6 +37,16 @@ void Projectile::Event_OnCollision(PE::Collider *collider)
         this->on_Terrain(collider);
     }
     this->Destroy();
+}
+
+void Projectile::Event_OnImpact(const PE::Vector &v)
+{
+    this->Owner->LastHit_Velocity = v;
+}
+
+void Projectile::Event_Destroyed()
+{
+    TankBase::ControlsFrozen = false;
 }
 
 void Projectile::on_Terrain(PE::Collider *collider)

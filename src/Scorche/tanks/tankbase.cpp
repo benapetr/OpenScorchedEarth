@@ -15,13 +15,64 @@
 #include "../weapons/cannon.h"
 #include <cmath>
 #include <PixelEngine/camera.h>
+#include <PixelEngine/engine.h>
 #include <PixelEngine/Physics/collider.h>
 #include <PixelEngine/definitions.h>
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/Physics/rigidbody.h>
 
 QList<TankBase*> TankBase::Players;
+bool TankBase::ControlsFrozen = false;
+TankBase *TankBase::ActivePlayer = nullptr;
 TankBase *TankBase::PlayerTank = nullptr;
+
+TankBase *TankBase::GetActivePlayer()
+{
+    if (ActivePlayer == nullptr)
+    {
+        if (PlayerTank->IsAlive())
+        {
+            ActivePlayer = PlayerTank;
+            return PlayerTank;
+        } else
+        {
+            foreach (TankBase *player, Players)
+            {
+                if (player->IsAlive())
+                {
+                    ActivePlayer = player;
+                    return player;
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    return ActivePlayer;
+}
+
+TankBase *TankBase::RotatePlayers()
+{
+    TankBase *activePlayer = GetActivePlayer();
+    // Check if there are any players alive
+    if (activePlayer == nullptr)
+        return nullptr;
+
+    int index = Players.indexOf(activePlayer);
+    int tries = 0;
+    while (tries++ < Players.size())
+    {
+        if (++index >= Players.size())
+            index = 0;
+        activePlayer = Players.at(index);
+        if (activePlayer->IsAlive())
+        {
+            ActivePlayer = activePlayer;
+            return activePlayer;
+        }
+    }
+    return nullptr;
+}
 
 TankBase::TankBase(double x, double y, const QColor &color, const QString &player_name, bool bot)
 {
@@ -48,15 +99,35 @@ TankBase::~TankBase()
 
 void TankBase::Fire()
 {
+    if (TankBase::ControlsFrozen)
+        return;
+
+    if (this->Power > 100)
+        this->Power = 100;
+
     if (this->SelectedWeapon == nullptr)
         return;
 
+    TankBase::ControlsFrozen = true;
+
     this->SelectedWeapon->Fire(this->getCanonB(this->Position), this->GetCanonAngle(), this->Power);
+    this->ResetCanonAdjust();
+    RotatePlayers();
+}
+
+void TankBase::Pass()
+{
+    this->ResetCanonAdjust();
+    RotatePlayers();
 }
 
 void TankBase::Update(qint64 time)
 {
     (void)time;
+
+    if (!TankBase::ControlsFrozen && this->IsAlive() && this->ai != nullptr && GetActivePlayer() == this)
+        this->ai->Process();
+
     if (this->canonAdjust == 0 && this->powerAdjust == 0)
         return;
     this->canonAngle += this->canonAdjust;
@@ -70,18 +141,24 @@ void TankBase::Update(qint64 time)
 
 void TankBase::Event_KeyPress(int key)
 {
+    if (TankBase::ControlsFrozen)
+        return;
+
     if (!this->IsPlayer)
+        return;
+
+    if (PlayerTank != GetActivePlayer())
         return;
 
     switch (key)
     {
         case Qt::Key_A:
         case Qt::Key_Left:
-            this->canonAdjust = 0.006;
+            this->SetCanonAdjustLeft();
             return;
         case Qt::Key_D:
         case Qt::Key_Right:
-            this->canonAdjust = -0.006;
+            this->SetCanonAdjustRight();
             return;
         case Qt::Key_Up:
         case Qt::Key_W:
@@ -122,7 +199,7 @@ void TankBase::Event_KeyRelease(int key)
 double TankBase::GetCanonAngleDegree()
 {
     // Simple radian to degree conversion
-    return (this->canonAngle * PE_PI_RAD_CNV) * PE_RAD_DEG_CNV;
+    return ((this->canonAngle * PE_PI_RAD_CNV) * PE_RAD_DEG_CNV) - 90;
 }
 
 double TankBase::GetCanonAngle()
@@ -185,6 +262,45 @@ bool TankBase::CheckCollision(const PE::Vector &point)
 void TankBase::InitializeBot()
 {
 
+}
+
+void TankBase::SetCanonAdjustLeft()
+{
+    this->canonAdjust = 0.006;
+}
+
+void TankBase::SetCanonAdjustRight()
+{
+    this->canonAdjust = -0.006;
+}
+
+void TankBase::ResetCanonAdjust()
+{
+    this->canonAdjust = 0;
+}
+
+void TankBase::SetPower(double p)
+{
+    this->Power = p;
+    if (this->Power > 100)
+        this->Power = 100;
+    if (this->Power < 0)
+        this->Power = 0;
+}
+
+void TankBase::SetAngle(double a)
+{
+    this->canonAngle = a;
+    if (this->canonAngle < 0)
+        this->canonAngle = 0;
+
+    if (this->canonAngle > PE_PI_RAD_CNV)
+        this->canonAngle = PE_PI_RAD_CNV;
+}
+
+void TankBase::IncreasePower(double p)
+{
+    this->SetPower(this->Power + p);
 }
 
 PE::Vector TankBase::getCanonB(const PE::Vector &source)

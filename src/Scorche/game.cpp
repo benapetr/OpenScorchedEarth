@@ -19,11 +19,13 @@
 #include "hud.h"
 
 Game *Game::CurrentGame = nullptr;
+bool  Game::AIQuickAim = true;
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
     Game::CurrentGame = this;
     this->renderer = r;
+    this->MapWidth = w_width;
     this->renderer->ManualUpdate = true;
     this->world = new PE::World(w_width, w_height);
     this->world->BackgroundColor = QColor(204, 221, 255);
@@ -40,15 +42,21 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->timer->start(10);
 
     // Create floor
-    PE::Collectable_SmartPtr<PE::BoxCollider> floor = new PE::BoxCollider(-100, 0, 2000, 20);
+    PE::Collectable_SmartPtr<PE::BoxCollider> floor = new PE::BoxCollider(-1000, -100, 2000, 120);
     this->world->RegisterCollider(floor);
+    this->world->RegisterCollider(new PE::BoxCollider(-200, -100, 100, 1000));
+    this->world->RegisterCollider(new PE::BoxCollider(w_width + 100, -100, 100, 1000));
+    this->world->RegisterCollider(new PE::BoxCollider(-1000, w_height + 400, 2000, 100));
 
     DemoTank *player = new DemoTank(10, 700, Qt::darkRed, "Player", false);
     TankBase::PlayerTank = player;
     player->IsPlayer = true;
 
     this->world->RegisterActor(player);
-    this->world->RegisterActor(new DemoTank(800, 700, Qt::darkBlue, "Bot", true));
+    this->world->RegisterActor(new DemoTank(400, 700, Qt::darkBlue, "Bot", true));
+    this->world->RegisterActor(new DemoTank(200, 700, Qt::darkCyan, "Bot2", true));
+    this->world->RegisterActor(new DemoTank(600, 700, Qt::darkYellow, "Bot3", true));
+    this->world->RegisterActor(new DemoTank(800, 700, Qt::darkMagenta, "Bot4", true));
 }
 
 Game::~Game()

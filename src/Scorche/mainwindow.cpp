@@ -13,11 +13,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "game.h"
+#include "console.h"
 #include <QKeyEvent>
 #include <QImage>
 #include <QDesktopWidget>
 #include <PixelEngine/engine.h>
 #include <PixelEngine/world.h>
+#include <PixelEngine/ringlog.h>
+#include <PixelEngine/ringlog_item.h>
 #include <PixelEngine/Graphics/qimagerenderer.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -32,6 +35,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->renderTimer, SIGNAL(timeout()), this, SLOT(OnRender()));
     // this timer speed defines FPS, smaller means higher FPS, but also more CPU usage
     this->renderTimer->start(20);
+
+    // Init console
+    foreach (PE::RingLog_Item item, PE::Engine::GetEngine()->RL->GetItems())
+    {
+        Console::Append(item.GetText());
+    }
+
+    Console *c = new Console(this);
+    c->show();
 }
 
 MainWindow::~MainWindow()
@@ -80,4 +92,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent *e)
 void MainWindow::on_actionRendering_triggered()
 {
     this->se_renderer->Enabled = !this->se_renderer->Enabled;
+}
+
+void MainWindow::on_actionBots_enable_quick_aim_triggered()
+{
+    Game::AIQuickAim = !Game::AIQuickAim;
 }
