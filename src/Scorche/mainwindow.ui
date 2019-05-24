@@ -55,11 +55,17 @@
     <property name="title">
      <string>Game</string>
     </property>
-    <addaction name="actionBots_enable_quick_aim"/>
     <addaction name="actionNew_game"/>
    </widget>
-   <addaction name="menuSystem"/>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Options</string>
+    </property>
+    <addaction name="actionBots_enable_quick_aim"/>
+   </widget>
    <addaction name="menuGame"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuSystem"/>
   </widget>
   <action name="actionRendering">
    <property name="checkable">

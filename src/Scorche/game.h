@@ -36,6 +36,7 @@ class Game : public QObject
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;
         void GenerateRandomWorld();
+        void ShowIntroScreen();
         void NewGame();
         PE::World *GetWorld() { return this->world; }
         PE::Collectable_SmartPtr<PE::Terrain> Terrain;

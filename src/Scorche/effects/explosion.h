@@ -25,8 +25,9 @@ class Explosion : public Generic
         void Render(PE::Renderer *r, PE::Camera *c) override;
         double Damage = 1000;
 
-    private:
+    protected:
         void destroyTerrain();
+        TankBase *owner;
         QList<TankBase*> untouchedTanks;
         double maxSize;
         double currentSize = 0;

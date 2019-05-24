@@ -10,9 +10,9 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "generic.h"
+#include "inventoryscene.h"
 
-Generic::Generic()
+InventoryScene::InventoryScene()
 {
 
 }

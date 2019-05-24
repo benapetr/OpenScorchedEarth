@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/textures/terrain">
+        <file alias="rock.png">assets/environment/rock.png</file>
+    </qresource>
+</RCC>

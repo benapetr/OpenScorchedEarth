@@ -10,9 +10,17 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "generic.h"
+#ifndef PLAYERINFO_H
+#define PLAYERINFO_H
 
-Generic::Generic()
+#include <QString>
+
+class PlayerInfo
 {
+    public:
+        PlayerInfo(QString name);
+        QString PlayerName;
+        double Cash = 2000;
+};
 
-}
+#endif // PLAYERINFO_H

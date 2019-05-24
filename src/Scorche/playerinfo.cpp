@@ -10,9 +10,9 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "generic.h"
+#include "playerinfo.h"
 
-Generic::Generic()
+PlayerInfo::PlayerInfo(QString name)
 {
-
+    this->PlayerName = name;
 }

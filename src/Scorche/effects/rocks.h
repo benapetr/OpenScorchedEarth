@@ -10,9 +10,19 @@
 
 // Copyright (c) Petr Bena 2019
 
+#ifndef ROCKS_H
+#define ROCKS_H
+
 #include "generic.h"
 
-Generic::Generic()
+class Rocks : public Generic
 {
+    public:
+        Rocks();
+        void Update(qint64 time) override;
+        void Render(PE::Renderer *r, PE::Camera *c) override;
+        void Event_OnImpact(const PE::Vector &v) override;
+        void RandomForce();
+};
 
-}
+#endif // ROCKS_H

@@ -10,9 +10,14 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "generic.h"
+#ifndef INVENTORYSCENE_H
+#define INVENTORYSCENE_H
 
-Generic::Generic()
+
+class InventoryScene
 {
+    public:
+        InventoryScene();
+};
 
-}
+#endif // INVENTORYSCENE_H

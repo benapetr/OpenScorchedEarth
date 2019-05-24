@@ -31,21 +31,23 @@ SOURCES += \
         ../../src/PixelEngine/GC/*.cpp \
         ../../src/PixelEngine/Physics/*.cpp \
         ../../src/PixelEngine/Graphics/*.cpp \
-        ../../src/Scorche/Weapons/*.cpp \
-        ../../src/Scorche/Projectiles/*.cpp \
-        ../../src/Scorche/Tanks/*.cpp \
-        ../../src/Scorche/Effects/*.cpp \
+        ../../src/Scorche/weapons/*.cpp \
+        ../../src/Scorche/projectiles/*.cpp \
+        ../../src/Scorche/tanks/*.cpp \
+        ../../src/Scorche/scenes/*.cpp \
+        ../../src/Scorche/effects/*.cpp \
         ../../src/Scorche/*.cpp
 
 HEADERS += \
         ../../src/PixelEngine/*.h \
         ../../src/PixelEngine/GC/*.h \
         ../../src/PixelEngine/Physics/*.h \
-        ../../src/Scorche/Projectiles/*.h \
         ../../src/PixelEngine/Graphics/*.h \
-        ../../src/Scorche/Weapons/*.h \
-        ../../src/Scorche/Tanks/*.h \
-        ../../src/Scorche/Effects/*.h \
+        ../../src/Scorche/scenes/*.h \
+        ../../src/Scorche/projectiles/*.h \
+        ../../src/Scorche/tanks/*.h \
+        ../../src/Scorche/weapons/*.h \
+        ../../src/Scorche/effects/*.h \
         ../../src/Scorche/*.h
 
 FORMS += \

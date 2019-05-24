@@ -26,10 +26,7 @@ class TankBase;
 class Generic : public PE::Actor
 {
     public:
-        Generic(TankBase *p);
-
-    protected:
-        TankBase *owner;
+        Generic();
 };
 
 #endif // GENERIC_H

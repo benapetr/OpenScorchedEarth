@@ -14,12 +14,15 @@
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/camera.h>
 #include <PixelEngine/terrain.h>
+#include <PixelEngine/world.h>
 #include <cmath>
+#include "rocks.h"
 #include "../tanks/tankbase.h"
 #include "../game.h"
 
-Explosion::Explosion(TankBase *p, double size) : Generic(p)
+Explosion::Explosion(TankBase *p, double size)
 {
+    this->owner = p;
     this->maxSize = size;
     this->untouchedTanks = TankBase::Players;
 }
@@ -33,6 +36,12 @@ void Explosion::Update(qint64 time)
         this->destroyTerrain();
         Game::CurrentGame->Terrain->LastMovementUpdate = time;
         this->RedrawNeeded = true;
+        // Fire a random rock out some direction, just for fun
+        Rocks *r = new Rocks();
+        r->Position = this->Position;
+        r->RandomForce();
+        Game::CurrentGame->GetWorld()->RegisterActor(r, 1);
+        r->Destroy(2000);
     } else
     {
         this->Destroy();

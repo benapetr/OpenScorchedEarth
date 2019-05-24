@@ -15,6 +15,7 @@
 #include <PixelEngine/Physics/boxcollider.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/worldgenerator.h>
+#include "scenes/introscene.h"
 #include "tanks/demotank.h"
 #include "hud.h"
 
@@ -29,7 +30,8 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->MapWidth = w_width;
     this->renderer->ManualUpdate = true;
 
-    this->NewGame();
+    //this->NewGame();
+    this->ShowIntroScreen();
 
     this->timer = new QTimer(this);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnUpdate()));
@@ -45,6 +47,16 @@ Game::~Game()
 void Game::GenerateRandomWorld()
 {
 
+}
+
+void Game::ShowIntroScreen()
+{
+    TankBase::ResetPlayers();
+    delete this->world;
+
+    this->world = new PE::World(this->MapWidth, this->MapHeight);
+    this->world->BackgroundColor = QColor(204, 221, 255);
+    this->world->RegisterObject(new IntroScene(), 10);
 }
 
 void Game::NewGame()

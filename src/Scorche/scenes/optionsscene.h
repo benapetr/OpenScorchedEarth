@@ -10,9 +10,13 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "generic.h"
+#ifndef OPTIONSSCENE_H
+#define OPTIONSSCENE_H
 
-Generic::Generic()
+class OptionsScene
 {
+    public:
+        OptionsScene();
+};
 
-}
+#endif // OPTIONSSCENE_H

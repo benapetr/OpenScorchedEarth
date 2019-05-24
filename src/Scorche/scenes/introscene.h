@@ -10,9 +10,16 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "generic.h"
+#ifndef INTROSCENE_H
+#define INTROSCENE_H
 
-Generic::Generic()
+#include <PixelEngine/object.h>
+
+class IntroScene : public PE::Object
 {
+    public:
+        IntroScene();
+        void Render(PE::Renderer *r, PE::Camera *c) override;
+};
 
-}
+#endif // INTROSCENE_H
