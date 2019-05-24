@@ -42,5 +42,5 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     TankBase *currentPlayer = TankBase::GetActivePlayer();
     if (currentPlayer != nullptr)
         r->DrawText(240, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
-    r->DrawText(600, 880, Console::LastMessage, QColor("black"));
+    r->DrawText(300, 880, Console::LastMessage, QColor("black"));
 }

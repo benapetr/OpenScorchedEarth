@@ -10,7 +10,10 @@
 
 // Copyright (c) Petr Bena 2019
 
+#include "../effects/explosion.h"
+#include "../game.h"
 #include "demotank.h"
+#include <PixelEngine/world.h>
 #include <PixelEngine/camera.h>
 #include <PixelEngine/Physics/boxcollider.h>
 #include <PixelEngine/Graphics/renderer.h>
@@ -36,6 +39,16 @@ void DemoTank::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawLine(this->getCanonRoot(position), this->getCanonB(position), 1, this->tankColor);
 
     TankBase::Render(r, c);
+}
+
+void DemoTank::Kill(TankBase *tank)
+{
+    // Explode
+    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this, 80);
+    explosion->Position = this->Position;
+    Game::CurrentGame->GetWorld()->RegisterActor(explosion, 2);
+
+    TankBase::Kill(tank);
 }
 
 PE::Vector DemoTank::getCanonRoot(const PE::Vector &source)

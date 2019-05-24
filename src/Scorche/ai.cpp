@@ -35,6 +35,7 @@ void AI::Process()
     {
         debug_log("enemy was killed, looking for a new one");
         this->selectedEnemy = nullptr;
+        this->state = AI_State_Undecided;
     }
     switch(this->state)
     {

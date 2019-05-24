@@ -12,7 +12,9 @@
 
 #include "tankbase.h"
 #include "../ai.h"
+#include "../console.h"
 #include "../weapons/cannon.h"
+#include "../game.h"
 #include <cmath>
 #include <PixelEngine/camera.h>
 #include <PixelEngine/engine.h>
@@ -25,6 +27,14 @@ QList<TankBase*> TankBase::Players;
 bool TankBase::ControlsFrozen = false;
 TankBase *TankBase::ActivePlayer = nullptr;
 TankBase *TankBase::PlayerTank = nullptr;
+
+void TankBase::ResetPlayers()
+{
+    Players.clear();
+    ActivePlayer = nullptr;
+    PlayerTank = nullptr;
+    ControlsFrozen = false;
+}
 
 TankBase *TankBase::GetActivePlayer()
 {
@@ -124,6 +134,18 @@ void TankBase::Pass()
 void TankBase::Update(qint64 time)
 {
     (void)time;
+
+    if (Game::CurrentGame->IsPaused)
+        return;
+
+    if (!this->IsAlive())
+    {
+        if (GetActivePlayer() == this)
+        {
+            RotatePlayers();
+        }
+        return;
+    }
 
     if (!TankBase::ControlsFrozen && this->IsAlive() && this->ai != nullptr && GetActivePlayer() == this)
         this->ai->Process();
@@ -231,6 +253,9 @@ void TankBase::Render(PE::Renderer *r, PE::Camera *c)
 
 void TankBase::TakeDamage(TankBase *source, double damage)
 {
+    if (!this->IsAlive())
+        return;
+
     this->Health -= damage;
     if (this->Health < 0)
         this->Health = 0;
@@ -241,7 +266,13 @@ void TankBase::TakeDamage(TankBase *source, double damage)
 
 void TankBase::Kill(TankBase *source)
 {
+    Console::Append(source->PlayerName + " just nuked " + this->PlayerName + " :O");
 
+    // Remove all colliders
+    foreach (PE::Collider *c, this->colliders)
+        c->DestroyNow();
+
+    this->colliders.clear();
 }
 
 bool TankBase::IsAlive()

@@ -24,6 +24,7 @@ class Weapon;
 class TankBase : public PE::Pawn
 {
     public:
+        static void ResetPlayers();
         static TankBase *GetActivePlayer();
         static TankBase *RotatePlayers();
         static QList<TankBase*> Players;

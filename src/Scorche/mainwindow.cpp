@@ -98,3 +98,8 @@ void MainWindow::on_actionBots_enable_quick_aim_triggered()
 {
     Game::AIQuickAim = !Game::AIQuickAim;
 }
+
+void MainWindow::on_actionNew_game_triggered()
+{
+    Game::CurrentGame->NewGame();
+}

@@ -51,6 +51,8 @@ class MainWindow : public QMainWindow
 
         void on_actionBots_enable_quick_aim_triggered();
 
+        void on_actionNew_game_triggered();
+
     private:
         QTimer *renderTimer;
         Game *game;

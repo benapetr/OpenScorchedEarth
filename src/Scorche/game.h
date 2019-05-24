@@ -36,10 +36,12 @@ class Game : public QObject
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;
         void GenerateRandomWorld();
+        void NewGame();
         PE::World *GetWorld() { return this->world; }
         PE::Collectable_SmartPtr<PE::Terrain> Terrain;
         double MapWidth;
-        bool Frozen = false;
+        double MapHeight;
+        bool IsPaused = false;
 
     protected slots:
         void OnUpdate();
