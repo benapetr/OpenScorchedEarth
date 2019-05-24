@@ -12,6 +12,7 @@
 
 #include "rocks.h"
 #include <PixelEngine/camera.h>
+#include <PixelEngine/resources.h>
 #include <PixelEngine/Physics/rigidbody.h>
 #include <PixelEngine/Physics/pixelcollider.h>
 #include <PixelEngine/Graphics/renderer.h>
@@ -32,7 +33,7 @@ void Rocks::Update(qint64 time)
 void Rocks::Render(PE::Renderer *r, PE::Camera *c)
 {
     PE::Vector position = c->ProjectedPosition(this->Position);
-    r->DrawBitmap(position.X2int(), position.Y2int(), 6, 6, QPixmap(":/textures/terrain/rock.png"));
+    r->DrawBitmap(position.X2int(), position.Y2int(), PE::PEMath::GetRandom(2, 6), PE::PEMath::GetRandom(2, 6), PE::Resources::GetPixmap(":/textures/terrain/rock.png"));
 }
 
 void Rocks::Event_OnImpact(const PE::Vector &v)

@@ -36,16 +36,31 @@ void Explosion::Update(qint64 time)
         this->destroyTerrain();
         Game::CurrentGame->Terrain->LastMovementUpdate = time;
         this->RedrawNeeded = true;
-        // Fire a random rock out some direction, just for fun
-        Rocks *r = new Rocks();
-        r->Position = this->Position;
-        r->RandomForce();
-        Game::CurrentGame->GetWorld()->RegisterActor(r, 1);
-        r->Destroy(2000);
+        if (Game::ExplosionEffects)
+        {
+            // Fire a random rock out some direction, just for fun
+            Rocks *r = new Rocks();
+            r->Position = this->Position;
+            r->RandomForce();
+            Game::CurrentGame->GetWorld()->RegisterActor(r, 1);
+            r->Destroy(1000);
+        }
     } else
     {
         this->Destroy();
     }
+}
+
+static int normalize(int i, int min)
+{
+    if (i > 255)
+        return 255;
+    if (i < min)
+        return min;
+    if (i < 0)
+        return 0;
+
+    return i;
 }
 
 void Explosion::Render(PE::Renderer *r, PE::Camera *c)
@@ -53,7 +68,12 @@ void Explosion::Render(PE::Renderer *r, PE::Camera *c)
     // Get position to render on
     PE::Vector position = c->ProjectedPosition(this->Position);
     int shift = static_cast<int>(this->currentSize / 2);
-    r->DrawEllipse(position.X2int() - shift, position.Y2int() - shift, static_cast<int>(this->currentSize), static_cast<int>(this->currentSize), QColor("red"), this->currentSize);
+    int color_shift = static_cast<int>(this->currentSize * 2);
+    int red = 255 - color_shift;
+    int gr = 100 - color_shift * 4;
+    int bl = 100 - color_shift * 2;
+    QColor color(normalize(red, 80), normalize(gr, 50), normalize(bl, 50));
+    r->DrawEllipse(position.X2int() - shift, position.Y2int() - shift, static_cast<int>(this->currentSize), static_cast<int>(this->currentSize), color, this->currentSize);
 }
 
 void Explosion::destroyTerrain()
@@ -71,7 +91,9 @@ void Explosion::destroyTerrain()
     {
         int circle_x = x + static_cast<int>(this->currentSize * std::cos(angle));
         int circle_y = y + static_cast<int>(this->currentSize * std::sin(angle));
+
         angle = angle + (0.3 / this->currentSize);
+
         // Optimization
         if (circle_x == old_x && circle_y == old_y)
             continue;
@@ -81,7 +103,7 @@ void Explosion::destroyTerrain()
 
         // These functions are expensive
         Game::CurrentGame->Terrain->DestroyPixel(circle_x, circle_y);
-        PE::Vector p(static_cast<double>(circle_x), static_cast<double>(circle_y));
+        PE::Vector p(circle_x, circle_y);
         foreach (TankBase *v, this->untouchedTanks)
         {
             if (v->CheckCollision(p))

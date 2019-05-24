@@ -20,6 +20,7 @@
 #include <PixelEngine/engine.h>
 #include <PixelEngine/Physics/collider.h>
 #include <PixelEngine/definitions.h>
+#include <PixelEngine/resources.h>
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/Physics/rigidbody.h>
 
@@ -249,6 +250,9 @@ void TankBase::Render(PE::Renderer *r, PE::Camera *c)
 
     // Render HP information
     r->DrawText(position.X2int(), position.Y2int() - 20, QString::number(this->Health), QColor("black"));
+
+    if (GetActivePlayer() == this)
+        r->DrawBitmap(position.X2int(), position.Y2int() + 30, 20, 30, PE::Resources::GetPixmap(":/textures/terrain/arrow.png"));
 }
 
 void TankBase::TakeDamage(TankBase *source, double damage)

@@ -62,6 +62,7 @@
      <string>Options</string>
     </property>
     <addaction name="actionBots_enable_quick_aim"/>
+    <addaction name="actionExplosion_rocks"/>
    </widget>
    <addaction name="menuGame"/>
    <addaction name="menuOptions"/>
@@ -92,6 +93,17 @@
   <action name="actionNew_game">
    <property name="text">
     <string>New game</string>
+   </property>
+  </action>
+  <action name="actionExplosion_rocks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Explosion rocks</string>
    </property>
   </action>
  </widget>

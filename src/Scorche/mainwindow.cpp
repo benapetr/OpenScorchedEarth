@@ -63,7 +63,7 @@ void MainWindow::Render()
 int MainWindow::GetWidth()
 {
     //return this->ui->viewPort->width() * QApplication::desktop()->devicePixelRatio() * 2;
-    return 1200;
+    return 1400;
 }
 
 int MainWindow::GetHeight()
@@ -102,4 +102,9 @@ void MainWindow::on_actionBots_enable_quick_aim_triggered()
 void MainWindow::on_actionNew_game_triggered()
 {
     Game::CurrentGame->NewGame();
+}
+
+void MainWindow::on_actionExplosion_rocks_triggered()
+{
+    Game::ExplosionEffects = !Game::ExplosionEffects;
 }

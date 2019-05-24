@@ -21,6 +21,7 @@
 
 Game *Game::CurrentGame = nullptr;
 bool  Game::AIQuickAim = true;
+bool  Game::ExplosionEffects = true;
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {

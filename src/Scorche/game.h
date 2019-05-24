@@ -33,6 +33,8 @@ class Game : public QObject
     public:
         static Game *CurrentGame;
         static bool AIQuickAim;
+        static bool ExplosionEffects;
+
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;
         void GenerateRandomWorld();
