@@ -55,6 +55,8 @@ class MainWindow : public QMainWindow
 
         void on_actionExplosion_rocks_triggered();
 
+        void on_actionFast_game_triggered();
+
     private:
         QTimer *renderTimer;
         Game *game;

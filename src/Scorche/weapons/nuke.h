@@ -10,17 +10,14 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef INTROSCENE_H
-#define INTROSCENE_H
+#ifndef NUKE_H
+#define NUKE_H
 
-#include <PixelEngine/actor.h>
 
-class IntroScene : public PE::Actor
+class Nuke
 {
     public:
-        IntroScene();
-        void Render(PE::Renderer *r, PE::Camera *c) override;
-        void Event_KeyPress(int key) override;
+        Nuke();
 };
 
-#endif // INTROSCENE_H
+#endif // NUKE_H

@@ -13,11 +13,13 @@
 #ifndef INVENTORYSCENE_H
 #define INVENTORYSCENE_H
 
+#include <PixelEngine/actor.h>
 
-class InventoryScene
+class InventoryScene : public PE::Actor
 {
     public:
         InventoryScene();
+        void Render(PE::Renderer *r, PE::Camera *c) override;
 };
 
 #endif // INVENTORYSCENE_H

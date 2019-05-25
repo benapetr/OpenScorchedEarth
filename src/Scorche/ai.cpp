@@ -87,7 +87,9 @@ void AI::Process()
             this->tank->Pass();
             break;
         case AI_State_Fired:
+            this->prevEvaluation = this->lastEvaluation;
             this->evaluateFire();
+            this->postEvaluateFire();
             break;
     }
 }
@@ -135,7 +137,7 @@ void AI::improveAngle(double max)
     qint32 x = static_cast<qint32>(max * 100);
     double rnd = static_cast<double>(PE::PEMath::GetRandom(-1 * x, x)) / 100;
     double old_angle = this->targetAngle;
-    this->targetAngle += rnd;
+    this->changeAngle(this->targetAngle + rnd);
     this->normalizeAngle();
     while (old_angle == this->targetAngle)
         this->improveAngle(max);
@@ -143,7 +145,7 @@ void AI::improveAngle(double max)
 
 void AI::improvePower(double max)
 {
-    this->tank->IncreasePower(PE::PEMath::GetRandom(-1 * max, 2 * max));
+    this->increasePower(PE::PEMath::GetRandom(-1 * max, 2 * max));
 }
 
 void AI::resetEnemy()
@@ -167,6 +169,7 @@ void AI::resetEnemy()
         this->tank->SetPower(PE::PEMath::GetRandom(30, 80));
     else if (distance > 100)
         this->tank->SetPower(PE::PEMath::GetRandom(30, 60));
+    this->lastEvaluation = AI_PreviousHitEvaluation_Unknown;
 }
 
 void AI::normalizeAngle()
@@ -230,6 +233,7 @@ void AI::evaluateFire()
     if (this->selectedEnemy->Health < this->previousEnemyHP)
     {
         debug_log("enemy has lower HP since last hit, keeping same trajectory");
+        this->lastEvaluation = AI_PreviousHitEvaluation_Pefect;
         this->previousEnemyHP = this->selectedEnemy->Health;
         this->Fire();
         return;
@@ -258,7 +262,9 @@ void AI::evaluateFire()
     if (distance_last < this->bestDistance)
     {
         debug_log("this is best distance hit we have so far, saving this angle for later");
+        this->lastEvaluation = AI_PreviousHitEvaluation_Pefect;
         this->bestAngle = this->targetAngle;
+        this->bestPower = this->tank->Power;
         this->bestDistance = distance_last;
     }
 
@@ -266,7 +272,6 @@ void AI::evaluateFire()
     {
         debug_log("last hit was when rocket was falling down and enemy was above it, rocket must go higher, adjusting power and angle");
         this->tank->IncreasePower(PE::PEMath::GetRandom(2, 20));
-        this->improveAngle(0.2);
         this->state = AI_State_Waiting_Angle;
         return;
     }
@@ -274,6 +279,7 @@ void AI::evaluateFire()
     if (this->flewOver(this->tank->LastHit.X) && this->tank->LastHit.Y > this->selectedEnemy->Position.Y && this->tank->LastHit_Velocity.Y > 0)
     {
         debug_log("last hit was when rocket was above enemy and it was flying up, adjusting power down");
+        this->lastEvaluation = AI_PreviousHitEvaluation_Bad;
         this->tank->IncreasePower(PE::PEMath::GetRandom(2, 20) * -1);
         this->Fire();
         return;
@@ -282,6 +288,7 @@ void AI::evaluateFire()
     if (this->flewAway(this->tank->LastHit.X) && this->tank->LastHit.Y > this->selectedEnemy->Position.Y)
     {
         debug_log("last hit flew out of map when rocket was above enemy, adjusting power down");
+        this->lastEvaluation = AI_PreviousHitEvaluation_Bad;
         this->tank->IncreasePower(PE::PEMath::GetRandom(2, 20) * -1);
         this->Fire();
         return;
@@ -290,6 +297,7 @@ void AI::evaluateFire()
     if (distance_last < distance_prev)
     {
         this->previousHit = this->tank->LastHit;
+        this->lastEvaluation = AI_PreviousHitEvaluation_Good;
         debug_log("last hit had better distance than one before, this is a good trajectory");
         this->tank->Fire();
         return;
@@ -298,6 +306,7 @@ void AI::evaluateFire()
     if (this->fallenBefore(this->tank->LastHit.X) && this->tank->Power < 100 && this->tank->LastHit.Y < this->selectedEnemy->Position.Y && this->tank->LastHit_Velocity.Y < 0)
     {
         debug_log("last hit was when rocket was falling down and enemy was above far away, rocket must go higher, adjusting power up");
+        this->lastEvaluation = AI_PreviousHitEvaluation_Bad;
         this->tank->IncreasePower(PE::PEMath::GetRandom(5, 40));
         this->state = AI_State_Waiting_Angle;
         return;
@@ -309,16 +318,67 @@ void AI::evaluateFire()
         this->targetAngle = this->bestAngle;
         this->improveAngle(0.3);
         debug_log("last hit had same distance than one before, trying better angle - " + QString::number(this->targetAngle));
-        this->state = AI_State_Waiting_Angle;
+        this->lastEvaluation = AI_PreviousHitEvaluation_Average;
         return;
     }
 
     this->previousHit = this->tank->LastHit;
     this->targetAngle = this->bestAngle;
-    this->improveAngle(0.1);
+    this->improveAngle(0.2);
     this->improvePower(10);
+    debug_log("last hit had worse distance than one before, trying better angle - " + QString::number(this->targetAngle));
+    this->lastEvaluation = AI_PreviousHitEvaluation_Horrible;
+}
+
+void AI::postEvaluateFire()
+{
+    switch (this->prevEvaluation)
+    {
+        case AI_PreviousHitEvaluation_Bad:
+        case AI_PreviousHitEvaluation_Horrible:
+            if (this->lastEvaluation == AI_PreviousHitEvaluation_Good || this->lastEvaluation == AI_PreviousHitEvaluation_Pefect)
+            {
+                // Previous evaluation was bad, but now it's much better, which means we improved,
+                // let's try to add half of the change we did last time to check if it improves further
+                debug_log("last change is evaluated as improvement, reapplying same change");
+                this->changeAngle(this->lastAngleChange / 2);
+                this->changePower(this->lastPowerChange / 2);
+                return;
+            }
+            break;
+        case AI_PreviousHitEvaluation_Pefect:
+        case AI_PreviousHitEvaluation_Good:
+            if (this->lastEvaluation == AI_PreviousHitEvaluation_Bad || this->lastEvaluation == AI_PreviousHitEvaluation_Horrible)
+            {
+                debug_log("last change is evaluated as worse, reverting change");
+                this->changeAngle(-1 * this->lastAngleChange);
+                this->changePower(-1 *this->lastPowerChange);
+                return;
+            }
+    }
+}
+
+void AI::changeAngle(double new_angle)
+{
+    this->lastAngleChange = new_angle - this->targetAngle;
+    this->targetAngle = new_angle;
     this->state = AI_State_Waiting_Angle;
-    debug_log("last hit had much worse distance than one before, trying better angle - " + QString::number(this->targetAngle));
+}
+
+void AI::changePower(double new_power)
+{
+    if (new_power < 0)
+        new_power = 0;
+    if (new_power > 100)
+        new_power = 100;
+    this->lastPowerChange = new_power - this->targetPower;
+    this->targetPower = new_power;
+    this->tank->SetPower(new_power);
+}
+
+void AI::increasePower(double p)
+{
+    this->changePower(this->tank->Power += p);
 }
 
 void AI::debug_log(const QString &text)

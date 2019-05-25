@@ -50,6 +50,8 @@ HEADERS += \
         ../../src/Scorche/effects/*.h \
         ../../src/Scorche/*.h
 
+RESOURCES += ../../src/Scorche/*.qrc
+
 FORMS += \
       ../../src/Scorche/*.ui
 

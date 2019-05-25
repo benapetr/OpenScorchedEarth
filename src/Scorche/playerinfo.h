@@ -21,6 +21,17 @@ class PlayerInfo
         PlayerInfo(QString name);
         QString PlayerName;
         double Cash = 2000;
+
+        unsigned int BigCanon = 0;
+        unsigned int TripleCanon = 0;
+        unsigned int Nuke = 0;
+        unsigned int MiniNuke = 0;
+
+        unsigned int HeavyShields = 0;
+        unsigned int Shields = 0;
+
+        unsigned int RepairKits = 0;
+        unsigned int Fuel = 0;
 };
 
 #endif // PLAYERINFO_H

@@ -34,6 +34,8 @@ class Game : public QObject
         static Game *CurrentGame;
         static bool AIQuickAim;
         static bool ExplosionEffects;
+        static bool SuperFast;
+        static bool PlayerRequestNewGame;
 
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;

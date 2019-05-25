@@ -12,6 +12,8 @@
 
 #include "introscene.h"
 #include <PixelEngine/Graphics/renderer.h>
+#include <PixelEngine/Graphics/pixmaptools.h>
+#include <PixelEngine/resources.h>
 #include "../game.h"
 
 IntroScene::IntroScene()
@@ -26,7 +28,15 @@ void IntroScene::Render(PE::Renderer *r, PE::Camera *c)
 
     r->DrawText(r->GetWidth() / 2 - 200, r->GetHeight() / 2 + 200, "Open Scorched Earth", QColor("black"), 40);
     r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 + 160, "Mother of all games", QColor("black"), 20);
-    r->DrawText(r->GetWidth() / 2 - 160, r->GetHeight() / 2 - 200, "Use menu on top to start new game", QColor("black"), 20);
+    r->DrawText(r->GetWidth() / 2 - 138, r->GetHeight() / 2 - 200, "Press space to start new game", QColor("black"), 20);
 
     r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 - 300, "Created by Petr Bena", QColor("black"), 20);
+    //r->DrawBitmap(10, 50, 20, 30, PE::PixmapTools::Rotate(PE::Resources::GetPixmap(":/textures/terrain/arrow.png"), 90));
+    //r->DrawBitmap(10, 50, 20, 30, PE::Resources::GetPixmap(":/textures/terrain/arrow.png"));
+}
+
+void IntroScene::Event_KeyPress(int key)
+{
+    if (key == Qt::Key::Key_Space)
+        Game::PlayerRequestNewGame = true;
 }

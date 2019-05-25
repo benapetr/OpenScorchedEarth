@@ -10,17 +10,9 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef INTROSCENE_H
-#define INTROSCENE_H
+#include "bigcannon.h"
 
-#include <PixelEngine/actor.h>
-
-class IntroScene : public PE::Actor
+BigCannon::BigCannon()
 {
-    public:
-        IntroScene();
-        void Render(PE::Renderer *r, PE::Camera *c) override;
-        void Event_KeyPress(int key) override;
-};
 
-#endif // INTROSCENE_H
+}

@@ -35,6 +35,16 @@ class AI
             AI_Right
         };
 
+        enum AI_PreviousHitEvaluation
+        {
+            AI_PreviousHitEvaluation_Pefect,
+            AI_PreviousHitEvaluation_Good,
+            AI_PreviousHitEvaluation_Average,
+            AI_PreviousHitEvaluation_Bad,
+            AI_PreviousHitEvaluation_Horrible,
+            AI_PreviousHitEvaluation_Unknown
+        };
+
     public:
         AI(TankBase *t);
         virtual ~AI();
@@ -53,15 +63,25 @@ class AI
         virtual bool flewOver(double X);
         virtual bool flewAway(double X);
         virtual void evaluateFire();
+        virtual void postEvaluateFire();
+        void changeAngle(double new_angle);
+        void changePower(double new_power);
+        void increasePower(double p);
 
         void debug_log(const QString &text);
         AI_State state = AI_State_Undecided;
+        AI_PreviousHitEvaluation lastEvaluation = AI_PreviousHitEvaluation_Unknown;
+        AI_PreviousHitEvaluation prevEvaluation = AI_PreviousHitEvaluation_Unknown;
         double targetTolerance = 0.01;
         int unknownDataCounter = 0;
         PE::Vector previousHit;
         double targetAngle = 0;
+        double targetPower = 0;
         double bestAngle = 0;
+        double bestPower = 0;
         double bestDistance = 9999;
+        double lastAngleChange = 0;
+        double lastPowerChange = 0;
         AI_Side enemySide = AI_Right;
         TankBase *selectedEnemy = nullptr;
         double previousEnemyHP = 0;

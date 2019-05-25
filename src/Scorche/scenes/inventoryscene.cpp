@@ -16,3 +16,8 @@ InventoryScene::InventoryScene()
 {
 
 }
+
+void InventoryScene::Render(PE::Renderer *r, PE::Camera *c)
+{
+
+}

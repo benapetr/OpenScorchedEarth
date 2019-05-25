@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     PE::Engine::Initialize();
     ui->setupUi(this);
+    this->showMaximized();
     this->se_renderer = new PE::QImageRenderer(this->GetWidth(), this->GetHeight());
     this->qimage = this->se_renderer->GetImage();
     this->game = new Game(this->GetWidth(), this->GetHeight(), this->se_renderer);
@@ -43,7 +44,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
 
     Console *c = new Console(this);
+#ifndef __EMSCRIPTEN__
     c->show();
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -62,14 +65,14 @@ void MainWindow::Render()
 
 int MainWindow::GetWidth()
 {
-    //return this->ui->viewPort->width() * QApplication::desktop()->devicePixelRatio() * 2;
-    return 1400;
+    return this->ui->viewPort->width();// * QApplication::desktop()->devicePixelRatio();
+    //return 1400;
 }
 
 int MainWindow::GetHeight()
 {
-    //return this->ui->viewPort->height() * QApplication::desktop()->devicePixelRatio() * 2;
-    return 900;
+    return this->ui->viewPort->height();// * QApplication::desktop()->devicePixelRatio();
+    //return 900;
 }
 
 void MainWindow::OnRender()
@@ -107,4 +110,9 @@ void MainWindow::on_actionNew_game_triggered()
 void MainWindow::on_actionExplosion_rocks_triggered()
 {
     Game::ExplosionEffects = !Game::ExplosionEffects;
+}
+
+void MainWindow::on_actionFast_game_triggered()
+{
+    Game::SuperFast = !Game::SuperFast;
 }

@@ -22,6 +22,8 @@
 Game *Game::CurrentGame = nullptr;
 bool  Game::AIQuickAim = true;
 bool  Game::ExplosionEffects = true;
+bool  Game::SuperFast = false;
+bool  Game::PlayerRequestNewGame = false;
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
@@ -57,7 +59,7 @@ void Game::ShowIntroScreen()
 
     this->world = new PE::World(this->MapWidth, this->MapHeight);
     this->world->BackgroundColor = QColor(204, 221, 255);
-    this->world->RegisterObject(new IntroScene(), 10);
+    this->world->RegisterActor(new IntroScene(), 10);
 }
 
 void Game::NewGame()
@@ -95,5 +97,18 @@ void Game::NewGame()
 
 void Game::OnUpdate()
 {
+    if (PlayerRequestNewGame)
+    {
+        PlayerRequestNewGame = false;
+        this->NewGame();
+        return;
+    }
+
     this->world->Update();
+    if (!Game::SuperFast)
+        return;
+
+    int x = 5;
+    while (--x > 0)
+        this->world->Update();
 }
