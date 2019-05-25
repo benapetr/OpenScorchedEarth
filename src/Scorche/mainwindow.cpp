@@ -13,6 +13,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "game.h"
+#include "staticassets.h"
 #include "console.h"
 #include <QKeyEvent>
 #include <QImage>
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     PE::Engine::Initialize();
     ui->setupUi(this);
     this->showMaximized();
+    StaticAssets::Instance = new StaticAssets();
     this->se_renderer = new PE::QImageRenderer(this->GetWidth(), this->GetHeight());
     this->qimage = this->se_renderer->GetImage();
     this->game = new Game(this->GetWidth(), this->GetHeight(), this->se_renderer);
@@ -43,9 +45,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         Console::Append(item.GetText());
     }
 
-    Console *c = new Console(this);
-#ifndef __EMSCRIPTEN__
-    c->show();
+    new Console(this);
+#ifdef __EMSCRIPTEN__
+    setWindowFlags(Qt::FramelessWindowHint| Qt::WindowSystemMenuHint);
 #endif
 }
 
@@ -54,6 +56,8 @@ MainWindow::~MainWindow()
     delete this->game;
     delete this->se_renderer;
     delete ui;
+    delete StaticAssets::Instance;
+    StaticAssets::Instance = nullptr;
 }
 
 void MainWindow::Render()
@@ -104,7 +108,7 @@ void MainWindow::on_actionBots_enable_quick_aim_triggered()
 
 void MainWindow::on_actionNew_game_triggered()
 {
-    Game::CurrentGame->NewGame();
+    Game::CurrentGame->RequestScene(Scene_NewGame);
 }
 
 void MainWindow::on_actionExplosion_rocks_triggered()
@@ -115,4 +119,9 @@ void MainWindow::on_actionExplosion_rocks_triggered()
 void MainWindow::on_actionFast_game_triggered()
 {
     Game::SuperFast = !Game::SuperFast;
+}
+
+void MainWindow::on_actionShow_console_triggered()
+{
+    Console::ActiveConsole->show();
 }

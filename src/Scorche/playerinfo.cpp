@@ -10,9 +10,48 @@
 
 // Copyright (c) Petr Bena 2019
 
+#include <PixelEngine/pemath.h>
 #include "playerinfo.h"
 
-PlayerInfo::PlayerInfo(QString name)
+QList<PlayerInfo*> PlayerInfo::Players;
+
+void PlayerInfo::Clear()
+{
+    qDeleteAll(PlayerInfo::Players);
+    PlayerInfo::Players.clear();
+}
+
+QColor PlayerInfo::RandomColor()
+{
+    QList<QColor> colors;
+    colors << QColor("red")
+           << QColor("green")
+           << QColor(244, 107, 66)
+           << QColor(217, 244, 65)
+           << QColor(157, 65, 244)
+           << QColor(0, 153, 60);
+
+    return colors[PE::PEMath::GetRandom(0, colors.size() - 1)];
+}
+
+QColor PlayerInfo::GetRandomUnusedColor()
+{
+    QColor result;
+    while (true)
+    {
+        result = PlayerInfo::RandomColor();
+        foreach (PlayerInfo *p, PlayerInfo::Players)
+        {
+            if (result == p->Color)
+                continue;
+        }
+        return result;
+    }
+}
+
+PlayerInfo::PlayerInfo(const QString &name, const QColor &color, bool bot)
 {
     this->PlayerName = name;
+    this->IsBot = bot;
+    this->Color = color;
 }

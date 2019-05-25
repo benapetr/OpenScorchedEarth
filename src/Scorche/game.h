@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QList>
+#include <QPixmap>
 #include <PixelEngine/terrain.h>
 
 namespace PE
@@ -27,6 +28,15 @@ namespace PE
 
 class TankBase;
 
+enum Scene
+{
+    Scene_Nothing,
+    Scene_Intro,
+    Scene_NewGame,
+    Scene_Inventory,
+    Scene_Game
+};
+
 class Game : public QObject
 {
         Q_OBJECT
@@ -35,15 +45,14 @@ class Game : public QObject
         static bool AIQuickAim;
         static bool ExplosionEffects;
         static bool SuperFast;
-        static bool PlayerRequestNewGame;
 
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;
-        void GenerateRandomWorld();
-        void ShowIntroScreen();
-        void NewGame();
+        void RequestScene(Scene s);
+
         PE::World *GetWorld() { return this->world; }
         PE::Collectable_SmartPtr<PE::Terrain> Terrain;
+        Scene CurrentScene = Scene_Nothing;
         double MapWidth;
         double MapHeight;
         bool IsPaused = false;
@@ -52,6 +61,12 @@ class Game : public QObject
         void OnUpdate();
 
     private:
+        void resetWorld();
+        void showIntroScreen();
+        void showInventoryScreen();
+        void startGame();
+        void startNewGame();
+        Scene requestedScene = Scene_Nothing;
         QTimer *timer;
         PE::World *world = nullptr;
         PE::Renderer *renderer = nullptr;

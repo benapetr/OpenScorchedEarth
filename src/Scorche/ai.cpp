@@ -145,7 +145,7 @@ void AI::improveAngle(double max)
 
 void AI::improvePower(double max)
 {
-    this->increasePower(PE::PEMath::GetRandom(-1 * max, 2 * max));
+    this->increasePower(PE::PEMath::GetRandom(static_cast<qint32>(-1 * max), static_cast<qint32>(2 * max)));
 }
 
 void AI::resetEnemy()
@@ -355,6 +355,9 @@ void AI::postEvaluateFire()
                 this->changePower(-1 *this->lastPowerChange);
                 return;
             }
+            break;
+        default:
+            return;
     }
 }
 

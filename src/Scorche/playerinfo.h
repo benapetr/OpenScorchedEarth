@@ -13,14 +13,26 @@
 #ifndef PLAYERINFO_H
 #define PLAYERINFO_H
 
+#include <QList>
+#include <QColor>
 #include <QString>
 
 class PlayerInfo
 {
     public:
-        PlayerInfo(QString name);
+        static void Clear();
+        static QColor RandomColor();
+        static QColor GetRandomUnusedColor();
+        static QList<PlayerInfo*> Players;
+
+        PlayerInfo(const QString &name, const QColor &color, bool bot);
+        QColor Color;
+        bool IsBot = false;
         QString PlayerName;
         double Cash = 2000;
+
+        unsigned int Kills_Total = 0;
+        unsigned int Deaths_Total = 0;
 
         unsigned int BigCanon = 0;
         unsigned int TripleCanon = 0;

@@ -15,7 +15,11 @@
 #include <PixelEngine/Physics/boxcollider.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/worldgenerator.h>
+#include "console.h"
+#include "playerinfo.h"
 #include "scenes/introscene.h"
+#include "scenes/inventoryscene.h"
+#include "scenes/newgame.h"
 #include "tanks/demotank.h"
 #include "hud.h"
 
@@ -23,7 +27,6 @@ Game *Game::CurrentGame = nullptr;
 bool  Game::AIQuickAim = true;
 bool  Game::ExplosionEffects = true;
 bool  Game::SuperFast = false;
-bool  Game::PlayerRequestNewGame = false;
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
@@ -34,7 +37,7 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->renderer->ManualUpdate = true;
 
     //this->NewGame();
-    this->ShowIntroScreen();
+    this->showIntroScreen();
 
     this->timer = new QTimer(this);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnUpdate()));
@@ -47,28 +50,31 @@ Game::~Game()
     delete this->world;
 }
 
-void Game::GenerateRandomWorld()
+void Game::RequestScene(Scene s)
 {
-
+    this->requestedScene = s;
 }
 
-void Game::ShowIntroScreen()
+void Game::showIntroScreen()
 {
-    TankBase::ResetPlayers();
-    delete this->world;
-
-    this->world = new PE::World(this->MapWidth, this->MapHeight);
-    this->world->BackgroundColor = QColor(204, 221, 255);
+    this->CurrentScene = Scene_Intro;
+    this->resetWorld();
     this->world->RegisterActor(new IntroScene(), 10);
 }
 
-void Game::NewGame()
+void Game::showInventoryScreen()
 {
-    TankBase::ResetPlayers();
-    delete this->world;
+        this->CurrentScene = Scene_NewGame;
+        TankBase::ResetPlayers();
+        this->resetWorld();
+        this->world->RegisterActor(new InventoryScene(), 10);
+}
 
-    this->world = new PE::World(this->MapWidth, this->MapHeight);
-    this->world->BackgroundColor = QColor(204, 221, 255);
+void Game::startGame()
+{
+    this->CurrentScene = Scene_Game;
+    TankBase::ResetPlayers();
+    this->resetWorld();
     this->world->RegisterObject(new HUD(), 10);
     this->Terrain = PE::WorldGenerator::GenerateRandom(static_cast<int>(this->MapWidth), static_cast<int>(this->MapHeight) - 20);
     // Move the terrain little bit higher, so there is space for HUD
@@ -83,32 +89,69 @@ void Game::NewGame()
     this->world->RegisterCollider(new PE::BoxCollider(this->MapWidth + 100, -100, 100, 2000));
     this->world->RegisterCollider(new PE::BoxCollider(-1000, this->MapHeight + 400, 4000, 100));
 
-    DemoTank *player = new DemoTank(10, 700, Qt::darkRed, "Player", false);
-    TankBase::PlayerTank = player;
-    player->IsPlayer = true;
+    int step = 0;
+    if (PlayerInfo::Players.count() > 0)
+        step = (this->MapHeight / (PlayerInfo::Players.count() - 1)) + 80;
+    int player_id = 0;
 
-    this->world->RegisterActor(player);
-    this->world->RegisterActor(new DemoTank(400, 700, Qt::darkBlue, "Bot", true));
-    this->world->RegisterActor(new DemoTank(200, 700, Qt::darkCyan, "Bot2", true));
-    this->world->RegisterActor(new DemoTank(600, 700, Qt::darkYellow, "Bot3", true));
-    this->world->RegisterActor(new DemoTank(800, 700, Qt::darkMagenta, "Bot4", true));
-    this->world->RegisterActor(new DemoTank(1000, 700, Qt::darkMagenta, "SuperBot", true));
+    // Register players
+    foreach (PlayerInfo *x, PlayerInfo::Players)
+    {
+        DemoTank *player = new DemoTank(10 + (player_id++ * step), 700, x->Color, x->PlayerName, x->IsBot);
+        if (!x->IsBot)
+            TankBase::PlayerTank = player;
+        player->IsPlayer = !x->IsBot;
+        this->world->RegisterActor(player);
+    }
+}
+
+void Game::startNewGame()
+{
+    this->CurrentScene = Scene_NewGame;
+    PlayerInfo::Clear();
+    TankBase::ResetPlayers();
+    this->resetWorld();
+    this->world->RegisterActor(new NewGame(), 10);
 }
 
 void Game::OnUpdate()
 {
-    if (PlayerRequestNewGame)
+    if (this->requestedScene != Scene_Nothing)
     {
-        PlayerRequestNewGame = false;
-        this->NewGame();
+        switch (this->requestedScene)
+        {
+            case Scene_NewGame:
+                this->startNewGame();
+                break;
+            case Scene_Inventory:
+                this->showInventoryScreen();
+                break;
+            case Scene_Game:
+                this->startGame();
+                break;
+            case Scene_Intro:
+                this->showIntroScreen();
+                break;
+            default:
+                Console::Append(QString("Unknown scene requested in ") + BOOST_CURRENT_FUNCTION);
+                break;
+        }
+        this->requestedScene = Scene_Nothing;
         return;
     }
 
     this->world->Update();
-    if (!Game::SuperFast)
+    if (this->CurrentScene != Scene_Game || !Game::SuperFast)
         return;
 
     int x = 5;
     while (--x > 0)
         this->world->Update();
+}
+
+void Game::resetWorld()
+{
+    delete this->world;
+    this->world = new PE::World(this->MapWidth, this->MapHeight);
+    this->world->BackgroundColor = QColor(204, 221, 255);
 }

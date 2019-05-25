@@ -38,5 +38,5 @@ void IntroScene::Render(PE::Renderer *r, PE::Camera *c)
 void IntroScene::Event_KeyPress(int key)
 {
     if (key == Qt::Key::Key_Space)
-        Game::PlayerRequestNewGame = true;
+        Game::CurrentGame->RequestScene(Scene_NewGame);
 }

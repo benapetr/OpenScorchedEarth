@@ -10,17 +10,21 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef INVENTORYSCENE_H
-#define INVENTORYSCENE_H
+#ifndef NEWGAME_H
+#define NEWGAME_H
 
 #include <PixelEngine/actor.h>
 
-class InventoryScene : public PE::Actor
+class NewGame : public PE::Actor
 {
     public:
-        InventoryScene();
+        NewGame();
         void Render(PE::Renderer *r, PE::Camera *c) override;
         void Event_KeyPress(int key) override;
+        void SelectUp();
+        void SelectDown();
+        int SelectedItem = 0;
+        int Bots = 1;
 };
 
-#endif // INVENTORYSCENE_H
+#endif // NEWGAME_H

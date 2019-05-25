@@ -50,6 +50,7 @@
      <string>System</string>
     </property>
     <addaction name="actionRendering"/>
+    <addaction name="actionShow_console"/>
    </widget>
    <widget class="QMenu" name="menuGame">
     <property name="title">
@@ -113,6 +114,11 @@
    </property>
    <property name="text">
     <string>Fast game</string>
+   </property>
+  </action>
+  <action name="actionShow_console">
+   <property name="text">
+    <string>Show console</string>
    </property>
   </action>
  </widget>

@@ -10,17 +10,21 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef INVENTORYSCENE_H
-#define INVENTORYSCENE_H
+#ifndef STATICASSETS_H
+#define STATICASSETS_H
 
-#include <PixelEngine/actor.h>
+#include <QPixmap>
 
-class InventoryScene : public PE::Actor
+class StaticAssets
 {
     public:
-        InventoryScene();
-        void Render(PE::Renderer *r, PE::Camera *c) override;
-        void Event_KeyPress(int key) override;
+        static StaticAssets *Instance;
+
+        StaticAssets();
+        QPixmap LeftArrow;
+        QPixmap RightArrow;
+        QPixmap UpArrow;
+        QPixmap DownArrow;
 };
 
-#endif // INVENTORYSCENE_H
+#endif // STATICASSETS_H
