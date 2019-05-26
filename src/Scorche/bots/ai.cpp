@@ -16,6 +16,8 @@
 #include "../playerinfo.h"
 #include "../shop.h"
 #include "../tanks/tankbase.h"
+#include "../weapons/weapon.h"
+#include "../weaponlist.h"
 #include <cmath>
 #include <PixelEngine/world.h>
 #include <PixelEngine/pemath.h>
@@ -39,6 +41,7 @@ void AI::Process()
         this->selectedEnemy = nullptr;
         this->state = AI_State_Undecided;
     }
+    this->evaluateWeapon();
     switch(this->state)
     {
         case AI_State_Trace_Wait:
@@ -71,6 +74,7 @@ void AI::Process()
             if (Game::AIQuickAim)
             {
                 this->tank->SetAngle(this->targetAngle);
+                this->tank->SetPower(this->targetPower);
                 this->tank->ResetCanonAdjust();
                 this->Fire();
                 return;
@@ -78,6 +82,7 @@ void AI::Process()
             if (std::abs(this->tank->GetCanonAngle() - this->targetAngle) < this->targetTolerance)
             {
                 this->tank->ResetCanonAdjust();
+                this->tank->SetPower(this->targetPower);
                 this->Fire();
                 return;
             }
@@ -256,6 +261,7 @@ bool AI::flewAway(double X)
 
 void AI::evaluateFire()
 {
+    this->untracedCounter++;
     if (this->tank->LastHit == PE::Vector(0, 0))
     {
         if (this->unknownDataCounter > 1)
@@ -306,6 +312,12 @@ void AI::evaluateFire()
         this->bestAngle = this->targetAngle;
         this->bestPower = this->tank->Power;
         this->bestDistance = distance_last;
+    }
+    if (this->untracedCounter > 4)
+    {
+        debug_log("more than 5 times didn't suceed, sending tracers");
+        this->trace();
+        return;
     }
 
     if (this->flewOver(this->tank->LastHit.X) && this->tank->LastHit.Y < this->selectedEnemy->Position.Y && this->tank->LastHit_Velocity.Y < 0)
@@ -364,10 +376,12 @@ void AI::evaluateFire()
 
     this->previousHit = this->tank->LastHit;
     this->targetAngle = this->bestAngle;
-    this->improveAngle(0.2);
+    /*this->improveAngle(0.2);
     this->improvePower(10);
-    debug_log("last hit had worse distance than one before, trying better angle - " + QString::number(this->targetAngle));
+    debug_log("last hit had worse distance than one before, trying better angle - " + QString::number(this->targetAngle)); */
+    debug_log("last hit had worse distance than one before, sending tracers");
     this->lastEvaluation = AI_PreviousHitEvaluation_Horrible;
+    this->trace();
 }
 
 void AI::postEvaluateFire()
@@ -381,8 +395,8 @@ void AI::postEvaluateFire()
                 // Previous evaluation was bad, but now it's much better, which means we improved,
                 // let's try to add half of the change we did last time to check if it improves further
                 debug_log("last change is evaluated as improvement, reapplying same change");
-                this->changeAngle(this->lastAngleChange / 2);
-                this->changePower(this->lastPowerChange / 2);
+                this->changeAngle(this->targetAngle + (this->lastAngleChange / 2));
+                this->changePower(this->targetPower + (this->lastPowerChange / 2));
                 return;
             }
             break;
@@ -391,14 +405,54 @@ void AI::postEvaluateFire()
             if (this->lastEvaluation == AI_PreviousHitEvaluation_Bad || this->lastEvaluation == AI_PreviousHitEvaluation_Horrible)
             {
                 debug_log("last change is evaluated as worse, reverting change");
-                this->changeAngle(-1 * this->lastAngleChange);
-                this->changePower(-1 *this->lastPowerChange);
+                this->changeAngle(this->bestAngle);
+                this->changePower(this->bestPower);
                 return;
             }
             break;
         default:
             return;
     }
+}
+
+bool AI::hasWeapon(int id)
+{
+    return this->tank->GetPlayer()->ItemList[id] > 0;
+}
+
+void AI::evaluateWeapon()
+{
+    int current_weapon = this->tank->SelectedWeapon->GetWeaponType();
+    if (current_weapon != 0 && this->tank->SelectedWeapon->Ammo <= 0)
+    {
+        // Current weapon is out of ammo, we have to change
+        this->changeWeapon();
+        return;
+    }
+    if (current_weapon == 0 && this->hasWeapon(WEAPON_TRIPLE_CANON))
+    {
+        this->tank->SwitchWeapon(WEAPON_TRIPLE_CANON);
+        return;
+    } else if (current_weapon == 0 && this->hasWeapon(WEAPON_BIG_CANON))
+    {
+        this->tank->SwitchWeapon(WEAPON_BIG_CANON);
+        return;
+    }
+}
+
+void AI::changeWeapon()
+{
+    if (this->hasWeapon(WEAPON_TRIPLE_CANON))
+    {
+        this->tank->SwitchWeapon(WEAPON_TRIPLE_CANON);
+        return;
+    }
+    if (this->hasWeapon(WEAPON_BIG_CANON))
+    {
+        this->tank->SwitchWeapon(WEAPON_BIG_CANON);
+        return;
+    }
+    this->tank->SwitchWeapon(WEAPON_CANON);
 }
 
 void AI::changeAngle(double new_angle)
@@ -426,6 +480,7 @@ void AI::increasePower(double p)
 
 void AI::trace()
 {
+    this->untracedCounter = 0;
     this->state = AI_State_Trace_Wait;
     // Fire couple of tracers
     int trace_count = 4;
@@ -455,6 +510,7 @@ void AI::trace()
         Game::CurrentGame->GetWorld()->RegisterActor(t);
         current_angle += 0.1;
     }
+    Game::Tracing = true;
 }
 
 void AI::traceEval()
@@ -464,6 +520,8 @@ void AI::traceEval()
         if (!t->Finished)
             return;
     }
+
+    Game::Tracing = false;
 
     double original_best_dist = this->bestDistance;
 
@@ -482,6 +540,7 @@ void AI::traceEval()
             {
                 this->bestAngle = t->Angle;
                 this->bestPower = t->Power;
+                this->bestDistance = t->PositionFinal.DistanceTo(this->selectedEnemy->Position);
                 this->targetAngle = this->bestAngle;
                 this->targetPower = this->bestPower;
                 debug_log("Tracer found enemy: " + t->target->PlayerName);
@@ -491,6 +550,12 @@ void AI::traceEval()
             }
         }
         double distance = t->PositionFinal.DistanceTo(this->selectedEnemy->Position);
+        double distance_to_self = t->PositionFinal.DistanceTo(this->tank->Position);
+        if (distance_to_self < 20)
+        {
+            debug_log("Tracer " + QString::number(tracer_id) + " is dangeously close to use, skipping it: " + QString::number(distance_to_self));
+            continue;
+        }
         debug_log("Tracer " + QString::number(tracer_id) + " found distance to target enemy: " + QString::number(distance));
         if (distance < this->bestDistance)
         {

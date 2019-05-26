@@ -51,6 +51,7 @@
     </property>
     <addaction name="actionRendering"/>
     <addaction name="actionShow_console"/>
+    <addaction name="actionDebug_AI"/>
    </widget>
    <widget class="QMenu" name="menuGame">
     <property name="title">
@@ -119,6 +120,14 @@
   <action name="actionShow_console">
    <property name="text">
     <string>Show console</string>
+   </property>
+  </action>
+  <action name="actionDebug_AI">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Debug AI</string>
    </property>
   </action>
  </widget>

@@ -13,6 +13,7 @@
 #include "tankbase.h"
 #include "../bots/ai.h"
 #include "../console.h"
+#include "../bots/terminator.h"
 #include "../weapons/cannon.h"
 #include "../weapons/bigcannon.h"
 #include "../weapons/mininuke.h"
@@ -98,7 +99,10 @@ TankBase::TankBase(double x, double y, PlayerInfo *player)
     this->PlayerName = player->PlayerName;
     if (player->IsBot)
     {
-        this->ai = new AI(this);
+        if (player->AI == "terminator")
+            this->ai = new Terminator(this);
+        else
+            this->ai = new AI(this);
         this->ai->ProcessInventory();
     }
 

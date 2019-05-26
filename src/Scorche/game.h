@@ -45,6 +45,7 @@ class Game : public QObject
         static bool AIQuickAim;
         static bool ExplosionEffects;
         static bool SuperFast;
+        static bool Tracing;
 
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;

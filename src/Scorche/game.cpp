@@ -28,6 +28,7 @@ Game *Game::CurrentGame = nullptr;
 bool  Game::AIQuickAim = true;
 bool  Game::ExplosionEffects = true;
 bool  Game::SuperFast = true;
+bool  Game::Tracing = false;
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
@@ -66,10 +67,10 @@ void Game::showIntroScreen()
 
 void Game::showInventoryScreen()
 {
-        this->CurrentScene = Scene_NewGame;
-        TankBase::ResetPlayers();
-        this->resetWorld();
-        this->world->RegisterActor(new InventoryScene(), 10);
+    this->CurrentScene = Scene_NewGame;
+    TankBase::ResetPlayers();
+    this->resetWorld();
+    this->world->RegisterActor(new InventoryScene(), 10);
 }
 
 void Game::startGame()
@@ -143,10 +144,10 @@ void Game::OnUpdate()
     }
 
     this->world->Update();
-    if (this->CurrentScene != Scene_Game || !Game::SuperFast)
+    if (this->CurrentScene != Scene_Game || (!Game::SuperFast && !Game::Tracing))
         return;
 
-    if (!TankBase::ControlsFrozen)
+    if (!TankBase::ControlsFrozen && TankBase::Players[0] == TankBase::ActivePlayer)
         return;
 
     int x = 5;
@@ -156,6 +157,7 @@ void Game::OnUpdate()
 
 void Game::resetWorld()
 {
+    Tracing = false;
     delete this->world;
     this->world = new PE::World(this->MapWidth, this->MapHeight);
     this->world->BackgroundColor = QColor(204, 221, 255);

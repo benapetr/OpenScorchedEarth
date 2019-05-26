@@ -20,7 +20,7 @@
 #include <PixelEngine/Physics/rigidbody.h>
 #include <PixelEngine/Graphics/renderer.h>
 
-bool AITracer::Debug = true;
+bool AITracer::Debug = false;
 
 AITracer::AITracer(const PE::Vector &position) : Projectile (position)
 {

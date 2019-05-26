@@ -32,6 +32,7 @@ class PlayerInfo
 
         QColor Color;
         bool IsBot = false;
+        QString AI;
         QString PlayerName;
 
         double Cash = 2000;

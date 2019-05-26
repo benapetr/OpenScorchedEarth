@@ -59,6 +59,8 @@ class MainWindow : public QMainWindow
 
         void on_actionShow_console_triggered();
 
+        void on_actionDebug_AI_triggered();
+
     private:
         QTimer *renderTimer;
         Game *game;

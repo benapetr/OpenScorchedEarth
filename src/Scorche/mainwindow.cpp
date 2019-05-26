@@ -18,6 +18,7 @@
 #include <QKeyEvent>
 #include <QImage>
 #include <QDesktopWidget>
+#include "projectiles/aitracer.h"
 #include <PixelEngine/engine.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/ringlog.h>
@@ -126,4 +127,9 @@ void MainWindow::on_actionFast_game_triggered()
 void MainWindow::on_actionShow_console_triggered()
 {
     Console::ActiveConsole->show();
+}
+
+void MainWindow::on_actionDebug_AI_triggered()
+{
+    AITracer::Debug = !AITracer::Debug;
 }

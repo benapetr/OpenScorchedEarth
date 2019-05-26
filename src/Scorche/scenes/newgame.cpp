@@ -64,7 +64,10 @@ void NewGame::Event_KeyPress(int key)
             int botc = this->Bots;
             while(botc-- > 0)
             {
-                PlayerInfo::Players.append(new PlayerInfo("Bot " + QString::number(bot_id++), colors[bot_id-1], true));
+                PlayerInfo *bot = new PlayerInfo("Bot " + QString::number(bot_id), colors[bot_id-1], true);
+                if (bot_id++ == 1)
+                    bot->AI = "terminator";
+                PlayerInfo::Players.append(bot);
                 // Doesn't work
                 //PlayerInfo::Players.append(new PlayerInfo("Bot " + QString::number(bot_id++), PlayerInfo::GetRandomUnusedColor(), true));
             }
@@ -77,7 +80,7 @@ void NewGame::Event_KeyPress(int key)
             return;
 
         case Qt::Key::Key_Right:
-            if (this->Bots < 64)
+            if (this->Bots < 10)
                 this->Bots++;
             return;
     }
