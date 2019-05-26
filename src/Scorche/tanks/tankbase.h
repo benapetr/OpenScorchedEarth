@@ -17,6 +17,7 @@
 #include <PixelEngine/vector.h>
 #include <QList>
 #include <QColor>
+#include "../weaponlist.h"
 
 class AI;
 class Weapon;
@@ -55,6 +56,8 @@ class TankBase : public PE::Pawn
         void SetPower(double p);
         void SetAngle(double a);
         void IncreasePower(double p);
+        void SwitchWeapon(int id);
+        virtual PE::Vector GetCanonRoot(const PE::Vector &source)=0;
         QString PlayerName;
         Weapon *SelectedWeapon;
         bool IsPlayer = false;
@@ -65,7 +68,6 @@ class TankBase : public PE::Pawn
         PE::Vector LastHit_Velocity;
 
     protected:
-        virtual PE::Vector getCanonRoot(const PE::Vector &source)=0;
         virtual PE::Vector getCanonB(const PE::Vector &source);
         PlayerInfo *playerInfo;
         AI *ai = nullptr;

@@ -55,6 +55,7 @@ PlayerInfo::PlayerInfo(const QString &name, const QColor &color, bool bot)
     this->PlayerName = name;
     this->IsBot = bot;
     this->Color = color;
+    this->ItemList.insert(WEAPON_CANON, -1);
     this->ItemList.insert(WEAPON_NUKE, 0);
     this->ItemList.insert(WEAPON_BIG_CANON, 0);
     this->ItemList.insert(WEAPON_MINI_NUKE, 0);

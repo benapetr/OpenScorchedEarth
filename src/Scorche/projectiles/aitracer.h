@@ -10,24 +10,26 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef DEMOTANK_H
-#define DEMOTANK_H
+#ifndef AITRACER_H
+#define AITRACER_H
 
-#include "tankbase.h"
+#include "projectile.h"
 
-class DemoTank : public TankBase
+class AITracer : public Projectile
 {
     public:
-        DemoTank(double x, double y, PlayerInfo *player);
+        static bool Debug;
+        AITracer(const PE::Vector &position);
         void Render(PE::Renderer *r, PE::Camera *c) override;
-        void Kill(TankBase *tank) override;
-
+        void Event_Destroyed() override;
+        PE::Vector PositionFinal;
+        double Angle = 0;
+        double Power = 0;
+        bool Finished = false;
+        TankBase *target = nullptr;;
     protected:
-        PE::Vector GetCanonRoot(const PE::Vector &source) override;
-
-    private:
-        int width = 20;
-        int height = 10;
+        void on_Terrain(PE::Collider *collider) override;
+        void on_Vehicle(TankBase *tank) override;
 };
 
-#endif // DEMOTANK_H
+#endif // AITRACER_H

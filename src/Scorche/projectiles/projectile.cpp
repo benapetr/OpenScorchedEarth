@@ -49,6 +49,11 @@ void Projectile::Event_Destroyed()
     TankBase::ControlsFrozen = false;
 }
 
+void Projectile::SetForce(const PE::Vector &force)
+{
+    this->RigidBody->AddForce(force);
+}
+
 void Projectile::on_Terrain(PE::Collider *collider)
 {
 

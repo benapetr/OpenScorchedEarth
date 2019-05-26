@@ -19,8 +19,7 @@ class Cannon : public Weapon
 {
     public:
         Cannon(TankBase *pawn);
-        WeaponType GetWeaponType() override;
-        QString GetName() override;
+        int GetWeaponType() override;
         void Fire(const PE::Vector &source, double angle, double power) override;
 };
 

@@ -41,6 +41,9 @@ void AI::Process()
     }
     switch(this->state)
     {
+        case AI_State_Trace_Wait:
+            this->traceEval();
+            return;
         case AI_State_Undecided:
             debug_log("is undecided, looking for a new enemy");
             if (this->selectedEnemy == nullptr)
@@ -56,9 +59,10 @@ void AI::Process()
             {
                 debug_log("new enemy found: " + this->selectedEnemy->PlayerName);
                 this->resetEnemy();
-                this->state = AI_State_Waiting_Angle;
                 this->getTargetAngle();
-                debug_log("new target angle calculated: " + QString::number(this->targetAngle));
+                debug_log("new target angle calculated, sending tracers: " + QString::number(this->targetAngle));
+                this->trace();
+                return;
             }
             break;
 
@@ -418,6 +422,95 @@ void AI::changePower(double new_power)
 void AI::increasePower(double p)
 {
     this->changePower(this->tank->Power += p);
+}
+
+void AI::trace()
+{
+    this->state = AI_State_Trace_Wait;
+    // Fire couple of tracers
+    int trace_count = 4;
+    double original_angle = this->targetAngle;
+    double current_angle = original_angle - 0.2;
+    double current_power = this->tank->Power;
+    while (trace_count-- > 0)
+    {
+        // Get spawn point
+        PE::Vector source = tank->GetCanonRoot(this->tank->Position);
+        PE::Vector spawn_point = source;
+        PE::Vector position = source;
+        // angle math
+        double radians = current_angle * PE_PI_RAD_CNV;
+        position.X += (2 * std::cos(radians));
+        position.Y += (2 * std::sin(radians));
+        spawn_point.X += (1 * std::cos(radians));
+        spawn_point.Y += (1 * std::sin(radians));
+        PE::Vector force = (position - source) * (current_power / 15);
+        AITracer *t = new AITracer(spawn_point);
+        t->SetForce(force);
+        t->Owner = this->tank;
+        t->Angle = current_angle;
+        t->Power = current_power;
+        t->Destroy(8000);
+        this->tracers.append(t);
+        Game::CurrentGame->GetWorld()->RegisterActor(t);
+        current_angle += 0.1;
+    }
+}
+
+void AI::traceEval()
+{
+    foreach (AITracer *t, this->tracers)
+    {
+        if (!t->Finished)
+            return;
+    }
+
+    double original_best_dist = this->bestDistance;
+
+    // Evaluate all tracers
+    int tracer_id = 0;
+    foreach (AITracer *t, this->tracers)
+    {
+        tracer_id++;
+        if (t->target != nullptr)
+        {
+            // We hit something!
+            if (this->selectedEnemy != t->target)
+            {
+                // it's not our enemy though
+            } else
+            {
+                this->bestAngle = t->Angle;
+                this->bestPower = t->Power;
+                this->targetAngle = this->bestAngle;
+                this->targetPower = this->bestPower;
+                debug_log("Tracer found enemy: " + t->target->PlayerName);
+                this->state = AI_State_Waiting_Angle;
+                this->tracers.clear();
+                return;
+            }
+        }
+        double distance = t->PositionFinal.DistanceTo(this->selectedEnemy->Position);
+        debug_log("Tracer " + QString::number(tracer_id) + " found distance to target enemy: " + QString::number(distance));
+        if (distance < this->bestDistance)
+        {
+            debug_log("Tracer " + QString::number(tracer_id) + " found better distance to target enemy: " + QString::number(distance));
+            this->bestDistance = distance;
+            this->bestAngle = t->Angle;
+            this->bestPower = t->Power;
+        }
+    }
+
+    if (this->bestAngle == original_best_dist)
+    {
+        debug_log("Tracers didn't find any better state");
+    } else
+    {
+        this->targetAngle = this->bestAngle;
+        this->targetPower = this->bestPower;
+        this->state = AI_State_Waiting_Angle;
+    }
+    this->tracers.clear();
 }
 
 void AI::debug_log(const QString &text)

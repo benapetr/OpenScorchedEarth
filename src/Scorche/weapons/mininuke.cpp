@@ -12,7 +12,18 @@
 
 #include "mininuke.h"
 
-MiniNuke::MiniNuke()
+MiniNuke::MiniNuke(TankBase *pawn) : Weapon (pawn)
 {
 
 }
+
+int MiniNuke::GetWeaponType()
+{
+    return WEAPON_MINI_NUKE;
+}
+
+void MiniNuke::Fire(const PE::Vector &source, double angle, double power)
+{
+
+}
+

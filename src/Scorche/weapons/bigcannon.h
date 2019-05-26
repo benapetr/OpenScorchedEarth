@@ -19,8 +19,7 @@ class BigCannon : public Weapon
 {
     public:
         BigCannon(TankBase *pawn);
-        WeaponType GetWeaponType() override;
-        QString GetName() override;
+        int GetWeaponType() override;
         void Fire(const PE::Vector &source, double angle, double power) override;
 };
 

@@ -21,7 +21,6 @@ class SmallRocket : public Projectile
     public:
         SmallRocket(const PE::Vector &position);
         void Render(PE::Renderer *r, PE::Camera *c) override;
-        void SetForce(const PE::Vector &force);
     protected:
         void on_Terrain(PE::Collider *collider) override;
         void on_Vehicle(TankBase *tank) override;

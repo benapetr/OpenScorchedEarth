@@ -10,21 +10,20 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "../shop.h"
-#include "weapon.h"
-#include "../tanks/tankbase.h"
+#ifndef ROCKET_H
+#define ROCKET_H
 
-Weapon::Weapon(TankBase *owner)
+#include <PixelEngine/vector.h>
+#include "projectile.h"
+
+class Rocket : public Projectile
 {
-    this->Owner = owner;
-}
+    public:
+        Rocket(const PE::Vector &position);
+        void Render(PE::Renderer *r, PE::Camera *c) override;
+    protected:
+        void on_Terrain(PE::Collider *collider) override;
+        void on_Vehicle(TankBase *tank) override;
+};
 
-Weapon::~Weapon()
-{
-
-}
-
-QString Weapon::GetName()
-{
-    return Shop::DefaultShop->ItemString(this->GetWeaponType());
-}
+#endif // ROCKET_H

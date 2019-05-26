@@ -13,11 +13,14 @@
 #ifndef TRIPLECANON_H
 #define TRIPLECANON_H
 
+#include "weapon.h"
 
-class TripleCanon
+class TripleCanon : public Weapon
 {
     public:
-        TripleCanon();
+        TripleCanon(TankBase *pawn);
+        int GetWeaponType() override;
+        void Fire(const PE::Vector &source, double angle, double power) override;
 };
 
 #endif // TRIPLECANON_H

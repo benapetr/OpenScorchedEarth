@@ -12,7 +12,17 @@
 
 #include "nuke.h"
 
-Nuke::Nuke()
+Nuke::Nuke(TankBase *pawn) : Weapon (pawn)
+{
+
+}
+
+int Nuke::GetWeaponType()
+{
+    return WEAPON_NUKE;
+}
+
+void Nuke::Fire(const PE::Vector &source, double angle, double power)
 {
 
 }

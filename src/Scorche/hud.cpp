@@ -42,6 +42,8 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawText(80, 6, "Angle: " + QString::number(TankBase::PlayerTank->GetCanonAngleDegree()), QColor("black"));
     r->DrawText(160, 6, "Power: " + QString::number(TankBase::PlayerTank->Power), QColor("black"));
     r->DrawText(230, 6, "Weapon: " + TankBase::PlayerTank->SelectedWeapon->GetName(), QColor("black"));
+    if (TankBase::PlayerTank->SelectedWeapon->GetWeaponType() != 0)
+        r->DrawText(340, 6, "Ammo: " + QString::number(TankBase::PlayerTank->SelectedWeapon->Ammo), QColor("black"));
     TankBase *currentPlayer = TankBase::GetActivePlayer();
     if (currentPlayer != nullptr)
         r->DrawText(400, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));

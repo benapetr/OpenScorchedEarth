@@ -10,39 +10,38 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include <PixelEngine/camera.h>
-#include <PixelEngine/Physics/rigidbody.h>
-#include <PixelEngine/world.h>
-#include <PixelEngine/Graphics/renderer.h>
-#include <PixelEngine/terrain.h>
-#include <PixelEngine/Physics/pixelcollider.h>
-#include "smallrocket.h"
+#include "rocket.h"
 #include "../effects/explosion.h"
-#include "../tanks/tankbase.h"
 #include "../game.h"
+#include "../tanks/tankbase.h"
+#include <PixelEngine/camera.h>
+#include <PixelEngine/world.h>
+#include <PixelEngine/pemath.h>
+#include <PixelEngine/Physics/pixelcollider.h>
+#include <PixelEngine/Physics/rigidbody.h>
+#include <PixelEngine/Graphics/renderer.h>
 
-SmallRocket::SmallRocket(const PE::Vector &position) : Projectile (position)
+Rocket::Rocket(const PE::Vector &position) : Projectile (position)
 {
     this->AddChildren(new PE::PixelCollider(0, 0));
 }
 
-void SmallRocket::Render(PE::Renderer *r, PE::Camera *c)
+void Rocket::Render(PE::Renderer *r, PE::Camera *c)
 {
     PE::Vector position = c->ProjectedPosition(this->Position);
-    r->DrawEllipse(position.X2int(), position.Y2int(), 2, 2, QColor("black"), 2);
+    r->DrawEllipse(position.X2int(), position.Y2int(), 3, 3, QColor("black"), 3);
 }
 
-void SmallRocket::on_Terrain(PE::Collider *collider)
+void Rocket::on_Terrain(PE::Collider *collider)
 {
     (void)collider;
     // Explode
-    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 20);
+    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 40);
     explosion->Position = this->Position;
     Game::CurrentGame->GetWorld()->RegisterActor(explosion, 2);
 }
 
-void SmallRocket::on_Vehicle(TankBase *tank)
+void Rocket::on_Vehicle(TankBase *tank)
 {
-    // Damage
-    tank->TakeDamage(this->Owner, 80);
+    tank->TakeDamage(this->Owner, 180);
 }

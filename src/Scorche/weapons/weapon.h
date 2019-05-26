@@ -16,23 +16,17 @@
 #include <QString>
 #include <PixelEngine/GC/collectable_smartptr.h>
 #include <PixelEngine/vector.h>
+#include "../weaponlist.h"
 
 class TankBase;
 
 class Weapon
 {
     public:
-        enum WeaponType
-        {
-            WeaponType_SmallRocket,
-            WeaponType_Rocket
-        };
-
-    public:
         Weapon(TankBase *owner);
         virtual ~Weapon();
-        virtual QString GetName()=0;
-        virtual WeaponType GetWeaponType()=0;
+        virtual QString GetName();
+        virtual int GetWeaponType()=0;
         virtual void Fire(const PE::Vector &source, double angle, double power)=0;
         PE::Collectable_SmartPtr<TankBase> Owner;
         int Ammo = 0;

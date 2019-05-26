@@ -109,5 +109,5 @@ int InventoryScene::GetItemFromID()
             return INVENTORY_PARACHUTE;
     }
 
-    return 0;
+    return WEAPON_CANON;
 }

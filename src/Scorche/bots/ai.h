@@ -15,6 +15,7 @@
 
 #include <PixelEngine/vector.h>
 #include <QString>
+#include "../projectiles/aitracer.h"
 
 class TankBase;
 
@@ -26,6 +27,7 @@ class AI
             AI_State_Undecided,
             AI_State_Waiting_Angle,
             AI_State_Fired,
+            AI_State_Trace_Wait,
             AI_State_Nothing_To_Do
         };
 
@@ -69,8 +71,10 @@ class AI
         void changeAngle(double new_angle);
         void changePower(double new_power);
         void increasePower(double p);
-
+        void trace();
+        void traceEval();
         void debug_log(const QString &text);
+        QList<PE::Collectable_SmartPtr<AITracer>> tracers;
         AI_State state = AI_State_Undecided;
         AI_PreviousHitEvaluation lastEvaluation = AI_PreviousHitEvaluation_Unknown;
         AI_PreviousHitEvaluation prevEvaluation = AI_PreviousHitEvaluation_Unknown;

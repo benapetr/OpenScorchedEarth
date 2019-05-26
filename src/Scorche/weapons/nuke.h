@@ -13,11 +13,14 @@
 #ifndef NUKE_H
 #define NUKE_H
 
+#include "weapon.h"
 
-class Nuke
+class Nuke : public Weapon
 {
     public:
-        Nuke();
+        Nuke(TankBase *pawn);
+        int GetWeaponType() override;
+        void Fire(const PE::Vector &source, double angle, double power) override;
 };
 
 #endif // NUKE_H

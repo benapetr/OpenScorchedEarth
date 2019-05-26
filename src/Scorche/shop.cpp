@@ -18,6 +18,7 @@ Shop *Shop::DefaultShop = nullptr;
 
 Shop::Shop()
 {
+    this->PriceList.insert(WEAPON_CANON, 0);
     this->PriceList.insert(INVENTORY_FUEL, 100);
     this->PriceList.insert(INVENTORY_SHIELD, 200);
     this->PriceList.insert(INVENTORY_PARACHUTE, 100);
@@ -39,7 +40,7 @@ bool Shop::BuyItem(PlayerInfo *player, int item_id)
 
     player->ItemList[item_id]++;
     player->Cash -= this->PriceList[item_id];
-    Console::Append(player->PlayerName + " bought 1 item: " + this->ItemString(item_id));
+    Console::Append(player->PlayerName + " bought 1 item: " + this->ItemString(item_id), true);
     return true;
 }
 
@@ -50,7 +51,7 @@ bool Shop::SellItem(PlayerInfo *player, int item_id)
 
     player->ItemList[item_id]--;
     player->Cash += this->PriceList[item_id];
-    Console::Append(player->PlayerName + " sold 1 item: " + this->ItemString(item_id));
+    Console::Append(player->PlayerName + " sold 1 item: " + this->ItemString(item_id), true);
     return true;
 }
 
@@ -58,6 +59,8 @@ QString Shop::ItemString(int i)
 {
     switch (i)
     {
+        case WEAPON_CANON:
+            return "Cannon";
         case WEAPON_NUKE:
             return "Nuke";
         case WEAPON_BIG_CANON:

@@ -23,14 +23,9 @@ Cannon::Cannon(TankBase *pawn) : Weapon(pawn)
     this->Ammo = -1;
 }
 
-Weapon::WeaponType Cannon::GetWeaponType()
+int Cannon::GetWeaponType()
 {
-    return WeaponType_SmallRocket;
-}
-
-QString Cannon::GetName()
-{
-    return "Small Cannon";
+    return WEAPON_CANON;
 }
 
 void Cannon::Fire(const PE::Vector &source, double angle, double power)

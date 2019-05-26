@@ -14,6 +14,10 @@
 #include "../bots/ai.h"
 #include "../console.h"
 #include "../weapons/cannon.h"
+#include "../weapons/bigcannon.h"
+#include "../weapons/mininuke.h"
+#include "../weapons/nuke.h"
+#include "../weapons/triplecanon.h"
 #include "../playerinfo.h"
 #include "../game.h"
 #include <cmath>
@@ -110,6 +114,7 @@ TankBase::TankBase(double x, double y, PlayerInfo *player)
 TankBase::~TankBase()
 {
     Players.removeOne(this);
+    delete this->SelectedWeapon;
     delete this->ai;
 }
 
@@ -120,6 +125,12 @@ PlayerInfo *TankBase::GetPlayer()
 
 void TankBase::Fire()
 {
+    if (this->SelectedWeapon->GetWeaponType() != 0 && this->SelectedWeapon->Ammo <= 0)
+    {
+        Console::Append("Not enough ammo to fire this weapon :(");
+        return;
+    }
+
     if (TankBase::ControlsFrozen)
         return;
 
@@ -204,6 +215,15 @@ void TankBase::Event_KeyPress(int key)
         case Qt::Key_Space:
             this->Fire();
             return;
+        case Qt::Key_1:
+            this->SwitchWeapon(WEAPON_CANON);
+            break;
+        case Qt::Key_2:
+            this->SwitchWeapon(WEAPON_BIG_CANON);
+            break;
+        case Qt::Key_3:
+            this->SwitchWeapon(WEAPON_TRIPLE_CANON);
+            break;
     }
 }
 
@@ -262,7 +282,14 @@ void TankBase::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawText(position.X2int(), position.Y2int() - 20, QString::number(this->Health), QColor("black"));
 
     if (GetActivePlayer() == this)
+    {
         r->DrawBitmap(position.X2int(), position.Y2int() + 30, 20, 30, PE::Resources::GetPixmap(":/textures/terrain/arrow.png"));
+        if (!ControlsFrozen && this->playerInfo->IsBot)
+        {
+            // Bot is thinking
+            r->DrawBitmap(position.X2int() + 20, position.Y2int(), 40, 30, PE::Resources::GetPixmap(":/textures/ui/thinking.png"));
+        }
+    }
 }
 
 void TankBase::TakeDamage(TankBase *source, double damage)
@@ -356,11 +383,43 @@ void TankBase::IncreasePower(double p)
     this->SetPower(this->Power + p);
 }
 
+void TankBase::SwitchWeapon(int id)
+{
+    if (id != 0 && this->playerInfo->ItemList[id] <= 0)
+        return;
+
+    switch(id)
+    {
+        case WEAPON_NUKE:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new Nuke(this);
+            break;
+        case WEAPON_CANON:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new Cannon(this);
+            break;
+        case WEAPON_BIG_CANON:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new BigCannon(this);
+            break;
+        case WEAPON_MINI_NUKE:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new MiniNuke(this);
+            break;
+        case WEAPON_TRIPLE_CANON:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new TripleCanon(this);
+            break;
+    }
+
+    this->RedrawNeeded = true;
+}
+
 PE::Vector TankBase::getCanonB(const PE::Vector &source)
 {
     // angle math
     double radians = this->GetCanonAngle() * PE_PI_RAD_CNV;
-    PE::Vector result = this->getCanonRoot(source);
+    PE::Vector result = this->GetCanonRoot(source);
     result.X += (12 * cos(radians));
     result.Y += (12 * sin(radians));
     return result;

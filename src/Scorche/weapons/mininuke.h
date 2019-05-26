@@ -13,11 +13,14 @@
 #ifndef MININUKE_H
 #define MININUKE_H
 
+#include "weapon.h"
 
-class MiniNuke
+class MiniNuke : public Weapon
 {
     public:
-        MiniNuke();
+        MiniNuke(TankBase *pawn);
+        int GetWeaponType() override;
+        void Fire(const PE::Vector &source, double angle, double power) override;
 };
 
 #endif // MININUKE_H
