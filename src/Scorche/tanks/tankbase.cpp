@@ -11,9 +11,10 @@
 // Copyright (c) Petr Bena 2019
 
 #include "tankbase.h"
-#include "../ai.h"
+#include "../bots/ai.h"
 #include "../console.h"
 #include "../weapons/cannon.h"
+#include "../playerinfo.h"
 #include "../game.h"
 #include <cmath>
 #include <PixelEngine/camera.h>
@@ -85,13 +86,17 @@ TankBase *TankBase::RotatePlayers()
     return nullptr;
 }
 
-TankBase::TankBase(double x, double y, const QColor &color, const QString &player_name, bool bot)
+TankBase::TankBase(double x, double y, PlayerInfo *player)
 {
     Players.append(this);
-    this->tankColor = color;
-    this->PlayerName = player_name;
-    if (bot)
+    this->playerInfo = player;
+    this->tankColor = player->Color;
+    this->PlayerName = player->PlayerName;
+    if (player->IsBot)
+    {
         this->ai = new AI(this);
+        this->ai->ProcessInventory();
+    }
 
     this->Position.X = x;
     this->Position.Y = y;
@@ -106,6 +111,11 @@ TankBase::~TankBase()
 {
     Players.removeOne(this);
     delete this->ai;
+}
+
+PlayerInfo *TankBase::GetPlayer()
+{
+    return this->playerInfo;
 }
 
 void TankBase::Fire()
@@ -270,7 +280,15 @@ void TankBase::TakeDamage(TankBase *source, double damage)
 
 void TankBase::Kill(TankBase *source)
 {
-    Console::Append(source->PlayerName + " just nuked " + this->PlayerName + " :O");
+    this->playerInfo->IncreaseMoney(-200);
+    if (source == this)
+    {
+        Console::Append(source->PlayerName + " killed himself - LOL");
+    } else
+    {
+        Console::Append(source->PlayerName + " just nuked " + this->PlayerName + " :O");
+        source->playerInfo->IncreaseMoney(600);
+    }
 
     // Remove all colliders
     foreach (PE::Collider *c, this->colliders)

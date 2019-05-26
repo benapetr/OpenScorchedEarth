@@ -30,7 +30,7 @@ Weapon::WeaponType Cannon::GetWeaponType()
 
 QString Cannon::GetName()
 {
-    return "Cannon";
+    return "Small Cannon";
 }
 
 void Cannon::Fire(const PE::Vector &source, double angle, double power)

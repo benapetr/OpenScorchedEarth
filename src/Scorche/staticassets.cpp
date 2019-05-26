@@ -18,8 +18,8 @@ StaticAssets *StaticAssets::Instance = nullptr;
 
 StaticAssets::StaticAssets()
 {
-    this->RightArrow = PE::PixmapTools::Rotate(PE::Resources::GetPixmap(":/textures/terrain/arrow.png"), 90);
-    this->LeftArrow = PE::PixmapTools::Rotate(PE::Resources::GetPixmap(":/textures/terrain/arrow.png"), 270);
-    this->UpArrow = PE::PixmapTools::Rotate(PE::Resources::GetPixmap(":/textures/terrain/arrow.png"), 180);
-    this->DownArrow = PE::Resources::GetPixmap(":/textures/terrain/arrow.png");
+    this->RightArrow = PE::Resources::GetPixmap(":/textures/ui/arrow.png");
+    this->LeftArrow = PE::PixmapTools::Rotate(PE::Resources::GetPixmap(":/textures/ui/arrow.png"), 180);
+    this->UpArrow = PE::PixmapTools::Rotate(PE::Resources::GetPixmap(":/textures/ui/arrow.png"), 90);
+    this->DownArrow = PE::PixmapTools::Rotate(PE::Resources::GetPixmap(":/textures/ui/arrow.png"), 270);
 }

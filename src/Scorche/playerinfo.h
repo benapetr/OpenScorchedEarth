@@ -13,7 +13,7 @@
 #ifndef PLAYERINFO_H
 #define PLAYERINFO_H
 
-#include <QList>
+#include <QHash>
 #include <QColor>
 #include <QString>
 
@@ -26,24 +26,18 @@ class PlayerInfo
         static QList<PlayerInfo*> Players;
 
         PlayerInfo(const QString &name, const QColor &color, bool bot);
+        void IncreaseMoney(int value);
+
+        QHash<int, int> ItemList;
+
         QColor Color;
         bool IsBot = false;
         QString PlayerName;
+
         double Cash = 2000;
 
-        unsigned int Kills_Total = 0;
-        unsigned int Deaths_Total = 0;
-
-        unsigned int BigCanon = 0;
-        unsigned int TripleCanon = 0;
-        unsigned int Nuke = 0;
-        unsigned int MiniNuke = 0;
-
-        unsigned int HeavyShields = 0;
-        unsigned int Shields = 0;
-
-        unsigned int RepairKits = 0;
-        unsigned int Fuel = 0;
+        int Kills_Total = 0;
+        int Deaths_Total = 0;
 };
 
 #endif // PLAYERINFO_H

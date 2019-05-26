@@ -3,4 +3,7 @@
         <file alias="rock.png">assets/environment/rock.png</file>
         <file alias="arrow.png">assets/ui/arrow.png</file>
     </qresource>
+    <qresource prefix="/textures/ui">
+        <file alias="arrow.png">assets/ui/arrow-alt-right.png</file>
+    </qresource>
 </RCC>

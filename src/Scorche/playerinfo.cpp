@@ -11,6 +11,7 @@
 // Copyright (c) Petr Bena 2019
 
 #include <PixelEngine/pemath.h>
+#include "weaponlist.h"
 #include "playerinfo.h"
 
 QList<PlayerInfo*> PlayerInfo::Players;
@@ -54,4 +55,20 @@ PlayerInfo::PlayerInfo(const QString &name, const QColor &color, bool bot)
     this->PlayerName = name;
     this->IsBot = bot;
     this->Color = color;
+    this->ItemList.insert(WEAPON_NUKE, 0);
+    this->ItemList.insert(WEAPON_BIG_CANON, 0);
+    this->ItemList.insert(WEAPON_MINI_NUKE, 0);
+    this->ItemList.insert(WEAPON_TRIPLE_CANON, 0);
+    this->ItemList.insert(INVENTORY_FUEL, 0);
+    this->ItemList.insert(INVENTORY_SHIELD, 0);
+    this->ItemList.insert(INVENTORY_PARACHUTE, 0);
+    this->ItemList.insert(INVENTORY_REPAIR_KIT, 0);
+    this->ItemList.insert(INVENTORY_HEAVY_SHIELD, 0);
+}
+
+void PlayerInfo::IncreaseMoney(int value)
+{
+    this->Cash += value;
+    if (this->Cash < 0)
+        this->Cash = 0;
 }

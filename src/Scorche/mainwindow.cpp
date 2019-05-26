@@ -45,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         Console::Append(item.GetText());
     }
 
+    this->ui->actionFast_game->setChecked(Game::SuperFast);
+
     new Console(this);
 #ifdef __EMSCRIPTEN__
     setWindowFlags(Qt::FramelessWindowHint| Qt::WindowSystemMenuHint);

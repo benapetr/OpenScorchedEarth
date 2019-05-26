@@ -17,6 +17,7 @@
 #include <PixelEngine/worldgenerator.h>
 #include "console.h"
 #include "playerinfo.h"
+#include "shop.h"
 #include "scenes/introscene.h"
 #include "scenes/inventoryscene.h"
 #include "scenes/newgame.h"
@@ -26,11 +27,12 @@
 Game *Game::CurrentGame = nullptr;
 bool  Game::AIQuickAim = true;
 bool  Game::ExplosionEffects = true;
-bool  Game::SuperFast = false;
+bool  Game::SuperFast = true;
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
     Game::CurrentGame = this;
+    Shop::DefaultShop = new Shop();
     this->renderer = r;
     this->MapHeight = w_height;
     this->MapWidth = w_width;
@@ -97,7 +99,7 @@ void Game::startGame()
     // Register players
     foreach (PlayerInfo *x, PlayerInfo::Players)
     {
-        DemoTank *player = new DemoTank(10 + (player_id++ * step), 700, x->Color, x->PlayerName, x->IsBot);
+        DemoTank *player = new DemoTank(10 + (player_id++ * step), 700, x);
         if (!x->IsBot)
             TankBase::PlayerTank = player;
         player->IsPlayer = !x->IsBot;
@@ -142,6 +144,9 @@ void Game::OnUpdate()
 
     this->world->Update();
     if (this->CurrentScene != Scene_Game || !Game::SuperFast)
+        return;
+
+    if (!TankBase::ControlsFrozen)
         return;
 
     int x = 5;

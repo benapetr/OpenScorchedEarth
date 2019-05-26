@@ -50,6 +50,8 @@ class AI
         virtual ~AI();
         virtual void Process();
         virtual TankBase *FindClosestEnemy();
+        virtual void ProcessInventory();
+        virtual QString GetAIModelName();
         void Fire();
 
     protected:

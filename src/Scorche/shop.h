@@ -10,24 +10,22 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef INVENTORYSCENE_H
-#define INVENTORYSCENE_H
+#ifndef SHOP_H
+#define SHOP_H
 
-#include <PixelEngine/actor.h>
+#include "weaponlist.h"
 #include <QHash>
 
-class InventoryScene : public PE::Actor
+class PlayerInfo;
+class Shop
 {
     public:
-        InventoryScene();
-        void Render(PE::Renderer *r, PE::Camera *c) override;
-        void Event_KeyPress(int key) override;
-    private:
-        void insertItem(PE::Renderer *r, int id, int position);
-        void SelectUp();
-        void SelectDown();
-        int GetItemFromID();
-        int selectedItem = 0;
+        static Shop *DefaultShop;
+        Shop();
+        bool BuyItem(PlayerInfo *player, int item_id);
+        bool SellItem(PlayerInfo *player, int item_id);
+        QString ItemString(int i);
+        QHash<int, int> PriceList;
 };
 
-#endif // INVENTORYSCENE_H
+#endif // SHOP_H

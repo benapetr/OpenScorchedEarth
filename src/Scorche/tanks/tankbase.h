@@ -20,6 +20,7 @@
 
 class AI;
 class Weapon;
+class PlayerInfo;
 
 class TankBase : public PE::Pawn
 {
@@ -32,8 +33,9 @@ class TankBase : public PE::Pawn
         static TankBase *PlayerTank;
         static bool ControlsFrozen;
 
-        TankBase(double x, double y, const QColor &color, const QString &player_name, bool bot);
+        TankBase(double x, double y, PlayerInfo *player);
         ~TankBase() override;
+        PlayerInfo *GetPlayer();
         virtual void Fire();
         virtual void Pass();
         void Update(qint64 time = 0) override;
@@ -65,6 +67,7 @@ class TankBase : public PE::Pawn
     protected:
         virtual PE::Vector getCanonRoot(const PE::Vector &source)=0;
         virtual PE::Vector getCanonB(const PE::Vector &source);
+        PlayerInfo *playerInfo;
         AI *ai = nullptr;
         double powerAdjust = 0;
         double canonAdjust = 0;

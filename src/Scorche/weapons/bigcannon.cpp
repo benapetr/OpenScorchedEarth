@@ -11,8 +11,26 @@
 // Copyright (c) Petr Bena 2019
 
 #include "bigcannon.h"
+#include "../weaponlist.h"
+#include "../tanks/tankbase.h"
+#include "../playerinfo.h"
 
-BigCannon::BigCannon()
+BigCannon::BigCannon(TankBase *pawn) : Weapon (pawn)
+{
+    this->Ammo = pawn->GetPlayer()->ItemList[WEAPON_BIG_CANON];
+}
+
+Weapon::WeaponType BigCannon::GetWeaponType()
+{
+    return WeaponType_Rocket;
+}
+
+QString BigCannon::GetName()
+{
+    return "Big cannon";
+}
+
+void BigCannon::Fire(const PE::Vector &source, double angle, double power)
 {
 
 }

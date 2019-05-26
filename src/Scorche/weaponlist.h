@@ -10,24 +10,18 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef INVENTORYSCENE_H
-#define INVENTORYSCENE_H
+#ifndef WEAPONLIST_H
+#define WEAPONLIST_H
 
-#include <PixelEngine/actor.h>
-#include <QHash>
+#define WEAPON_BIG_CANON 0
+#define WEAPON_TRIPLE_CANON 1
+#define WEAPON_MINI_NUKE 2
+#define WEAPON_NUKE 3
 
-class InventoryScene : public PE::Actor
-{
-    public:
-        InventoryScene();
-        void Render(PE::Renderer *r, PE::Camera *c) override;
-        void Event_KeyPress(int key) override;
-    private:
-        void insertItem(PE::Renderer *r, int id, int position);
-        void SelectUp();
-        void SelectDown();
-        int GetItemFromID();
-        int selectedItem = 0;
-};
+#define INVENTORY_SHIELD 100
+#define INVENTORY_HEAVY_SHIELD 101
+#define INVENTORY_PARACHUTE 102
+#define INVENTORY_REPAIR_KIT 105
+#define INVENTORY_FUEL 104
 
-#endif // INVENTORYSCENE_H
+#endif // WEAPONLIST_H

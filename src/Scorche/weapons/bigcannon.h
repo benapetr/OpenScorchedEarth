@@ -13,11 +13,15 @@
 #ifndef BIGCANNON_H
 #define BIGCANNON_H
 
+#include "weapon.h"
 
-class BigCannon
+class BigCannon : public Weapon
 {
     public:
-        BigCannon();
+        BigCannon(TankBase *pawn);
+        WeaponType GetWeaponType() override;
+        QString GetName() override;
+        void Fire(const PE::Vector &source, double angle, double power) override;
 };
 
 #endif // BIGCANNON_H

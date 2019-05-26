@@ -19,7 +19,7 @@
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/Physics/rigidbody.h>
 
-DemoTank::DemoTank(double x, double y, const QColor& color, const QString &player_name, bool bot) : TankBase (x, y, color, player_name, bot)
+DemoTank::DemoTank(double x, double y, PlayerInfo *player) : TankBase (x, y, player)
 {
     this->AddChildren(new PE::BoxCollider(0, 0, this->width, this->height, this));
     this->AddChildren(new PE::BoxCollider(5, 10, 10, 6, this));

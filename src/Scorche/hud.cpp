@@ -14,6 +14,8 @@
 #include "tanks/tankbase.h"
 #include "console.h"
 #include "game.h"
+#include "playerinfo.h"
+#include "weapons/weapon.h"
 #include <PixelEngine/Graphics/renderer.h>
 
 HUD::HUD()
@@ -31,7 +33,7 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
 
     if (TankBase::ControlsFrozen)
     {
-        r->DrawText(400, 6, "Waiting for current round to finish", Qt::darkRed);
+        r->DrawText(500, 6, "Waiting for current round to finish", Qt::darkRed);
     }
 
     if (!TankBase::PlayerTank)
@@ -39,8 +41,9 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawText(10, 6, "HP: " + QString::number(TankBase::PlayerTank->Health), QColor("black"));
     r->DrawText(80, 6, "Angle: " + QString::number(TankBase::PlayerTank->GetCanonAngleDegree()), QColor("black"));
     r->DrawText(160, 6, "Power: " + QString::number(TankBase::PlayerTank->Power), QColor("black"));
+    r->DrawText(230, 6, "Weapon: " + TankBase::PlayerTank->SelectedWeapon->GetName(), QColor("black"));
     TankBase *currentPlayer = TankBase::GetActivePlayer();
     if (currentPlayer != nullptr)
-        r->DrawText(240, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
+        r->DrawText(400, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
     r->DrawText(300, 880, Console::LastMessage, QColor("black"));
 }

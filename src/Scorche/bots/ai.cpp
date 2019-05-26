@@ -11,10 +11,12 @@
 // Copyright (c) Petr Bena 2019
 
 #include "ai.h"
-#include "console.h"
+#include "../console.h"
+#include "../game.h"
+#include "../playerinfo.h"
+#include "../shop.h"
+#include "../tanks/tankbase.h"
 #include <cmath>
-#include "game.h"
-#include "tanks/tankbase.h"
 #include <PixelEngine/world.h>
 #include <PixelEngine/pemath.h>
 #include <PixelEngine/vector.h>
@@ -114,6 +116,40 @@ TankBase *AI::FindClosestEnemy()
         tank = p;
     }
     return tank;
+}
+
+void AI::ProcessInventory()
+{
+    // Spend most of money for everything
+    PlayerInfo *info = this->tank->GetPlayer();
+    while(info->Cash > 500)
+    {
+        // We always need shields
+        if (info->ItemList[INVENTORY_SHIELD] < 2)
+        {
+            Shop::DefaultShop->BuyItem(info, INVENTORY_SHIELD);
+        }
+        if (info->Cash > 1500)
+        {
+            Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
+        }
+        if (info->Cash > 5000)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
+        }
+        if (info->Cash > 2000)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
+        }
+
+        Shop::DefaultShop->BuyItem(info, WEAPON_TRIPLE_CANON);
+        Shop::DefaultShop->BuyItem(info, WEAPON_BIG_CANON);
+    }
+}
+
+QString AI::GetAIModelName()
+{
+    return "Default";
 }
 
 void AI::Fire()
