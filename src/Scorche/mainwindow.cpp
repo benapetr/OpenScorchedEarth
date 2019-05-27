@@ -38,7 +38,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->renderTimer = new QTimer(this);
     connect(this->renderTimer, SIGNAL(timeout()), this, SLOT(OnRender()));
     // this timer speed defines FPS, smaller means higher FPS, but also more CPU usage
+#ifdef __EMSCRIPTEN__
+    this->renderTimer->start(40);
+#else
     this->renderTimer->start(20);
+#endif
 
     // Init console
     foreach (PE::RingLog_Item item, PE::Engine::GetEngine()->RL->GetItems())
