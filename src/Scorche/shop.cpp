@@ -20,9 +20,9 @@ Shop::Shop()
 {
     this->PriceList.insert(WEAPON_CANON, 0);
     this->PriceList.insert(INVENTORY_FUEL, 100);
-    this->PriceList.insert(INVENTORY_SHIELD, 200);
+    this->PriceList.insert(INVENTORY_SHIELD, 400);
     this->PriceList.insert(INVENTORY_PARACHUTE, 100);
-    this->PriceList.insert(INVENTORY_HEAVY_SHIELD, 600);
+    this->PriceList.insert(INVENTORY_HEAVY_SHIELD, 2000);
     this->PriceList.insert(INVENTORY_REPAIR_KIT, 200);
     this->PriceList.insert(WEAPON_NUKE, 2000);
     this->PriceList.insert(WEAPON_MINI_NUKE, 500);

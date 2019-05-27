@@ -23,6 +23,21 @@ class AI;
 class Weapon;
 class PlayerInfo;
 
+namespace PE
+{
+    class CircleCollider;
+}
+
+enum ShieldType
+{
+    ShieldNone,
+    ShieldMini,
+    ShieldHeavy,
+    ShieldForce,
+    ShieldHeavyForce,
+    ShieldMag
+};
+
 class TankBase : public PE::Pawn
 {
     public:
@@ -59,8 +74,18 @@ class TankBase : public PE::Pawn
         void SetAngle(double a);
         void IncreasePower(double p);
         void SwitchWeapon(int id);
+        void DeployShield(ShieldType shield);
+        void DisableShield();
+        void RestoreShield();
         virtual PE::Vector GetCanonRoot(const PE::Vector &source)=0;
+        QColor GetShieldColor();
+        void Warm();
+        // Temporary hack to disable shield while firing so that we don't hit our own shield
+        bool ShieldDisabled = false;
         bool IsSpawned = false;
+        bool WarmingUp = true;
+        ShieldType Shield = ShieldNone;
+        double ShieldPower = 0;
         QString PlayerName;
         Weapon *SelectedWeapon;
         bool IsPlayer = false;
@@ -72,6 +97,7 @@ class TankBase : public PE::Pawn
 
     protected:
         virtual PE::Vector getCanonB(const PE::Vector &source);
+        PE::Collectable_SmartPtr<PE::CircleCollider> shieldCollider;
         PlayerInfo *playerInfo;
         AI *ai = nullptr;
         double powerAdjust = 0;

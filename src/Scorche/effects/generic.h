@@ -26,7 +26,10 @@ class TankBase;
 class Generic : public PE::Actor
 {
     public:
+        static int EffectCount;
+
         Generic();
+        ~Generic();
 };
 
 #endif // GENERIC_H

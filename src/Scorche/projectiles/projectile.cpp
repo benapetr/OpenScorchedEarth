@@ -29,7 +29,11 @@ Projectile::~Projectile()
 {
     Projectile::ActiveProjectiles--;
     if (Projectile::ActiveProjectiles <= 0)
+    {
         TankBase::ControlsFrozen = false;
+        TankBase::ActivePlayer->RestoreShield();
+        TankBase::RotatePlayers();
+    }
 }
 
 void Projectile::Event_OnCollision(PE::Collider *collider)

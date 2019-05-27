@@ -24,11 +24,13 @@
 #include <cmath>
 #include <PixelEngine/camera.h>
 #include <PixelEngine/engine.h>
-#include <PixelEngine/Physics/collider.h>
+#include <PixelEngine/Physics/circlecollider.h>
 #include <PixelEngine/definitions.h>
 #include <PixelEngine/resources.h>
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/Physics/rigidbody.h>
+
+#define SHIELD_RADIUS 22
 
 QList<TankBase*> TankBase::Players;
 bool TankBase::ControlsFrozen = false;
@@ -127,6 +129,18 @@ TankBase::TankBase(double x, double y, PlayerInfo *player)
         else
             this->ai = new AI(this);
         this->ai->ProcessInventory();
+        this->ai->WarmUp();
+        this->WarmingUp = false;
+        Game::CurrentGame->WarmingTanks--;
+    } else
+    {
+        // Check if this player has anything to use in warm up
+        if (this->playerInfo->ItemList[INVENTORY_SHIELD] <= 0 &&
+            this->playerInfo->ItemList[INVENTORY_HEAVY_SHIELD] <= 0)
+        {
+            this->WarmingUp = false;
+            Game::CurrentGame->WarmingTanks--;
+        }
     }
 
     this->Position.X = x;
@@ -169,9 +183,9 @@ void TankBase::Fire()
 
     TankBase::ControlsFrozen = true;
 
+    this->DisableShield();
     this->SelectedWeapon->Fire(this->getCanonB(this->Position), this->GetCanonAngle(), this->Power);
     this->ResetCanonAdjust();
-    RotatePlayers();
 }
 
 void TankBase::Pass()
@@ -188,6 +202,9 @@ void TankBase::Update(qint64 time)
         return;
 
     if (Game::CurrentGame->IsPaused)
+        return;
+
+    if (Game::CurrentGame->WarmingTanks > 0)
         return;
 
     if (!this->IsAlive())
@@ -217,7 +234,33 @@ void TankBase::Event_KeyPress(int key)
 {
     if (Game::CurrentGame->IsFinished)
     {
-
+        switch (key)
+        {
+            case Qt::Key_N:
+                Game::CurrentGame->RequestScene(Scene_Game);
+                return;
+            case Qt::Key_Space:
+                Game::CurrentGame->RequestScene(Scene_Inventory);
+                return;
+        }
+        return;
+    }
+    if (this->WarmingUp)
+    {
+        switch (key)
+        {
+            case Qt::Key_L:
+                this->DeployShield(ShieldMini);
+                this->Warm();
+                break;
+            case Qt::Key_H:
+                this->DeployShield(ShieldHeavy);
+                this->Warm();
+                break;
+            case Qt::Key_Space:
+                this->Warm();
+                break;
+        }
         return;
     }
     if (TankBase::ControlsFrozen)
@@ -231,6 +274,12 @@ void TankBase::Event_KeyPress(int key)
 
     switch (key)
     {
+        case Qt::Key_L:
+            this->DeployShield(ShieldMini);
+            break;
+        case Qt::Key_H:
+            this->DeployShield(ShieldHeavy);
+            break;
         case Qt::Key_A:
         case Qt::Key_Left:
             this->SetCanonAdjustLeft();
@@ -264,20 +313,6 @@ void TankBase::Event_KeyPress(int key)
 
 void TankBase::Event_KeyRelease(int key)
 {
-    if (Game::CurrentGame->IsFinished)
-    {
-        switch (key)
-        {
-            case Qt::Key_N:
-                Game::CurrentGame->RequestScene(Scene_Game);
-                return;
-            case Qt::Key_Space:
-                Game::CurrentGame->RequestScene(Scene_Inventory);
-                return;
-        }
-        return;
-    }
-
     if (!this->IsPlayer)
         return;
 
@@ -342,12 +377,53 @@ void TankBase::Render(PE::Renderer *r, PE::Camera *c)
             r->DrawBitmap(position.X2int() + 20, position.Y2int(), 40, 30, PE::Resources::GetPixmap(":/textures/ui/thinking.png"));
         }
     }
+
+    if (this->WarmingUp)
+    {
+        r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("white"), true);
+        r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("black"), false);
+        r->DrawText(r->GetWidth() / 2 - 200, r->GetHeight() / 2 + 200, "Warm up", QColor("black"), 20);
+        r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2, "Press l to set up shield", QColor("black"), 10);
+        r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2 - 20, "Press h to set up heavy shield", QColor("black"), 10);
+        r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2 - 40, "Press space to continue", QColor("black"), 10);
+    }
+
+    double shield_radius = SHIELD_RADIUS;
+    position.Y -= 50;
+    PE::Vector sp = this->GetCanonRoot(position) - shield_radius;
+
+    // Shields
+    if (this->ShieldPower > 0)
+    {
+        int shield_t = 1;
+        switch (this->Shield)
+        {
+            case ShieldHeavyForce:
+            case ShieldHeavy:
+                shield_t = 4;
+                break;
+        }
+        r->DrawEllipse(sp.X2int(), sp.Y2int(), shield_radius * 2, shield_radius * 2, this->GetShieldColor(), shield_t);
+    }
 }
 
 void TankBase::TakeDamage(TankBase *source, double damage)
 {
     if (!this->IsAlive())
         return;
+
+    if (this->ShieldPower > 0)
+    {
+        this->ShieldPower -= damage;
+        if (this->ShieldPower < 0)
+        {
+            this->ShieldPower = 0;
+            this->RemoveChildren(this->shieldCollider);
+            this->shieldCollider = nullptr;
+            this->Shield = ShieldNone;
+        }
+        return;
+    }
 
     this->Health -= damage;
     if (this->Health < 0)
@@ -467,6 +543,80 @@ void TankBase::SwitchWeapon(int id)
             break;
     }
 
+    this->RedrawNeeded = true;
+}
+
+void TankBase::DeployShield(ShieldType shield)
+{
+    int shield_type;
+    double max_power;
+    switch (shield)
+    {
+        case ShieldMini:
+            shield_type = INVENTORY_SHIELD;
+            max_power = 200;
+            break;
+        case ShieldHeavy:
+            shield_type = INVENTORY_HEAVY_SHIELD;
+            max_power = 1000;
+            break;
+        default:
+            return;
+    }
+    if (this->playerInfo->ItemList[shield_type] <= 0)
+        return;
+    if (this->shieldCollider != nullptr)
+        this->RemoveChildren(this->shieldCollider);
+    this->shieldCollider = new PE::CircleCollider(this->Position.X + SHIELD_RADIUS, this->Position.Y + SHIELD_RADIUS, SHIELD_RADIUS);
+    this->AddChildren(this->shieldCollider);
+    this->playerInfo->ItemList[shield_type]--;
+    this->Shield = shield;
+    this->ShieldPower = max_power;
+}
+
+void TankBase::DisableShield()
+{
+    if (this->ShieldDisabled)
+        return;
+    if (this->shieldCollider != nullptr)
+        this->RemoveChildren(this->shieldCollider);
+    this->ShieldDisabled = true;
+}
+
+void TankBase::RestoreShield()
+{
+    if (!this->ShieldDisabled)
+        return;
+    if (this->shieldCollider != nullptr)
+        this->AddChildren(this->shieldCollider);
+    this->ShieldDisabled = false;
+}
+
+QColor TankBase::GetShieldColor()
+{
+    double max_hp;
+    QColor base;
+    switch(this->Shield)
+    {
+        case ShieldMini:
+            base = QColor(255, 255, 255);
+            max_hp = 200;
+            break;
+        case ShieldHeavy:
+            base = QColor(255, 255, 255);
+            max_hp = 1000;
+            break;
+    }
+    double result_color_r = (static_cast<double>(base.red()) / max_hp) * this->ShieldPower;
+    double result_color_g = (static_cast<double>(base.green()) / max_hp) * this->ShieldPower;
+    double result_color_b = (static_cast<double>(base.blue()) / max_hp) * this->ShieldPower;
+    return QColor(static_cast<int>(result_color_r), static_cast<int>(result_color_g), static_cast<int>(result_color_b));
+}
+
+void TankBase::Warm()
+{
+    this->WarmingUp = false;
+    Game::CurrentGame->WarmingTanks--;
     this->RedrawNeeded = true;
 }
 

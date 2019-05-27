@@ -95,6 +95,8 @@ void Game::startGame()
     this->world->RegisterCollider(new PE::BoxCollider(this->MapWidth + 100, -100, 100, 2000));
     this->world->RegisterCollider(new PE::BoxCollider(-1000, this->MapHeight + 800, 4000, 100));
 
+    this->WarmingTanks = PlayerInfo::Players.count();
+
     int step = 0;
     if (PlayerInfo::Players.count() > 0)
         step = (this->MapHeight / (PlayerInfo::Players.count() - 1)) + 80;

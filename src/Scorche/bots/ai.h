@@ -55,6 +55,7 @@ class AI
         virtual void ProcessInventory();
         virtual QString GetAIModelName();
         void Fire();
+        virtual void WarmUp();
 
     protected:
         // AI stuff
@@ -69,6 +70,7 @@ class AI
         virtual void evaluateFire();
         virtual void postEvaluateFire();
         bool hasWeapon(int id);
+        virtual void evaluateShield();
         virtual void evaluateWeapon();
         virtual void changeWeapon();
         void changeAngle(double new_angle);

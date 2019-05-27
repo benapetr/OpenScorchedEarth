@@ -16,6 +16,7 @@
 #include "game.h"
 #include "playerinfo.h"
 #include "weapons/weapon.h"
+#include "effects/generic.h"
 #include <PixelEngine/Graphics/renderer.h>
 
 HUD::HUD()
@@ -31,7 +32,10 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("white"), true);
     r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("black"));
 
-    if (TankBase::ControlsFrozen)
+    if (Game::CurrentGame->WarmingTanks > 0)
+    {
+        r->DrawText(500, 6, "Warm up!!", Qt::darkRed);
+    } else if (TankBase::ControlsFrozen)
     {
         r->DrawText(500, 6, "Waiting for current round to finish", Qt::darkRed);
     }
@@ -49,7 +53,7 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
         r->DrawText(400, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
     r->DrawText(300, 880, Console::LastMessage, QColor("black"));
 
-    if (Game::CurrentGame->IsFinished)
+    if (Generic::EffectCount == 0 && Game::CurrentGame->IsFinished)
     {
         // Game over
         r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("white"), true);

@@ -58,6 +58,7 @@ class Game : public QObject
         double MapHeight;
         bool IsFinished = false;
         bool IsPaused = false;
+        int WarmingTanks = 0;
 
     protected slots:
         void OnUpdate();

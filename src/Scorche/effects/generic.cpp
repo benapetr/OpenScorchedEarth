@@ -12,7 +12,14 @@
 
 #include "generic.h"
 
+int Generic::EffectCount = 0;
+
 Generic::Generic()
 {
+    EffectCount++;
+}
 
+Generic::~Generic()
+{
+    EffectCount--;
 }

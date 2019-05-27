@@ -41,6 +41,7 @@ void AI::Process()
         this->selectedEnemy = nullptr;
         this->state = AI_State_Undecided;
     }
+    this->evaluateShield();
     this->evaluateWeapon();
     switch(this->state)
     {
@@ -132,25 +133,27 @@ void AI::ProcessInventory()
     while(info->Cash > 500)
     {
         // We always need shields
-        if (info->ItemList[INVENTORY_SHIELD] < 2)
+        if (info->Cash > 600 && info->ItemList[INVENTORY_SHIELD] < 2)
         {
             Shop::DefaultShop->BuyItem(info, INVENTORY_SHIELD);
         }
-        if (info->Cash > 1500)
+        if (info->Cash > 3500 && info->ItemList[INVENTORY_HEAVY_SHIELD] < 2)
         {
             Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
         }
         if (info->Cash > 5000)
         {
-            Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
+            //Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
         }
         if (info->Cash > 2000)
         {
-            Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
+            //Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
         }
 
-        Shop::DefaultShop->BuyItem(info, WEAPON_TRIPLE_CANON);
-        Shop::DefaultShop->BuyItem(info, WEAPON_BIG_CANON);
+        if (info->ItemList[WEAPON_TRIPLE_CANON] < 40)
+            Shop::DefaultShop->BuyItem(info, WEAPON_TRIPLE_CANON);
+        if (info->ItemList[WEAPON_BIG_CANON] < 60)
+            Shop::DefaultShop->BuyItem(info, WEAPON_BIG_CANON);
     }
 }
 
@@ -163,6 +166,17 @@ void AI::Fire()
 {
     this->state = AI_State_Fired;
     this->tank->Fire();
+}
+
+void AI::WarmUp()
+{
+    if (this->tank->GetPlayer()->ItemList[INVENTORY_HEAVY_SHIELD] > 0)
+    {
+        this->tank->DeployShield(ShieldHeavy);
+    } else if (this->tank->GetPlayer()->ItemList[INVENTORY_SHIELD] > 0)
+    {
+        this->tank->DeployShield(ShieldMini);
+    }
 }
 
 void AI::getTargetAngle()
@@ -423,6 +437,16 @@ bool AI::hasWeapon(int id)
     return this->tank->GetPlayer()->ItemList[id] > 0;
 }
 
+void AI::evaluateShield()
+{
+    if (this->tank->ShieldPower > 0)
+        return;
+    if (this->tank->GetPlayer()->ItemList[INVENTORY_HEAVY_SHIELD] > 0)
+        this->tank->DeployShield(ShieldHeavy);
+    else if (this->tank->GetPlayer()->ItemList[INVENTORY_SHIELD] > 0)
+        this->tank->DeployShield(ShieldMini);
+}
+
 void AI::evaluateWeapon()
 {
     int current_weapon = this->tank->SelectedWeapon->GetWeaponType();
@@ -583,5 +607,6 @@ void AI::traceEval()
 
 void AI::debug_log(const QString &text)
 {
-    Console::Append("DEBUG " + this->tank->PlayerName + ": " + text);
+    if (AITracer::Debug)
+        Console::Append("DEBUG " + this->tank->PlayerName + ": " + text);
 }
