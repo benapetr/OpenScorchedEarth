@@ -27,8 +27,10 @@ class TankBase : public PE::Pawn
 {
     public:
         static void ResetPlayers();
+        static int LivingPlayers();
         static TankBase *GetActivePlayer();
         static TankBase *RotatePlayers();
+        static TankBase *GetUnspawned();
         static QList<TankBase*> Players;
         static TankBase *ActivePlayer;
         static TankBase *PlayerTank;
@@ -58,6 +60,7 @@ class TankBase : public PE::Pawn
         void IncreasePower(double p);
         void SwitchWeapon(int id);
         virtual PE::Vector GetCanonRoot(const PE::Vector &source)=0;
+        bool IsSpawned = false;
         QString PlayerName;
         Weapon *SelectedWeapon;
         bool IsPlayer = false;

@@ -56,6 +56,7 @@ class Game : public QObject
         Scene CurrentScene = Scene_Nothing;
         double MapWidth;
         double MapHeight;
+        bool IsFinished = false;
         bool IsPaused = false;
 
     protected slots:

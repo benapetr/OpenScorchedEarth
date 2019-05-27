@@ -23,6 +23,7 @@
 #include "scenes/introscene.h"
 #include "scenes/inventoryscene.h"
 #include "scenes/newgame.h"
+#include "playerstart.h"
 #include "tanks/demotank.h"
 #include "hud.h"
 
@@ -92,7 +93,7 @@ void Game::startGame()
     this->world->RegisterCollider(new PE::BoxCollider(-1000, -100, 4000, 120));
     this->world->RegisterCollider(new PE::BoxCollider(-200, -100, 100, 2000));
     this->world->RegisterCollider(new PE::BoxCollider(this->MapWidth + 100, -100, 100, 2000));
-    this->world->RegisterCollider(new PE::BoxCollider(-1000, this->MapHeight + 400, 4000, 100));
+    this->world->RegisterCollider(new PE::BoxCollider(-1000, this->MapHeight + 800, 4000, 100));
 
     int step = 0;
     if (PlayerInfo::Players.count() > 0)
@@ -102,11 +103,15 @@ void Game::startGame()
     // Register players
     foreach (PlayerInfo *x, PlayerInfo::Players)
     {
-        DemoTank *player = new DemoTank(10 + (player_id++ * step), 700, x);
+        DemoTank *player = new DemoTank(10 + (player_id * step), 0, x);
         if (!x->IsBot)
             TankBase::PlayerTank = player;
         player->IsPlayer = !x->IsBot;
         this->world->RegisterActor(player);
+
+        // Create player start, one for each bot, very high
+        PlayerStart *ps = new PlayerStart(PE::Vector(10 + (player_id++ * step), this->MapHeight));
+        this->world->RegisterActor(ps);
     }
 }
 
@@ -150,6 +155,24 @@ void Game::OnUpdate()
         return;
     }
 
+    // Check if game is finished
+    if (!this->IsFinished && this->CurrentScene == Scene_Game)
+    {
+        if (TankBase::LivingPlayers() <= 1)
+        {
+            // Find last player
+            foreach (TankBase *t, TankBase::Players)
+            {
+                if (t->IsAlive())
+                {
+                    t->GetPlayer()->Score += 10000;
+                    t->GetPlayer()->IncreaseMoney(3000);
+                }
+            }
+            this->IsFinished = true;
+        }
+    }
+
     this->world->Update();
     if (this->CurrentScene != Scene_Game || (!Game::SuperFast && !Game::Tracing))
         return;
@@ -165,6 +188,7 @@ void Game::OnUpdate()
 void Game::resetWorld()
 {
     Tracing = false;
+    this->IsFinished = false;
     delete this->world;
     this->world = new PE::World(this->MapWidth, this->MapHeight);
     this->world->BackgroundColor = QColor(204, 221, 255);

@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->renderTimer, SIGNAL(timeout()), this, SLOT(OnRender()));
     // this timer speed defines FPS, smaller means higher FPS, but also more CPU usage
 #ifdef __EMSCRIPTEN__
+    // WASM is significantly worse than native, so let's decrease FPS to put less strain on CPU
     this->renderTimer->start(40);
 #else
     this->renderTimer->start(20);
@@ -77,13 +78,11 @@ void MainWindow::Render()
 int MainWindow::GetWidth()
 {
     return this->ui->viewPort->width();// * QApplication::desktop()->devicePixelRatio();
-    //return 1400;
 }
 
 int MainWindow::GetHeight()
 {
     return this->ui->viewPort->height();// * QApplication::desktop()->devicePixelRatio();
-    //return 900;
 }
 
 void MainWindow::OnRender()

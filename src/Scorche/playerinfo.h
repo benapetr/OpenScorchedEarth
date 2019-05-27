@@ -29,6 +29,7 @@ class PlayerInfo
         void IncreaseMoney(int value);
 
         QHash<int, int> ItemList;
+        int Score = 0;
 
         QColor Color;
         bool IsBot = false;

@@ -43,6 +43,17 @@ void TankBase::ResetPlayers()
     ControlsFrozen = false;
 }
 
+int TankBase::LivingPlayers()
+{
+    int result = 0;
+    foreach (TankBase *player, Players)
+    {
+        if (player->IsAlive())
+            result++;
+    }
+    return result;
+}
+
 TankBase *TankBase::GetActivePlayer()
 {
     if (ActivePlayer == nullptr)
@@ -86,6 +97,18 @@ TankBase *TankBase::RotatePlayers()
         {
             ActivePlayer = activePlayer;
             return activePlayer;
+        }
+    }
+    return nullptr;
+}
+
+TankBase *TankBase::GetUnspawned()
+{
+    foreach (TankBase *player, Players)
+    {
+        if (!player->IsSpawned)
+        {
+            return player;
         }
     }
     return nullptr;
@@ -161,6 +184,9 @@ void TankBase::Update(qint64 time)
 {
     (void)time;
 
+    if (!this->IsSpawned)
+        return;
+
     if (Game::CurrentGame->IsPaused)
         return;
 
@@ -189,6 +215,11 @@ void TankBase::Update(qint64 time)
 
 void TankBase::Event_KeyPress(int key)
 {
+    if (Game::CurrentGame->IsFinished)
+    {
+
+        return;
+    }
     if (TankBase::ControlsFrozen)
         return;
 
@@ -233,6 +264,20 @@ void TankBase::Event_KeyPress(int key)
 
 void TankBase::Event_KeyRelease(int key)
 {
+    if (Game::CurrentGame->IsFinished)
+    {
+        switch (key)
+        {
+            case Qt::Key_N:
+                Game::CurrentGame->RequestScene(Scene_Game);
+                return;
+            case Qt::Key_Space:
+                Game::CurrentGame->RequestScene(Scene_Inventory);
+                return;
+        }
+        return;
+    }
+
     if (!this->IsPlayer)
         return;
 
@@ -272,6 +317,9 @@ double TankBase::GetCanonAngle()
 
 void TankBase::Render(PE::Renderer *r, PE::Camera *c)
 {
+    if (!this->IsSpawned)
+        return;
+
     // Get position to render on
     PE::Vector position = c->ProjectedPosition(this->Position);
     position.Y += 50;
@@ -311,7 +359,8 @@ void TankBase::TakeDamage(TankBase *source, double damage)
 
 void TankBase::Kill(TankBase *source)
 {
-    this->playerInfo->IncreaseMoney(-200);
+    //this->playerInfo->IncreaseMoney(-200);
+    this->playerInfo->Deaths_Total++;
     if (source == this)
     {
         Console::Append(source->PlayerName + " killed himself - LOL");
@@ -319,6 +368,8 @@ void TankBase::Kill(TankBase *source)
     {
         Console::Append(source->PlayerName + " just nuked " + this->PlayerName + " :O");
         source->playerInfo->IncreaseMoney(600);
+        source->playerInfo->Score += 1000;
+        source->playerInfo->Kills_Total++;
     }
 
     // Remove all colliders

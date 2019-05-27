@@ -48,4 +48,23 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     if (currentPlayer != nullptr)
         r->DrawText(400, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
     r->DrawText(300, 880, Console::LastMessage, QColor("black"));
+
+    if (Game::CurrentGame->IsFinished)
+    {
+        // Game over
+        r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("white"), true);
+        r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("black"), false);
+        r->DrawText(r->GetWidth() / 2 - 200, r->GetHeight() / 2 + 200, "Round finished", QColor("black"), 20);
+
+        int current_Y = r->GetHeight() / 2 + 180;
+        r->DrawText(r->GetWidth() / 2 - 300, current_Y, "Scores:", QColor("black"), 12);
+        foreach (TankBase *t, TankBase::Players)
+        {
+            current_Y -= 20;
+            r->DrawText(r->GetWidth() / 2 - 300, current_Y, t->GetPlayer()->PlayerName + " cash: $" + QString::number(t->GetPlayer()->Cash) + " score: " + QString::number(t->GetPlayer()->Score), t->GetPlayer()->Color, 12);
+        }
+
+        r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2 - 300, "Press space to go to inventory screen", QColor("black"), 10);
+        r->DrawText(r->GetWidth() / 2 + 20, r->GetHeight() / 2 - 320, "Press N to play next game", QColor("black"), 10);
+    }
 }

@@ -29,6 +29,8 @@ DemoTank::DemoTank(double x, double y, PlayerInfo *player) : TankBase (x, y, pla
 
 void DemoTank::Render(PE::Renderer *r, PE::Camera *c)
 {
+    if (!this->IsSpawned)
+        return;
     if (!this->IsAlive())
         return;
     // Get position to render on
