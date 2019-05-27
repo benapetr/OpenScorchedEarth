@@ -28,6 +28,83 @@ Terminator::Terminator(TankBase *t) : AI(t)
 
 }
 
+void Terminator::ProcessInventory()
+{
+    PlayerInfo *info = this->tank->GetPlayer();
+    bool needs_more = true;
+    while(needs_more)
+    {
+        needs_more = false;
+        // We always need shields
+        if (info->Cash > 600 && info->ItemList[INVENTORY_SHIELD] < 2)
+        {
+            Shop::DefaultShop->BuyItem(info, INVENTORY_SHIELD);
+            needs_more = true;
+        }
+        if (info->Cash > 2500 && info->ItemList[INVENTORY_HEAVY_SHIELD] < 2)
+        {
+            Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
+            needs_more = true;
+        }
+        if (info->Cash > 5000)
+        {
+            //Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
+        }
+        if (info->Cash > 2000)
+        {
+            //Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
+        }
+        if (info->Cash > 20 && info->ItemList[WEAPON_TRIPLE_CANON] < 60)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_TRIPLE_CANON);
+            needs_more = true;
+        }
+        if (info->Cash > 10 && info->ItemList[WEAPON_BIG_CANON] < 60)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_BIG_CANON);
+            needs_more = true;
+        }
+        if (info->Cash > 1000 && info->ItemList[WEAPON_MINI_NUKE] < 1)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
+            needs_more = true;
+        }
+        if (info->Cash > 3000 && info->ItemList[WEAPON_NUKE] < 1)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
+            needs_more = true;
+        }
+    }
+}
+
+void Terminator::evaluateWeapon()
+{
+    int current_weapon = this->tank->SelectedWeapon->GetWeaponType();
+    if (current_weapon != 0 && this->tank->SelectedWeapon->Ammo <= 0)
+    {
+        // Current weapon is out of ammo, we have to change
+        this->changeWeapon();
+        return;
+    }
+    if (!this->firstShot && this->bestDistance < 120 && this->hasWeapon(WEAPON_NUKE))
+    {
+        this->tank->SwitchWeapon(WEAPON_NUKE);
+        return;
+    } else if (!this->firstShot && this->bestDistance < 60 && this->hasWeapon(WEAPON_MINI_NUKE))
+    {
+        this->tank->SwitchWeapon(WEAPON_MINI_NUKE);
+        return;
+    } else if (current_weapon == 0 && this->hasWeapon(WEAPON_TRIPLE_CANON))
+    {
+        this->tank->SwitchWeapon(WEAPON_TRIPLE_CANON);
+        return;
+    } else if (current_weapon == 0 && this->hasWeapon(WEAPON_BIG_CANON))
+    {
+        this->tank->SwitchWeapon(WEAPON_BIG_CANON);
+        return;
+    }
+}
+
 void Terminator::evaluateFire()
 {
     this->untracedCounter++;

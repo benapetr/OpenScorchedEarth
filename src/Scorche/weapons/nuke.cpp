@@ -11,10 +11,18 @@
 // Copyright (c) Petr Bena 2019
 
 #include "nuke.h"
+#include "../weaponlist.h"
+#include "../tanks/tankbase.h"
+#include "../playerinfo.h"
+#include "../projectiles/nukerocket.h"
+#include "../game.h"
+#include <cmath>
+#include <PixelEngine/Physics/rigidbody.h>
+#include <PixelEngine/world.h>
 
 Nuke::Nuke(TankBase *pawn) : Weapon (pawn)
 {
-
+    this->Ammo = pawn->GetPlayer()->ItemList[WEAPON_NUKE];
 }
 
 int Nuke::GetWeaponType()
@@ -24,5 +32,28 @@ int Nuke::GetWeaponType()
 
 void Nuke::Fire(const PE::Vector &source, double angle, double power)
 {
+    if (this->Ammo <= 0)
+        return;
 
+    this->Owner->GetPlayer()->ItemList[WEAPON_NUKE]--;
+    this->Ammo = this->Owner->GetPlayer()->ItemList[WEAPON_NUKE];
+
+    PE::Vector position = source;
+    PE::Vector spawn_position = source;
+
+    // angle math
+    double radians = angle * PE_PI_RAD_CNV;
+    position.X += (2 * std::cos(radians));
+    position.Y += (2 * std::sin(radians));
+    spawn_position.X += (1 * std::cos(radians));
+    spawn_position.Y += (1 * std::sin(radians));
+
+    PE::Vector force = (position - source) * (power / 15);
+
+    // Instantiate a projectile in front of cannon
+    PE::Collectable_SmartPtr<NukeRocket> rocket = new NukeRocket(spawn_position);
+    rocket->Owner = this->Owner;
+    rocket->Destroy(8000);
+    rocket->RigidBody->AddForce(force);
+    Game::CurrentGame->GetWorld()->RegisterActor(rocket);
 }

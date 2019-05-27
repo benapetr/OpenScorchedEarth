@@ -10,20 +10,20 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef TERMINATOR_H
-#define TERMINATOR_H
+#ifndef MNROCKET_H
+#define MNROCKET_H
 
-#include "ai.h"
+#include <PixelEngine/vector.h>
+#include "projectile.h"
 
-class Terminator : public AI
+class MNRocket : public Projectile
 {
     public:
-        Terminator(TankBase *t);
-        void ProcessInventory() override;
+        MNRocket(const PE::Vector &position);
+        void Render(PE::Renderer *r, PE::Camera *c) override;
     protected:
-        void evaluateWeapon() override;
-        void evaluateFire() override;
-        void trace() override;
+        void on_Terrain(PE::Collider *collider) override;
+        void on_Vehicle(TankBase *tank) override;
 };
 
-#endif // TERMINATOR_H
+#endif // MNROCKET_H

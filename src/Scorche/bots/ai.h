@@ -86,6 +86,7 @@ class AI
         AI_PreviousHitEvaluation prevEvaluation = AI_PreviousHitEvaluation_Unknown;
         double targetTolerance = 0.01;
         int unknownDataCounter = 0;
+        bool firstShot = true;
         PE::Vector previousHit;
         double targetAngle = 0;
         double targetPower = 0;

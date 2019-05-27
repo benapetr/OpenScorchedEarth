@@ -74,7 +74,7 @@ class TankBase : public PE::Pawn
         void SetAngle(double a);
         void IncreasePower(double p);
         void SwitchWeapon(int id);
-        void DeployShield(ShieldType shield);
+        virtual void DeployShield(ShieldType shield);
         void DisableShield();
         void RestoreShield();
         virtual PE::Vector GetCanonRoot(const PE::Vector &source)=0;
@@ -82,6 +82,7 @@ class TankBase : public PE::Pawn
         void Warm();
         // Temporary hack to disable shield while firing so that we don't hit our own shield
         bool ShieldDisabled = false;
+        bool BotInitialized = false;
         bool IsSpawned = false;
         bool WarmingUp = true;
         ShieldType Shield = ShieldNone;

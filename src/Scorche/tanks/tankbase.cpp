@@ -122,26 +122,6 @@ TankBase::TankBase(double x, double y, PlayerInfo *player)
     this->playerInfo = player;
     this->tankColor = player->Color;
     this->PlayerName = player->PlayerName;
-    if (player->IsBot)
-    {
-        if (player->AI == "terminator")
-            this->ai = new Terminator(this);
-        else
-            this->ai = new AI(this);
-        this->ai->ProcessInventory();
-        this->ai->WarmUp();
-        this->WarmingUp = false;
-        Game::CurrentGame->WarmingTanks--;
-    } else
-    {
-        // Check if this player has anything to use in warm up
-        if (this->playerInfo->ItemList[INVENTORY_SHIELD] <= 0 &&
-            this->playerInfo->ItemList[INVENTORY_HEAVY_SHIELD] <= 0)
-        {
-            this->WarmingUp = false;
-            Game::CurrentGame->WarmingTanks--;
-        }
-    }
 
     this->Position.X = x;
     this->Position.Y = y;
@@ -200,6 +180,9 @@ void TankBase::Update(qint64 time)
 
     if (!this->IsSpawned)
         return;
+
+    if (!this->BotInitialized)
+        this->InitializeBot();
 
     if (Game::CurrentGame->IsPaused)
         return;
@@ -308,6 +291,12 @@ void TankBase::Event_KeyPress(int key)
         case Qt::Key_3:
             this->SwitchWeapon(WEAPON_TRIPLE_CANON);
             break;
+        case Qt::Key_4:
+            this->SwitchWeapon(WEAPON_MINI_NUKE);
+            break;
+        case Qt::Key_5:
+            this->SwitchWeapon(WEAPON_NUKE);
+            break;
     }
 }
 
@@ -380,9 +369,9 @@ void TankBase::Render(PE::Renderer *r, PE::Camera *c)
 
     if (this->WarmingUp)
     {
-        r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("white"), true);
-        r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("black"), false);
-        r->DrawText(r->GetWidth() / 2 - 200, r->GetHeight() / 2 + 200, "Warm up", QColor("black"), 20);
+        r->DrawRect(r->GetWidth() / 2 - 150, r->GetHeight() / 2 - 100, 300, 200, 2, QColor("white"), true);
+        r->DrawRect(r->GetWidth() / 2 - 150, r->GetHeight() / 2 - 100, 300, 200, 2, QColor("black"), false);
+        r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 - 80, "Warm up", QColor("black"), 20);
         r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2, "Press l to set up shield", QColor("black"), 10);
         r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2 - 20, "Press h to set up heavy shield", QColor("black"), 10);
         r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2 - 40, "Press space to continue", QColor("black"), 10);
@@ -472,7 +461,27 @@ bool TankBase::CheckCollision(const PE::Vector &point)
 
 void TankBase::InitializeBot()
 {
-
+    this->BotInitialized = true;
+    if (this->playerInfo->IsBot)
+    {
+        if (this->playerInfo->AI == "terminator")
+            this->ai = new Terminator(this);
+        else
+            this->ai = new AI(this);
+        this->ai->ProcessInventory();
+        this->ai->WarmUp();
+        this->WarmingUp = false;
+        Game::CurrentGame->WarmingTanks--;
+    } else
+    {
+        // Check if this player has anything to use in warm up
+        if (this->playerInfo->ItemList[INVENTORY_SHIELD] <= 0 &&
+            this->playerInfo->ItemList[INVENTORY_HEAVY_SHIELD] <= 0)
+        {
+            this->WarmingUp = false;
+            Game::CurrentGame->WarmingTanks--;
+        }
+    }
 }
 
 void TankBase::SetCanonAdjustLeft()
@@ -567,8 +576,10 @@ void TankBase::DeployShield(ShieldType shield)
         return;
     if (this->shieldCollider != nullptr)
         this->RemoveChildren(this->shieldCollider);
-    this->shieldCollider = new PE::CircleCollider(this->Position.X + SHIELD_RADIUS, this->Position.Y + SHIELD_RADIUS, SHIELD_RADIUS);
+    PE::Vector position = this->GetCanonRoot(this->Position);
+    this->shieldCollider = new PE::CircleCollider(position.X + SHIELD_RADIUS, position.Y + SHIELD_RADIUS, SHIELD_RADIUS);
     this->AddChildren(this->shieldCollider);
+    this->RedrawNeeded = true;
     this->playerInfo->ItemList[shield_type]--;
     this->Shield = shield;
     this->ShieldPower = max_power;

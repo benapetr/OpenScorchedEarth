@@ -85,8 +85,8 @@ void InventoryScene::SelectUp()
 void InventoryScene::SelectDown()
 {
     this->selectedItem++;
-    if (this->selectedItem > 6)
-        this->selectedItem = 6;
+    if (this->selectedItem > 5)
+        this->selectedItem = 5;
 }
 
 int InventoryScene::GetItemFromID()

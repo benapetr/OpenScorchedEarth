@@ -130,16 +130,20 @@ void AI::ProcessInventory()
 {
     // Spend most of money for everything
     PlayerInfo *info = this->tank->GetPlayer();
-    while(info->Cash > 500)
+    bool needs_more = true;
+    while(needs_more)
     {
+        needs_more = false;
         // We always need shields
         if (info->Cash > 600 && info->ItemList[INVENTORY_SHIELD] < 2)
         {
             Shop::DefaultShop->BuyItem(info, INVENTORY_SHIELD);
+            needs_more = true;
         }
         if (info->Cash > 3500 && info->ItemList[INVENTORY_HEAVY_SHIELD] < 2)
         {
             Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
+            needs_more = true;
         }
         if (info->Cash > 5000)
         {
@@ -149,11 +153,11 @@ void AI::ProcessInventory()
         {
             //Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
         }
-
-        if (info->ItemList[WEAPON_TRIPLE_CANON] < 40)
-            Shop::DefaultShop->BuyItem(info, WEAPON_TRIPLE_CANON);
-        if (info->ItemList[WEAPON_BIG_CANON] < 60)
+        if (info->Cash > 10 && info->ItemList[WEAPON_BIG_CANON] < 60)
+        {
             Shop::DefaultShop->BuyItem(info, WEAPON_BIG_CANON);
+            needs_more = true;
+        }
     }
 }
 
@@ -164,6 +168,7 @@ QString AI::GetAIModelName()
 
 void AI::Fire()
 {
+    this->firstShot = false;
     this->state = AI_State_Fired;
     this->tank->Fire();
 }
@@ -207,6 +212,7 @@ void AI::improvePower(double max)
 
 void AI::resetEnemy()
 {
+    this->firstShot = true;
     this->bestDistance = 99999;
     this->previousEnemyHP = this->selectedEnemy->Health;
     this->unknownDataCounter = 0;
@@ -456,13 +462,13 @@ void AI::evaluateWeapon()
         this->changeWeapon();
         return;
     }
-    if (current_weapon == 0 && this->hasWeapon(WEAPON_TRIPLE_CANON))
-    {
-        this->tank->SwitchWeapon(WEAPON_TRIPLE_CANON);
-        return;
-    } else if (current_weapon == 0 && this->hasWeapon(WEAPON_BIG_CANON))
+    if (current_weapon == 0 && this->hasWeapon(WEAPON_BIG_CANON))
     {
         this->tank->SwitchWeapon(WEAPON_BIG_CANON);
+        return;
+    } else if (current_weapon == 0 && this->hasWeapon(WEAPON_TRIPLE_CANON))
+    {
+        this->tank->SwitchWeapon(WEAPON_TRIPLE_CANON);
         return;
     }
 }

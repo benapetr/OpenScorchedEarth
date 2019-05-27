@@ -10,7 +10,7 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "rocket.h"
+#include "nukerocket.h"
 #include "../effects/explosion.h"
 #include "../game.h"
 #include "../tanks/tankbase.h"
@@ -21,28 +21,29 @@
 #include <PixelEngine/Physics/rigidbody.h>
 #include <PixelEngine/Graphics/renderer.h>
 
-Rocket::Rocket(const PE::Vector &position) : Projectile (position)
+NukeRocket::NukeRocket(const PE::Vector &position) : Projectile (position)
 {
     this->AddChildren(new PE::PixelCollider(0, 0));
 }
 
-void Rocket::Render(PE::Renderer *r, PE::Camera *c)
+void NukeRocket::Render(PE::Renderer *r, PE::Camera *c)
 {
     PE::Vector position = c->ProjectedPosition(this->Position);
-    r->DrawEllipse(position.X2int(), position.Y2int(), 3, 3, QColor("black"), 3);
+    r->DrawEllipse(position.X2int(), position.Y2int(), 6, 6, QColor("black"), 3);
+    r->DrawEllipse(position.X2int() + 2, position.Y2int() + 2, 4, 4, QColor("red"), 3);
 }
 
-void Rocket::on_Terrain(PE::Collider *collider)
+void NukeRocket::on_Terrain(PE::Collider *collider)
 {
     (void)collider;
     // Explode
-    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 40);
+    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 200);
+    explosion->Damage = 10000;
     explosion->Position = this->Position;
-    explosion->Damage = 2000;
     Game::CurrentGame->GetWorld()->RegisterActor(explosion, 2);
 }
 
-void Rocket::on_Vehicle(TankBase *tank)
+void NukeRocket::on_Vehicle(TankBase *tank)
 {
-    tank->TakeDamage(this->Owner, 180);
+    tank->TakeDamage(this->Owner, 1000);
 }
