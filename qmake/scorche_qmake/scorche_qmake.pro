@@ -31,6 +31,7 @@ SOURCES += \
         ../../src/PixelEngine/GC/*.cpp \
         ../../src/PixelEngine/Physics/*.cpp \
         ../../src/PixelEngine/Graphics/*.cpp \
+        ../../src/Scorche/bots/*.cpp \
         ../../src/Scorche/weapons/*.cpp \
         ../../src/Scorche/projectiles/*.cpp \
         ../../src/Scorche/tanks/*.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
         ../../src/PixelEngine/GC/*.h \
         ../../src/PixelEngine/Physics/*.h \
         ../../src/PixelEngine/Graphics/*.h \
+        ../../src/Scorche/bots/*.cpp \
         ../../src/Scorche/scenes/*.h \
         ../../src/Scorche/projectiles/*.h \
         ../../src/Scorche/tanks/*.h \
