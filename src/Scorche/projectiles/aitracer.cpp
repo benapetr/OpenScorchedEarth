@@ -25,6 +25,12 @@ bool AITracer::Debug = false;
 AITracer::AITracer(const PE::Vector &position) : Projectile (position)
 {
     this->AddChildren(new PE::PixelCollider(0, 0));
+    Projectile::ActiveProjectiles--;
+}
+
+AITracer::~AITracer()
+{
+    Projectile::ActiveProjectiles++;
 }
 
 void AITracer::Render(PE::Renderer *r, PE::Camera *c)

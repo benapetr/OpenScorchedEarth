@@ -30,11 +30,11 @@ void InventoryScene::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawText(20, r->GetHeight() - 80, "Your money: $" + QString::number(PlayerInfo::Players[0]->Cash), QColor("black"), 20);
     this->insertItem(r, WEAPON_BIG_CANON, 0);
     this->insertItem(r, WEAPON_TRIPLE_CANON, 1);
-    this->insertItem(r, WEAPON_MINI_NUKE, 2);
-    this->insertItem(r, WEAPON_NUKE, 3);
-    this->insertItem(r, INVENTORY_SHIELD, 4);
-    this->insertItem(r, INVENTORY_HEAVY_SHIELD, 5);
-    this->insertItem(r, INVENTORY_PARACHUTE, 6);
+    //this->insertItem(r, WEAPON_MINI_NUKE, 2);
+    //this->insertItem(r, WEAPON_NUKE, 3);
+    //this->insertItem(r, INVENTORY_SHIELD, 4);
+    //this->insertItem(r, INVENTORY_HEAVY_SHIELD, 5);
+    //this->insertItem(r, INVENTORY_PARACHUTE, 6);
 
     r->DrawBitmap(0, r->GetHeight() - 120 - (this->selectedItem * 20), 20, 20, StaticAssets::Instance->RightArrow);
     r->DrawBitmap(300, r->GetHeight() - 120 - (this->selectedItem * 20), 20, 20, StaticAssets::Instance->LeftArrow);
@@ -85,8 +85,8 @@ void InventoryScene::SelectUp()
 void InventoryScene::SelectDown()
 {
     this->selectedItem++;
-    if (this->selectedItem > 8)
-        this->selectedItem = 8;
+    if (this->selectedItem > 1)
+        this->selectedItem = 1;
 }
 
 int InventoryScene::GetItemFromID()

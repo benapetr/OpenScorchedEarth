@@ -80,7 +80,7 @@ void NewGame::Event_KeyPress(int key)
             return;
 
         case Qt::Key::Key_Right:
-            if (this->Bots < 10)
+            if (this->Bots < 8)
                 this->Bots++;
             return;
     }

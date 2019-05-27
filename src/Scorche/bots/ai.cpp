@@ -68,8 +68,6 @@ void AI::Process()
                 return;
             }
             break;
-
-
         case AI_State_Waiting_Angle:
             if (Game::AIQuickAim)
             {
@@ -324,6 +322,8 @@ void AI::evaluateFire()
     {
         debug_log("last hit was when rocket was falling down and enemy was above it, rocket must go higher, adjusting power and angle");
         this->tank->IncreasePower(PE::PEMath::GetRandom(2, 20));
+        this->targetPower = this->tank->Power;
+        this->improveAngle(0.1);
         this->state = AI_State_Waiting_Angle;
         return;
     }
@@ -333,7 +333,9 @@ void AI::evaluateFire()
         debug_log("last hit was when rocket was above enemy and it was flying up, adjusting power down");
         this->lastEvaluation = AI_PreviousHitEvaluation_Bad;
         this->tank->IncreasePower(PE::PEMath::GetRandom(2, 20) * -1);
-        this->Fire();
+        this->targetPower = this->tank->Power;
+        this->improveAngle(0.1);
+        this->state = AI_State_Waiting_Angle;
         return;
     }
 
@@ -360,6 +362,7 @@ void AI::evaluateFire()
         debug_log("last hit was when rocket was falling down and enemy was above far away, rocket must go higher, adjusting power up");
         this->lastEvaluation = AI_PreviousHitEvaluation_Bad;
         this->tank->IncreasePower(PE::PEMath::GetRandom(5, 40));
+        this->targetPower = this->tank->Power;
         this->state = AI_State_Waiting_Angle;
         return;
     }

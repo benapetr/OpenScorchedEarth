@@ -70,7 +70,7 @@ void Terminator::trace()
             Game::CurrentGame->GetWorld()->RegisterActor(t);
             current_angle += 0.05;
         }
-        current_power -= 10;
+        current_power -= PE::PEMath::GetRandom(8, 15);
     }
     Game::Tracing = true;
 }

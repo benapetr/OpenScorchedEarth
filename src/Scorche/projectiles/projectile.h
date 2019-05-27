@@ -22,7 +22,9 @@ class TankBase;
 class Projectile : public PE::Actor
 {
     public:
+        static int ActiveProjectiles;
         Projectile(const PE::Vector &position);
+        ~Projectile();
         void Event_OnCollision(PE::Collider *collider) override;
         void Event_OnImpact(const PE::Vector &v) override;
         void Event_Destroyed() override;

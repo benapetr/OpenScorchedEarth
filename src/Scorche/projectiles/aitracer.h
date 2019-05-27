@@ -20,6 +20,7 @@ class AITracer : public Projectile
     public:
         static bool Debug;
         AITracer(const PE::Vector &position);
+        ~AITracer() override;
         void Render(PE::Renderer *r, PE::Camera *c) override;
         void Event_Destroyed() override;
         PE::Vector PositionFinal;

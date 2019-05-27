@@ -15,11 +15,21 @@
 #include "../tanks/tankbase.h"
 #include "projectile.h"
 
+int Projectile::ActiveProjectiles = 0;
+
 Projectile::Projectile(const PE::Vector &position)
 {
     this->Position = position;
     this->RigidBody = new PE::Rigidbody();
     this->RigidBody->Weight = 0.1;
+    Projectile::ActiveProjectiles++;
+}
+
+Projectile::~Projectile()
+{
+    Projectile::ActiveProjectiles--;
+    if (Projectile::ActiveProjectiles <= 0)
+        TankBase::ControlsFrozen = false;
 }
 
 void Projectile::Event_OnCollision(PE::Collider *collider)
@@ -46,7 +56,7 @@ void Projectile::Event_OnImpact(const PE::Vector &v)
 
 void Projectile::Event_Destroyed()
 {
-    TankBase::ControlsFrozen = false;
+
 }
 
 void Projectile::SetForce(const PE::Vector &force)
