@@ -11,6 +11,8 @@
 // Copyright (c) Petr Bena 2019
 
 #include "game.h"
+#include <PixelEngine/engine.h>
+#include <PixelEngine/GC/gc.h>
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/Physics/boxcollider.h>
 #include <PixelEngine/world.h>
@@ -119,6 +121,11 @@ void Game::startNewGame()
 
 void Game::OnUpdate()
 {
+    // emscripten doesn't support multi-threading so we have to do this using timer
+#ifdef __EMSCRIPTEN__
+    PE::Engine::GetEngine()->GetGC()->Collect();
+#endif
+
     if (this->requestedScene != Scene_Nothing)
     {
         switch (this->requestedScene)
