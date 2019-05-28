@@ -46,6 +46,7 @@ class Game : public QObject
         static bool ExplosionEffects;
         static bool SuperFast;
         static bool Tracing;
+        static bool FastTerrainUpdates;
 
         Game(double w_width, double w_height, PE::Renderer *r);
         ~Game() override;
@@ -56,6 +57,8 @@ class Game : public QObject
         Scene CurrentScene = Scene_Nothing;
         double MapWidth;
         double MapHeight;
+        bool DynamicTerrain = true;
+        bool TerrainNeedsUpdate = false;
         bool IsFinished = false;
         bool IsPaused = false;
         int WarmingTanks = 0;
@@ -64,11 +67,13 @@ class Game : public QObject
         void OnUpdate();
 
     private:
+        void updateTerrain();
         void resetWorld();
         void showIntroScreen();
         void showInventoryScreen();
         void startGame();
         void startNewGame();
+        int lastTerrainShiftedPoints = 0;
         Scene requestedScene = Scene_Nothing;
         QTimer *timer;
         PE::World *world = nullptr;

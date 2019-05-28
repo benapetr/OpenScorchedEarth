@@ -32,6 +32,8 @@ void Explosion::Update(qint64 time)
     (void)time;
     if (this->currentSize < this->maxSize)
     {
+        // Prevent any dynamic terrain updates during the explosion - this leads to issues and CPU overload
+        Game::CurrentGame->TerrainNeedsUpdate = false;
         this->currentSize += 1;
         this->destroyTerrain();
         Game::CurrentGame->Terrain->LastMovementUpdate = time;
@@ -48,6 +50,7 @@ void Explosion::Update(qint64 time)
     } else
     {
         this->Destroy();
+        Game::CurrentGame->TerrainNeedsUpdate = true;
     }
 }
 

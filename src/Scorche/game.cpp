@@ -32,6 +32,7 @@ bool  Game::AIQuickAim = true;
 bool  Game::ExplosionEffects = true;
 bool  Game::SuperFast = true;
 bool  Game::Tracing = false;
+bool  Game::FastTerrainUpdates = true;
 
 Game::Game(double w_width, double w_height, PE::Renderer *r)
 {
@@ -88,6 +89,7 @@ void Game::startGame()
     terrain_position.Y += 20;
     this->Terrain->SetPosition(terrain_position);
     this->world->RegisterTerrain(this->Terrain);
+    this->world->BorderColor = QColor("blue");
 
     // Create floor
     this->world->RegisterCollider(new PE::BoxCollider(-1000, -100, 4000, 120));
@@ -123,6 +125,7 @@ void Game::startNewGame()
     PlayerInfo::Clear();
     TankBase::ResetPlayers();
     this->resetWorld();
+    this->TerrainNeedsUpdate = false;
     this->world->RegisterActor(new NewGame(), 10);
 }
 
@@ -175,6 +178,7 @@ void Game::OnUpdate()
         }
     }
 
+    this->updateTerrain();
     this->world->Update();
     if (this->CurrentScene != Scene_Game || (!Game::SuperFast && !Game::Tracing))
         return;
@@ -184,7 +188,32 @@ void Game::OnUpdate()
 
     int x = 5;
     while (--x > 0)
+    {
         this->world->Update();
+    }
+}
+
+void Game::updateTerrain()
+{
+    // Update terrain
+    if (this->DynamicTerrain)
+    {
+        if (this->TerrainNeedsUpdate)
+        {
+            if (Game::FastTerrainUpdates)
+                this->lastTerrainShiftedPoints = this->Terrain->ShiftFloatingBitsDown();
+            else
+                this->lastTerrainShiftedPoints = this->Terrain->ShiftFloatingBitsDownByOnePixel();
+            this->Terrain->RefreshPixmap();
+            this->Terrain->RedrawNeeded = true;
+            if (this->lastTerrainShiftedPoints == 0)
+            {
+                // Terrain is all layed
+                this->Terrain->LastMovementUpdate = QDateTime::currentDateTime().toMSecsSinceEpoch();
+                this->TerrainNeedsUpdate = false;
+            }
+        }
+    }
 }
 
 void Game::resetWorld()

@@ -174,6 +174,17 @@ void TankBase::Pass()
     RotatePlayers();
 }
 
+bool TankBase::CanPlay()
+{
+    if (Game::CurrentGame->IsPaused)
+        return false;
+
+    if (Game::CurrentGame->DynamicTerrain && Game::CurrentGame->TerrainNeedsUpdate)
+        return false;
+
+    return true;
+}
+
 void TankBase::Update(qint64 time)
 {
     (void)time;
@@ -184,7 +195,7 @@ void TankBase::Update(qint64 time)
     if (!this->BotInitialized)
         this->InitializeBot();
 
-    if (Game::CurrentGame->IsPaused)
+    if (!this->CanPlay())
         return;
 
     if (Game::CurrentGame->WarmingTanks > 0)

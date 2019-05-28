@@ -52,6 +52,7 @@
     <addaction name="actionRendering"/>
     <addaction name="actionShow_console"/>
     <addaction name="actionDebug_AI"/>
+    <addaction name="actionFluid_terrain"/>
    </widget>
    <widget class="QMenu" name="menuGame">
     <property name="title">
@@ -128,6 +129,14 @@
    </property>
    <property name="text">
     <string>Debug AI</string>
+   </property>
+  </action>
+  <action name="actionFluid_terrain">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fluid terrain</string>
    </property>
   </action>
  </widget>

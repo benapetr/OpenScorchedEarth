@@ -56,6 +56,7 @@ class TankBase : public PE::Pawn
         PlayerInfo *GetPlayer();
         virtual void Fire();
         virtual void Pass();
+        bool CanPlay();
         void Update(qint64 time = 0) override;
         void Event_KeyPress(int key) override;
         void Event_KeyRelease(int key) override;

@@ -136,3 +136,8 @@ void MainWindow::on_actionDebug_AI_triggered()
 {
     AITracer::Debug = !AITracer::Debug;
 }
+
+void MainWindow::on_actionFluid_terrain_triggered()
+{
+    Game::FastTerrainUpdates = !Game::FastTerrainUpdates;
+}

@@ -61,6 +61,8 @@ class MainWindow : public QMainWindow
 
         void on_actionDebug_AI_triggered();
 
+        void on_actionFluid_terrain_triggered();
+
     private:
         QTimer *renderTimer;
         Game *game;

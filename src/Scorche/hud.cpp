@@ -58,7 +58,7 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
         // Game over
         r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("white"), true);
         r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("black"), false);
-        r->DrawText(r->GetWidth() / 2 - 200, r->GetHeight() / 2 + 200, "Round finished", QColor("black"), 20);
+        r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 + 200, "Round finished", QColor("black"), 20);
 
         int current_Y = r->GetHeight() / 2 + 180;
         r->DrawText(r->GetWidth() / 2 - 300, current_Y, "Scores:", QColor("black"), 12);
