@@ -36,7 +36,7 @@ void MNRocket::on_Terrain(PE::Collider *collider)
 {
     (void)collider;
     // Explode
-    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 80);
+    PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 90);
     explosion->Damage = 3000;
     explosion->Position = this->Position;
     Game::CurrentGame->GetWorld()->RegisterActor(explosion, 2);

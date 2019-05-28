@@ -20,6 +20,7 @@
 #include "../weapons/nuke.h"
 #include "../weapons/triplecanon.h"
 #include "../playerinfo.h"
+#include "../weaponlist.h"
 #include "../game.h"
 #include <cmath>
 #include <PixelEngine/camera.h>
@@ -188,6 +189,9 @@ bool TankBase::CanPlay()
 void TankBase::Update(qint64 time)
 {
     (void)time;
+
+    // Workaround for a bug in collision optimizer
+    this->RigidBody->GroundCollider = nullptr;
 
     if (!this->IsSpawned)
         return;
@@ -583,11 +587,11 @@ void TankBase::DeployShield(ShieldType shield)
     {
         case ShieldMini:
             shield_type = INVENTORY_SHIELD;
-            max_power = 200;
+            max_power = SHIELD_LIGHT_MAX_HP;
             break;
         case ShieldHeavy:
             shield_type = INVENTORY_HEAVY_SHIELD;
-            max_power = 1000;
+            max_power = SHIELD_HEAVY_MAX_HP;
             break;
         default:
             return;
@@ -634,11 +638,11 @@ QColor TankBase::GetShieldColor()
     {
         case ShieldMini:
             base = QColor(255, 255, 255);
-            max_hp = 200;
+            max_hp = SHIELD_LIGHT_MAX_HP;
             break;
         case ShieldHeavy:
             base = QColor(255, 255, 255);
-            max_hp = 1000;
+            max_hp = SHIELD_HEAVY_MAX_HP;
             break;
     }
     double result_color_r = (static_cast<double>(base.red()) / max_hp) * this->ShieldPower;

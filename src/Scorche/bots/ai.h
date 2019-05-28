@@ -19,6 +19,18 @@
 
 class TankBase;
 
+class AI_HitMetrics
+{
+    public:
+        AI_HitMetrics(double a, double p, PE::Vector pos);
+        PE::Vector Source;
+        double Angle;
+        double Power;
+        double ExpectedDistance = 999999999;
+        int SuccessfulHits = 0;
+        int Failures = 0;
+};
+
 class AI
 {
     public:
@@ -79,6 +91,7 @@ class AI
         virtual void trace();
         virtual void traceEval();
         void debug_log(const QString &text);
+        QList<AI_HitMetrics*> metrics;
         QList<PE::Collectable_SmartPtr<AITracer>> tracers;
         int untracedCounter = 0;
         AI_State state = AI_State_Undecided;

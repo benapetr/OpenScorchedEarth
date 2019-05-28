@@ -186,10 +186,13 @@ void Game::OnUpdate()
     if (!TankBase::ControlsFrozen && TankBase::Players[0] == TankBase::ActivePlayer)
         return;
 
-    int x = 5;
-    while (--x > 0)
+    if (Game::SuperFast)
     {
-        this->world->Update();
+        int x = 5;
+        while (--x > 0)
+        {
+            this->world->Update();
+        }
     }
 }
 
@@ -209,7 +212,6 @@ void Game::updateTerrain()
             if (this->lastTerrainShiftedPoints == 0)
             {
                 // Terrain is all layed
-                this->Terrain->LastMovementUpdate = QDateTime::currentDateTime().toMSecsSinceEpoch();
                 this->TerrainNeedsUpdate = false;
             }
         }

@@ -30,7 +30,7 @@ AI::AI(TankBase *t)
 
 AI::~AI()
 {
-
+    qDeleteAll(this->metrics);
 }
 
 void AI::Process()
@@ -212,9 +212,11 @@ void AI::improvePower(double max)
 
 void AI::resetEnemy()
 {
+    qDeleteAll(this->metrics);
+    this->metrics.clear();
     this->firstShot = true;
     this->bestDistance = 99999;
-    this->previousEnemyHP = this->selectedEnemy->Health;
+    this->previousEnemyHP = this->selectedEnemy->Health + this->selectedEnemy->ShieldPower;
     this->unknownDataCounter = 0;
     double distance = this->tank->Position.DistanceTo(this->selectedEnemy->Position);
     if (this->selectedEnemy->Position.X > this->tank->Position.X)
@@ -294,11 +296,11 @@ void AI::evaluateFire()
         this->Fire();
         return;
     }
-    if (this->selectedEnemy->Health < this->previousEnemyHP)
+    if (this->selectedEnemy->Health + this->selectedEnemy->ShieldPower < this->previousEnemyHP)
     {
         debug_log("enemy has lower HP since last hit, keeping same trajectory");
         this->lastEvaluation = AI_PreviousHitEvaluation_Pefect;
-        this->previousEnemyHP = this->selectedEnemy->Health;
+        this->previousEnemyHP = this->selectedEnemy->Health + this->selectedEnemy->ShieldPower;
         this->Fire();
         return;
     }
@@ -615,4 +617,11 @@ void AI::debug_log(const QString &text)
 {
     if (AITracer::Debug)
         Console::Append("DEBUG " + this->tank->PlayerName + ": " + text);
+}
+
+AI_HitMetrics::AI_HitMetrics(double a, double p, PE::Vector pos)
+{
+    this->Power = p;
+    this->Source = pos;
+    this->Angle = a;
 }
