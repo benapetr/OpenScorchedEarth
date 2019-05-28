@@ -52,7 +52,6 @@
     <addaction name="actionRendering"/>
     <addaction name="actionShow_console"/>
     <addaction name="actionDebug_AI"/>
-    <addaction name="actionFluid_terrain"/>
    </widget>
    <widget class="QMenu" name="menuGame">
     <property name="title">
@@ -67,6 +66,7 @@
     <addaction name="actionBots_enable_quick_aim"/>
     <addaction name="actionExplosion_rocks"/>
     <addaction name="actionFast_game"/>
+    <addaction name="actionFluid_terrain"/>
    </widget>
    <addaction name="menuGame"/>
    <addaction name="menuOptions"/>
