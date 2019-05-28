@@ -199,6 +199,10 @@ void TankBase::Update(qint64 time)
         return;
     }
 
+    //! \todo This needs to be removed once fixed
+    if (this->shieldCollider != nullptr)
+        this->shieldCollider->Position = this->GetCanonRoot(this->Position);
+
     if (!TankBase::ControlsFrozen && this->IsAlive() && this->ai != nullptr && GetActivePlayer() == this)
         this->ai->Process();
 
@@ -371,11 +375,16 @@ void TankBase::Render(PE::Renderer *r, PE::Camera *c)
     {
         r->DrawRect(r->GetWidth() / 2 - 150, r->GetHeight() / 2 - 100, 300, 200, 2, QColor("white"), true);
         r->DrawRect(r->GetWidth() / 2 - 150, r->GetHeight() / 2 - 100, 300, 200, 2, QColor("black"), false);
-        r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 - 80, "Warm up", QColor("black"), 20);
-        r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2, "Press l to set up shield", QColor("black"), 10);
-        r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2 - 20, "Press h to set up heavy shield", QColor("black"), 10);
-        r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2 - 40, "Press space to continue", QColor("black"), 10);
+        r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 + 60, "Warm up", QColor("black"), 20);
+        if (this->playerInfo->ItemList[INVENTORY_SHIELD] > 0)
+            r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2, "Press L to set up shield", QColor("black"), 12);
+        if (this->playerInfo->ItemList[INVENTORY_HEAVY_SHIELD] > 0)
+            r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 - 20, "Press H to set up heavy shield", QColor("black"), 12);
+        r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 - 40, "Press space to continue", QColor("black"), 12);
     }
+
+    //PE::Collider::Debug = true;
+    //return;
 
     double shield_radius = SHIELD_RADIUS;
     position.Y -= 50;
@@ -577,7 +586,7 @@ void TankBase::DeployShield(ShieldType shield)
     if (this->shieldCollider != nullptr)
         this->RemoveChildren(this->shieldCollider);
     PE::Vector position = this->GetCanonRoot(this->Position);
-    this->shieldCollider = new PE::CircleCollider(position.X + SHIELD_RADIUS, position.Y + SHIELD_RADIUS, SHIELD_RADIUS);
+    this->shieldCollider = new PE::CircleCollider(position.X, position.Y, SHIELD_RADIUS);
     this->AddChildren(this->shieldCollider);
     this->RedrawNeeded = true;
     this->playerInfo->ItemList[shield_type]--;
@@ -599,7 +608,10 @@ void TankBase::RestoreShield()
     if (!this->ShieldDisabled)
         return;
     if (this->shieldCollider != nullptr)
+    {
+        this->shieldCollider->Position = this->GetCanonRoot(this->Position);
         this->AddChildren(this->shieldCollider);
+    }
     this->ShieldDisabled = false;
 }
 

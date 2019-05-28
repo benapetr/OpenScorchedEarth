@@ -17,6 +17,8 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11")
 endif()
 
+ADD_DEFINITIONS(-DPE_DEBUG)
+
 # Settings
 option(QT5_BUILD "Build with Qt5" true)
 option(EXTREME_DEBUG "Enable some resource expensive and slowing debug info" false)
