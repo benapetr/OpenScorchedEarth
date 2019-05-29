@@ -42,7 +42,7 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
         r->DrawText(500, 6, "Warm up!!", Qt::darkRed);
     } else if (TankBase::ControlsFrozen)
     {
-        r->DrawText(500, 6, "Waiting for current round to finish", Qt::darkRed);
+        r->DrawText(600, 6, "Waiting for current round to finish", Qt::darkRed);
     }
 
     if (!TankBase::PlayerTank)
@@ -53,11 +53,23 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawText(230, 6, "Weapon: " + TankBase::PlayerTank->SelectedWeapon->GetName(), QColor("black"));
     if (TankBase::PlayerTank->SelectedWeapon->GetWeaponType() != 0)
         r->DrawText(340, 6, "Ammo: " + QString::number(TankBase::PlayerTank->SelectedWeapon->Ammo), QColor("black"));
+    r->DrawText(400, 6, "Cash: $" + QString::number(TankBase::PlayerTank->GetPlayer()->Cash), QColor("black"));
     TankBase *currentPlayer = TankBase::GetActivePlayer();
     if (currentPlayer != nullptr)
-        r->DrawText(400, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
+        r->DrawText(500, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
     if (this->lastRefresh - Console::LastMessageTime < 8000)
-        r->DrawText(700, 6, Console::LastMessage, QColor("black"));
+        r->DrawText(800, 6, Console::LastMessage, QColor("black"));
+
+    if (Game::CurrentGame->IsPaused)
+    {
+        int x = r->GetWidth() / 2 - 150;
+        int y = r->GetHeight() / 2;
+        int width = 300;
+        int height = 80;
+        r->DrawRect(x, y, width, height, 2, QColor("white"), true);
+        r->DrawRect(x, y, width, height, 2, QColor("black"), false);
+        r->DrawText(x + (width / 2) - 40, y + height - 30, "Paused", QColor("black"), 20);
+    }
 
     if (Generic::EffectCount == 0 && Game::CurrentGame->IsFinished)
     {
@@ -83,4 +95,11 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
         r->DrawText(x + (width / 2) - 100, y + 40, "Press space to go to inventory screen", QColor("black"), 10);
         r->DrawText(x + (width / 2) - 48, y + 20, "Press N to play next game", QColor("black"), 10);
     }
+}
+
+void HUD::Event_KeyPress(int key)
+{
+    if (key == Qt::Key_P)
+        Game::CurrentGame->IsPaused = !Game::CurrentGame->IsPaused;
+    this->RedrawNeeded = true;
 }

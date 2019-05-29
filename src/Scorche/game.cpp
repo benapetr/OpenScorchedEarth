@@ -137,6 +137,9 @@ void Game::OnUpdate()
     // emscripten doesn't support multi-threading so we have to do this using timer
 #ifdef __EMSCRIPTEN__
     PE::Engine::GetEngine()->GetGC()->Collect();
+#else
+    // Temporary hack - let's check if random crashes aren't caused by multithreaded GC
+    PE::Engine::GetEngine()->GetGC()->Collect();
 #endif
 
     if (this->requestedScene != Scene_Nothing)

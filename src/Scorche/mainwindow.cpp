@@ -27,7 +27,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    PE::Engine::Initialize();
+    PE::Engine::Initialize(false);
     ui->setupUi(this);
     this->showMaximized();
     StaticAssets::Instance = new StaticAssets();
@@ -140,4 +140,13 @@ void MainWindow::on_actionDebug_AI_triggered()
 void MainWindow::on_actionFluid_terrain_triggered()
 {
     Game::FastTerrainUpdates = !Game::FastTerrainUpdates;
+}
+
+void MainWindow::on_actionLow_FPS_triggered(bool checked)
+{
+    this->renderTimer->stop();
+    if (!checked)
+        this->renderTimer->start(20);
+    else
+        this->renderTimer->start(40);
 }

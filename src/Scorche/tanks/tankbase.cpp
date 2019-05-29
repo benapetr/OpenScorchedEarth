@@ -248,6 +248,12 @@ void TankBase::Update(qint64 time)
 
 void TankBase::Event_KeyPress(int key)
 {
+    if (Game::CurrentGame->IsPaused)
+        return;
+
+    if (!this->IsPlayer)
+        return;
+
     if (Game::CurrentGame->IsFinished)
     {
         switch (key)
@@ -280,9 +286,6 @@ void TankBase::Event_KeyPress(int key)
         return;
     }
     if (TankBase::ControlsFrozen)
-        return;
-
-    if (!this->IsPlayer)
         return;
 
     if (PlayerTank != GetActivePlayer())
@@ -335,6 +338,9 @@ void TankBase::Event_KeyPress(int key)
 
 void TankBase::Event_KeyRelease(int key)
 {
+    if (Game::CurrentGame->IsPaused)
+        return;
+
     if (!this->IsPlayer)
         return;
 

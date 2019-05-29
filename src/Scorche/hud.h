@@ -21,6 +21,7 @@ class HUD : public PE::Actor
         HUD();
         void Update(qint64 time = 0) override;
         void Render(PE::Renderer *r, PE::Camera *c) override;
+        void Event_KeyPress(int key) override;
     private:
         qint64 lastRefresh;
 };

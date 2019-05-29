@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Scorche</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="assets.qrc">
+    <normaloff>:/textures/ui/tank.png</normaloff>:/textures/ui/tank.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="leftMargin">
@@ -67,6 +71,7 @@
     <addaction name="actionExplosion_rocks"/>
     <addaction name="actionFast_game"/>
     <addaction name="actionFluid_terrain"/>
+    <addaction name="actionLow_FPS"/>
    </widget>
    <addaction name="menuGame"/>
    <addaction name="menuOptions"/>
@@ -139,8 +144,18 @@
     <string>Fluid terrain</string>
    </property>
   </action>
+  <action name="actionLow_FPS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Low FPS</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="assets.qrc"/>
+ </resources>
  <connections/>
 </ui>
