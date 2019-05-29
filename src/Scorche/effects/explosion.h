@@ -24,6 +24,7 @@ class Explosion : public Generic
         void Update(qint64 time) override;
         void Render(PE::Renderer *r, PE::Camera *c) override;
         double Damage = 1000;
+        bool FallingRocks = true;
 
     protected:
         void destroyTerrain();

@@ -13,13 +13,16 @@
 #ifndef HUD_H
 #define HUD_H
 
-#include <PixelEngine/object.h>
+#include <PixelEngine/actor.h>
 
-class HUD : public PE::Object
+class HUD : public PE::Actor
 {
     public:
         HUD();
+        void Update(qint64 time = 0) override;
         void Render(PE::Renderer *r, PE::Camera *c) override;
+    private:
+        qint64 lastRefresh;
 };
 
 #endif // HUD_H

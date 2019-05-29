@@ -12,14 +12,17 @@
 
 #include "console.h"
 #include "ui_console.h"
+#include <QDateTime>
 
 QList<QString> Console::Items;
 // Last message
 QString Console::LastMessage = "";
+qint64 Console::LastMessageTime = 0;
 Console *Console::ActiveConsole = nullptr;
 
 void Console::Append(QString text, bool debug)
 {
+    LastMessageTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
     Console::LastMessage = text;
     Console::Items.append(text);
     if (Console::ActiveConsole != nullptr)

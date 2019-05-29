@@ -83,7 +83,7 @@ void Game::startGame()
     this->CurrentScene = Scene_Game;
     TankBase::ResetPlayers();
     this->resetWorld();
-    this->world->RegisterObject(new HUD(), 10);
+    this->world->RegisterActor(new HUD(), 10);
     QColor background_color = this->getRandomBackgroundColor();
     QColor terrain = this->getRandomTerrainColor();
     this->Terrain = PE::WorldGenerator::GenerateRandom(static_cast<int>(this->MapWidth), static_cast<int>(this->MapHeight) - 20, background_color, terrain);
@@ -178,6 +178,9 @@ void Game::OnUpdate()
                 }
             }
             this->IsFinished = true;
+            Console::Append("Game finished - giving $200 to each player");
+            foreach (PlayerInfo *p, PlayerInfo::Players)
+                p->IncreaseMoney(200);
         }
     }
 

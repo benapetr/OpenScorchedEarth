@@ -38,7 +38,7 @@ void Explosion::Update(qint64 time)
         this->destroyTerrain();
         Game::CurrentGame->Terrain->LastMovementUpdate = time;
         this->RedrawNeeded = true;
-        if (Game::ExplosionEffects)
+        if (Game::ExplosionEffects && this->FallingRocks)
         {
             // Fire a random rock out some direction, just for fun
             Rocks *r = new Rocks();
@@ -90,6 +90,7 @@ void Explosion::destroyTerrain()
     int old_x = 0;
     int old_y = 0;
 
+    int pixel_id = 1;
     while (angle < (PE_PI_RAD_CNV * 4))
     {
         int circle_x = x + static_cast<int>(this->currentSize * std::cos(angle));
@@ -104,20 +105,25 @@ void Explosion::destroyTerrain()
         old_x = circle_x;
         old_y = circle_y;
 
-        // These functions are expensive
         Game::CurrentGame->Terrain->DestroyPixel(circle_x, circle_y);
-        PE::Vector p(circle_x, circle_y);
-        foreach (TankBase *v, this->untouchedTanks)
+        // These functions are expensive - only check them for every 4th pixel
+        if (pixel_id > 4)
         {
-            if (v->CheckCollision(p))
+            pixel_id = 0;
+            PE::Vector p(circle_x, circle_y);
+            foreach (TankBase *v, this->untouchedTanks)
             {
-                v->TakeDamage(this->owner, this->Damage / this->currentSize);
-                this->untouchedTanks.removeOne(v);
-                // There seems to be some kind of bug in Qt? There are random crashes happening from this point
-                // I suspect that this change of container makes them
-                break;
+                if (v->CheckCollision(p))
+                {
+                    v->TakeDamage(this->owner, this->Damage / this->currentSize);
+                    this->untouchedTanks.removeOne(v);
+                    // There seems to be some kind of bug in Qt? There are random crashes happening from this point
+                    // I suspect that this change of container makes them
+                    break;
+                }
             }
         }
+        pixel_id++;
     }
     Game::CurrentGame->Terrain->RefreshPixmap();
 }

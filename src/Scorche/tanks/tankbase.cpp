@@ -94,7 +94,10 @@ TankBase *TankBase::RotatePlayers()
     while (tries++ < Players.size())
     {
         if (++index >= Players.size())
+        {
             index = 0;
+            TankBase::FinishRound();
+        }
         activePlayer = Players.at(index);
         if (activePlayer->IsAlive())
         {
@@ -115,6 +118,16 @@ TankBase *TankBase::GetUnspawned()
         }
     }
     return nullptr;
+}
+
+void TankBase::FinishRound()
+{
+    Console::Append("Round finished - giving $20 to all survivors");
+    foreach (TankBase *player, Players)
+    {
+        if (player->IsAlive())
+            player->GetPlayer()->IncreaseMoney(20);
+    }
 }
 
 TankBase::TankBase(double x, double y, PlayerInfo *player)

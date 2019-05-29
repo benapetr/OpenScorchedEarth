@@ -24,6 +24,11 @@ HUD::HUD()
 
 }
 
+void HUD::Update(qint64 time)
+{
+    this->lastRefresh = time;
+}
+
 void HUD::Render(PE::Renderer *r, PE::Camera *c)
 {
     // HUD is using absolute position
@@ -51,7 +56,8 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     TankBase *currentPlayer = TankBase::GetActivePlayer();
     if (currentPlayer != nullptr)
         r->DrawText(400, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
-    r->DrawText(300, 880, Console::LastMessage, QColor("black"));
+    if (this->lastRefresh - Console::LastMessageTime < 8000)
+        r->DrawText(700, 6, Console::LastMessage, QColor("black"));
 
     if (Generic::EffectCount == 0 && Game::CurrentGame->IsFinished)
     {

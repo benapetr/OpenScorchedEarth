@@ -46,6 +46,7 @@ class TankBase : public PE::Pawn
         static TankBase *GetActivePlayer();
         static TankBase *RotatePlayers();
         static TankBase *GetUnspawned();
+        static void FinishRound();
         static QList<TankBase*> Players;
         static TankBase *ActivePlayer;
         static TankBase *PlayerTank;
