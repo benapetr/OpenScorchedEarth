@@ -28,8 +28,8 @@ void NewGame::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawText(r->GetWidth() / 2 - 120, r->GetHeight() - 60, "New game", QColor("black"), 40);
     r->DrawText(60, r->GetHeight() - 120, "How many bots you want to play with: " + QString::number(this->Bots), QColor("black"), 20);
 
-    r->DrawBitmap(420, r->GetHeight() - 120, 40, 20, StaticAssets::Instance->LeftArrow);
-    r->DrawBitmap(462, r->GetHeight() - 120, 40, 20, StaticAssets::Instance->RightArrow);
+    r->DrawBitmap(470, r->GetHeight() - 120, 40, 20, StaticAssets::Instance->LeftArrow);
+    r->DrawBitmap(512, r->GetHeight() - 120, 40, 20, StaticAssets::Instance->RightArrow);
     r->DrawText(r->GetWidth() / 2 - 138, r->GetHeight() / 2 - 200, "Press space to open inventory", QColor("black"), 20);
     //r->DrawText(60, r->GetHeight() / 2 + 160, "How many bots you want to play with", QColor("black"), 20);
 
