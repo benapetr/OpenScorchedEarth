@@ -6,5 +6,6 @@
     <qresource prefix="/textures/ui">
         <file alias="arrow.png">assets/ui/arrow-alt-right.png</file>
         <file alias="thinking.png">assets/ui/thinking.png</file>
+        <file alias="tank.png">assets/ui/logo.png</file>
     </qresource>
 </RCC>

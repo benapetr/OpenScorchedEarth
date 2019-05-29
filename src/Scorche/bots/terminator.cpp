@@ -35,6 +35,8 @@ void Terminator::ProcessInventory()
     while(needs_more)
     {
         needs_more = false;
+        ///////////
+        // Basics
         // We always need shields
         if (info->Cash > 600 && info->ItemList[INVENTORY_SHIELD] < 2)
         {
@@ -74,6 +76,28 @@ void Terminator::ProcessInventory()
             Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
             needs_more = true;
         }
+        ///////////
+        // Rich
+        if (info->Cash > 5000 && info->ItemList[WEAPON_MINI_NUKE] < 5)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
+            needs_more = true;
+        }
+        if (info->Cash > 5500 && info->ItemList[WEAPON_NUKE] < 3)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
+            needs_more = true;
+        }
+        if (info->Cash > 6000 && info->ItemList[INVENTORY_SHIELD] < 8)
+        {
+            Shop::DefaultShop->BuyItem(info, INVENTORY_SHIELD);
+            needs_more = true;
+        }
+        if (info->Cash > 8000 && info->ItemList[INVENTORY_HEAVY_SHIELD] < 6)
+        {
+            Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
+            needs_more = true;
+        }
     }
 }
 
@@ -86,11 +110,11 @@ void Terminator::evaluateWeapon()
         this->changeWeapon();
         return;
     }
-    if (!this->firstShot && this->bestDistance < 120 && this->hasWeapon(WEAPON_NUKE))
+    if (!this->firstShot && this->bestDistance < 260 && this->hasWeapon(WEAPON_NUKE))
     {
         this->tank->SwitchWeapon(WEAPON_NUKE);
         return;
-    } else if (!this->firstShot && this->bestDistance < 60 && this->hasWeapon(WEAPON_MINI_NUKE))
+    } else if (!this->firstShot && this->bestDistance < 80 && this->hasWeapon(WEAPON_MINI_NUKE))
     {
         this->tank->SwitchWeapon(WEAPON_MINI_NUKE);
         return;

@@ -93,8 +93,8 @@ void Game::startGame()
 
     // Create floor
     this->world->RegisterCollider(new PE::BoxCollider(-1000, -100, 4000, 120));
-    this->world->RegisterCollider(new PE::BoxCollider(-200, -100, 100, 2000));
-    this->world->RegisterCollider(new PE::BoxCollider(this->MapWidth + 100, -100, 100, 2000));
+    this->world->RegisterCollider(new PE::BoxCollider(-100, -100, 100, 2000));
+    this->world->RegisterCollider(new PE::BoxCollider(this->MapWidth, -100, 100, 2000));
     this->world->RegisterCollider(new PE::BoxCollider(-1000, this->MapHeight + 800, 4000, 100));
 
     this->WarmingTanks = PlayerInfo::Players.count();
@@ -171,7 +171,7 @@ void Game::OnUpdate()
                 if (t->IsAlive())
                 {
                     t->GetPlayer()->Score += 10000;
-                    t->GetPlayer()->IncreaseMoney(3000);
+                    t->GetPlayer()->IncreaseMoney(6000);
                 }
             }
             this->IsFinished = true;

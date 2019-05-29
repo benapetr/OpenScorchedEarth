@@ -113,6 +113,9 @@ void Explosion::destroyTerrain()
             {
                 v->TakeDamage(this->owner, this->Damage / this->currentSize);
                 this->untouchedTanks.removeOne(v);
+                // There seems to be some kind of bug in Qt? There are random crashes happening from this point
+                // I suspect that this change of container makes them
+                break;
             }
         }
     }

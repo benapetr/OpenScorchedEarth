@@ -67,6 +67,10 @@ QString Shop::ItemString(int i)
             return "Big cannon";
         case WEAPON_MINI_NUKE:
             return "Mini nuke";
+        case WEAPON_PIERCER:
+            return "Terrain piercer";
+        case WEAPON_SONIC_WAVE:
+            return "Sonic wave";
         case WEAPON_TRIPLE_CANON:
             return "Triple rocket";
         case INVENTORY_SHIELD:
@@ -77,6 +81,7 @@ QString Shop::ItemString(int i)
             return "Repair kit";
         case INVENTORY_PARACHUTE:
             return "Parachute";
+
 
     }
     return QString::number(i);

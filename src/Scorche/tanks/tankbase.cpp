@@ -442,6 +442,9 @@ void TankBase::TakeDamage(TankBase *source, double damage)
     if (this->Health < 0)
         this->Health = 0;
 
+    if (source != this)
+        source->playerInfo->IncreaseMoney(static_cast<int>(damage));
+
     if (!this->IsAlive())
         this->Kill(source);
 }
@@ -456,8 +459,8 @@ void TankBase::Kill(TankBase *source)
     } else
     {
         Console::Append(source->PlayerName + " just nuked " + this->PlayerName + " :O");
-        source->playerInfo->IncreaseMoney(600);
-        source->playerInfo->Score += 1000;
+        source->playerInfo->IncreaseMoney(1000);
+        source->playerInfo->Score += 2000;
         source->playerInfo->Kills_Total++;
     }
 
