@@ -388,14 +388,18 @@ void TankBase::Render(PE::Renderer *r, PE::Camera *c)
 
     if (this->WarmingUp)
     {
-        r->DrawRect(r->GetWidth() / 2 - 150, r->GetHeight() / 2 - 100, 300, 200, 2, QColor("white"), true);
-        r->DrawRect(r->GetWidth() / 2 - 150, r->GetHeight() / 2 - 100, 300, 200, 2, QColor("black"), false);
-        r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 + 60, "Warm up", QColor("black"), 20);
+        int x = r->GetWidth() / 2 - 150;
+        int y = r->GetHeight() / 2 - 100;
+        int width = 300;
+        int height = 200;
+        r->DrawRect(x, y, 300, 200, 2, QColor("white"), true);
+        r->DrawRect(x, y, 300, 200, 2, QColor("black"), false);
+        r->DrawText(x + width / 2 - 50, y + height - 60, "Warm up", QColor("black"), 20);
         if (this->playerInfo->ItemList[INVENTORY_SHIELD] > 0)
-            r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2, "Press L to set up shield", QColor("black"), 12);
+            r->DrawText(x + width / 2 - 80, y + height - 100, "Press L to set up shield", QColor("black"), 12);
         if (this->playerInfo->ItemList[INVENTORY_HEAVY_SHIELD] > 0)
-            r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 - 20, "Press H to set up heavy shield", QColor("black"), 12);
-        r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 - 40, "Press space to continue", QColor("black"), 12);
+            r->DrawText(x + width / 2 - 100, y + height - 120, "Press H to set up heavy shield", QColor("black"), 12);
+        r->DrawText(x + width / 2 - 80, y + height - 180, "Press space to continue", QColor("black"), 12);
     }
 
     //PE::Collider::Debug = true;

@@ -56,19 +56,25 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     if (Generic::EffectCount == 0 && Game::CurrentGame->IsFinished)
     {
         // Game over
-        r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("white"), true);
-        r->DrawRect(r->GetWidth() / 2 - 600, r->GetHeight() / 2 - 400, r->GetWidth() - 400, r->GetHeight() - 300, 2, QColor("black"), false);
-        r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 + 200, "Round finished", QColor("black"), 20);
+        int x = r->GetWidth() / 2 - 300;
+        int y = r->GetHeight() / 2 - 400;
+        int width = 600;
+        int height = 600;
+        r->DrawRect(x, y, width, height, 2, QColor("white"), true);
+        r->DrawRect(x, y, width, height, 2, QColor("black"), false);
+        r->DrawText(x + (width / 2) - 80, y + height - 20, "Round finished", QColor("black"), 20);
 
-        int current_Y = r->GetHeight() / 2 + 180;
-        r->DrawText(r->GetWidth() / 2 - 300, current_Y, "Scores:", QColor("black"), 12);
+        int current_Y = y + height - 40;
+        r->DrawText(x + (width / 2) - 40, current_Y, "Scores:", QColor("black"), 12);
         foreach (TankBase *t, TankBase::Players)
         {
             current_Y -= 20;
-            r->DrawText(r->GetWidth() / 2 - 300, current_Y, t->GetPlayer()->PlayerName + " cash: $" + QString::number(t->GetPlayer()->Cash) + " score: " + QString::number(t->GetPlayer()->Score), t->GetPlayer()->Color, 12);
+            r->DrawText(x + 20, current_Y, t->GetPlayer()->PlayerName + " total kills: " + QString::number(t->GetPlayer()->Kills_Total)
+                        + " total deaths: " + QString::number(t->GetPlayer()->Deaths_Total) +  " cash: $"
+                        + QString::number(t->GetPlayer()->Cash) + " score: " + QString::number(t->GetPlayer()->Score), t->GetPlayer()->Color, 12);
         }
 
-        r->DrawText(r->GetWidth() / 2, r->GetHeight() / 2 - 300, "Press space to go to inventory screen", QColor("black"), 10);
-        r->DrawText(r->GetWidth() / 2 + 20, r->GetHeight() / 2 - 320, "Press N to play next game", QColor("black"), 10);
+        r->DrawText(x + (width / 2) - 100, y + 40, "Press space to go to inventory screen", QColor("black"), 10);
+        r->DrawText(x + (width / 2) - 48, y + 20, "Press N to play next game", QColor("black"), 10);
     }
 }
