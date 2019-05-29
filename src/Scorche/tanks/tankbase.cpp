@@ -96,7 +96,8 @@ TankBase *TankBase::RotatePlayers()
         if (++index >= Players.size())
         {
             index = 0;
-            TankBase::FinishRound();
+            if (!Game::CurrentGame->IsFinished)
+                TankBase::FinishRound();
         }
         activePlayer = Players.at(index);
         if (activePlayer->IsAlive())
