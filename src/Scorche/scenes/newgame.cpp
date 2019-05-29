@@ -11,6 +11,7 @@
 // Copyright (c) Petr Bena 2019
 
 #include <PixelEngine/camera.h>
+#include <PixelEngine/generic.h>
 #include <PixelEngine/Graphics/renderer.h>
 #include "newgame.h"
 #include "../staticassets.h"
@@ -27,9 +28,10 @@ void NewGame::Render(PE::Renderer *r, PE::Camera *c)
     (void)c;
     r->DrawText(r->GetWidth() / 2 - 120, r->GetHeight() - 60, "New game", QColor("black"), 40);
     r->DrawText(60, r->GetHeight() - 120, "How many bots you want to play with: " + QString::number(this->Bots), QColor("black"), 20);
+    r->DrawText(60, r->GetHeight() - 140, "Terrain falls down: " + PE::Generic::Bool2String(this->DynamicTerrain), QColor("black"), 20);
 
-    r->DrawBitmap(470, r->GetHeight() - 120, 40, 20, StaticAssets::Instance->LeftArrow);
-    r->DrawBitmap(512, r->GetHeight() - 120, 40, 20, StaticAssets::Instance->RightArrow);
+    r->DrawBitmap(470, r->GetHeight() - 120 - (this->SelectedItem * 20), 40, 20, StaticAssets::Instance->LeftArrow);
+    r->DrawBitmap(512, r->GetHeight() - 120 - (this->SelectedItem * 20), 40, 20, StaticAssets::Instance->RightArrow);
     r->DrawText(r->GetWidth() / 2 - 138, r->GetHeight() / 2 - 200, "Press space to open inventory", QColor("black"), 20);
     //r->DrawText(60, r->GetHeight() / 2 + 160, "How many bots you want to play with", QColor("black"), 20);
 
@@ -71,31 +73,44 @@ void NewGame::Event_KeyPress(int key)
                 // Doesn't work
                 //PlayerInfo::Players.append(new PlayerInfo("Bot " + QString::number(bot_id++), PlayerInfo::GetRandomUnusedColor(), true));
             }
+            Game::CurrentGame->DynamicTerrain = this->DynamicTerrain;
             Game::CurrentGame->RequestScene(Scene_Inventory);
         }
             return;
+
+        case Qt::Key::Key_Up:
+            if (this->SelectedItem > 0)
+                this->SelectedItem--;
+            return;
+        case Qt::Key::Key_Down:
+            if (this->SelectedItem < 1)
+                this->SelectedItem++;
+            return;
         case Qt::Key::Key_Left:
-            if (this->Bots > 1)
-                this->Bots--;
+            switch (this->SelectedItem)
+            {
+                case 0:
+                    if (this->Bots > 1)
+                        this->Bots--;
+                    break;
+                case 1:
+                    this->DynamicTerrain = true;
+                    break;
+            }
             return;
 
         case Qt::Key::Key_Right:
-            if (this->Bots < 8)
-                this->Bots++;
+            switch (this->SelectedItem)
+            {
+                case 0:
+                    if (this->Bots < 8)
+                        this->Bots++;
+                    break;
+                case 1:
+                    this->DynamicTerrain = false;
+                    break;
+            }
+
             return;
     }
-}
-
-void NewGame::SelectUp()
-{
-    if (this->SelectedItem <= 0)
-        return;
-    this->SelectedItem--;
-}
-
-void NewGame::SelectDown()
-{
-    if (this->SelectedItem >= 1)
-        return;
-    this->SelectedItem++;
 }

@@ -14,6 +14,7 @@
 #include <PixelEngine/engine.h>
 #include <PixelEngine/GC/gc.h>
 #include <PixelEngine/Graphics/renderer.h>
+#include <PixelEngine/pemath.h>
 #include <PixelEngine/Physics/boxcollider.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/worldgenerator.h>
@@ -83,7 +84,9 @@ void Game::startGame()
     TankBase::ResetPlayers();
     this->resetWorld();
     this->world->RegisterObject(new HUD(), 10);
-    this->Terrain = PE::WorldGenerator::GenerateRandom(static_cast<int>(this->MapWidth), static_cast<int>(this->MapHeight) - 20);
+    QColor background_color = this->getRandomBackgroundColor();
+    QColor terrain = this->getRandomTerrainColor();
+    this->Terrain = PE::WorldGenerator::GenerateRandom(static_cast<int>(this->MapWidth), static_cast<int>(this->MapHeight) - 20, background_color, terrain);
     // Move the terrain little bit higher, so there is space for HUD
     PE::Vector terrain_position = this->Terrain->Position;
     terrain_position.Y += 20;
@@ -194,6 +197,48 @@ void Game::OnUpdate()
             this->world->Update();
         }
     }
+}
+
+QColor Game::getRandomBackgroundColor()
+{
+    int color = PE::PEMath::GetRandom(0, 5);
+    switch (color)
+    {
+        case 0:
+            return QColor(190, 200, 216);
+        case 1:
+            return QColor(174, 180, 191);
+        case 2:
+            return QColor(185, 202, 232);
+        case 3:
+            return QColor(139, 175, 239);
+        case 4:
+            return QColor(178, 207, 255);
+        case 5:
+            return QColor(249, 240, 219);
+    }
+    return QColor(178, 207, 255);
+}
+
+QColor Game::getRandomTerrainColor()
+{
+    int color = PE::PEMath::GetRandom(0, 5);
+    switch (color)
+    {
+        case 0:
+            return QColor(30, 33, 31);
+        case 1:
+            return QColor(46, 48, 48);
+        case 2:
+            return QColor(35, 63, 43);
+        case 3:
+            return QColor(0, 0, 0);
+        case 4:
+            return QColor(7, 112, 37);
+        case 5:
+            return QColor(6, 66, 23);
+    }
+    return QColor(10, 10, 10);
 }
 
 void Game::updateTerrain()

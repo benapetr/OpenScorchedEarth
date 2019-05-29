@@ -67,6 +67,8 @@ class Game : public QObject
         void OnUpdate();
 
     private:
+        QColor getRandomBackgroundColor();
+        QColor getRandomTerrainColor();
         void updateTerrain();
         void resetWorld();
         void showIntroScreen();

@@ -21,9 +21,8 @@ class NewGame : public PE::Actor
         NewGame();
         void Render(PE::Renderer *r, PE::Camera *c) override;
         void Event_KeyPress(int key) override;
-        void SelectUp();
-        void SelectDown();
         int SelectedItem = 0;
+        bool DynamicTerrain = true;
         int Bots = 1;
 };
 
