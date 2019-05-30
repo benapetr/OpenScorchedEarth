@@ -19,7 +19,9 @@
 #include "../weapons/mininuke.h"
 #include "../weapons/nuke.h"
 #include "../weapons/triplecanon.h"
+#include "../projectiles/projectile.h"
 #include "../playerinfo.h"
+#include "../effects/explosion.h"
 #include "../weaponlist.h"
 #include "../game.h"
 #include <cmath>
@@ -37,6 +39,16 @@ QList<TankBase*> TankBase::Players;
 bool TankBase::ControlsFrozen = false;
 TankBase *TankBase::ActivePlayer = nullptr;
 TankBase *TankBase::PlayerTank = nullptr;
+
+void TankBase::RotateIfPeace()
+{
+    if (TankBase::ControlsFrozen && Projectile::ActiveProjectiles <= 0 && Explosion::ExplosionCounter <= 0)
+    {
+        TankBase::ControlsFrozen = false;
+        TankBase::ActivePlayer->RestoreShield();
+        TankBase::RotatePlayers();
+    }
+}
 
 void TankBase::ResetPlayers()
 {
@@ -219,14 +231,14 @@ void TankBase::Update(qint64 time)
     if (Game::CurrentGame->WarmingTanks > 0)
         return;
 
-    if (!this->IsAlive())
+    /*if (!this->IsAlive())
     {
         if (GetActivePlayer() == this)
         {
             RotatePlayers();
         }
         return;
-    }
+    }*/
 
     //! \todo This needs to be removed once fixed
     if (this->shieldCollider != nullptr)

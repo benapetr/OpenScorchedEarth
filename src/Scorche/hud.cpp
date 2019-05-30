@@ -16,7 +16,7 @@
 #include "game.h"
 #include "playerinfo.h"
 #include "weapons/weapon.h"
-#include "effects/generic.h"
+#include "effects/explosion.h"
 #include <PixelEngine/Graphics/renderer.h>
 
 HUD::HUD()
@@ -71,7 +71,7 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
         r->DrawText(x + (width / 2) - 40, y + height - 30, "Paused", QColor("black"), 20);
     }
 
-    if (Generic::EffectCount == 0 && Game::CurrentGame->IsFinished)
+    if (Explosion::ExplosionCounter == 0 && Game::CurrentGame->IsFinished)
     {
         // Game over
         int x = r->GetWidth() / 2 - 300;

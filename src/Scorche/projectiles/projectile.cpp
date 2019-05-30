@@ -28,12 +28,8 @@ Projectile::Projectile(const PE::Vector &position)
 Projectile::~Projectile()
 {
     Projectile::ActiveProjectiles--;
-    if (Projectile::ActiveProjectiles <= 0)
-    {
-        TankBase::ControlsFrozen = false;
-        TankBase::ActivePlayer->RestoreShield();
-        TankBase::RotatePlayers();
-    }
+    if (Projectile::ActiveProjectiles == 0)
+        TankBase::RotateIfPeace();
 }
 
 void Projectile::Event_OnCollision(PE::Collider *collider)

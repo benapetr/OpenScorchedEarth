@@ -145,14 +145,20 @@ void AI::ProcessInventory()
             Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
             needs_more = true;
         }
-        if (info->Cash > 5000)
+        if (info->Cash > 10000 && info->ItemList[WEAPON_NUKE] < 2)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
+            needs_more = true;
+        }
         {
             //Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
         }
-        if (info->Cash > 2000)
+        if (info->Cash > 2000 && info->ItemList[WEAPON_MINI_NUKE] < 2)
         {
-            //Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
+            Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
+            needs_more = true;
         }
+
         if (info->Cash > 10 && info->ItemList[WEAPON_BIG_CANON] < 60)
         {
             Shop::DefaultShop->BuyItem(info, WEAPON_BIG_CANON);
@@ -464,7 +470,16 @@ void AI::evaluateWeapon()
         this->changeWeapon();
         return;
     }
-    if (current_weapon == 0 && this->hasWeapon(WEAPON_BIG_CANON))
+
+    if (!this->firstShot && this->bestDistance < 400 && this->hasWeapon(WEAPON_NUKE))
+    {
+        this->tank->SwitchWeapon(WEAPON_NUKE);
+        return;
+    } else if (!this->firstShot && this->bestDistance < 120 && this->hasWeapon(WEAPON_MINI_NUKE))
+    {
+        this->tank->SwitchWeapon(WEAPON_MINI_NUKE);
+        return;
+    } else if (current_weapon == 0 && this->hasWeapon(WEAPON_BIG_CANON))
     {
         this->tank->SwitchWeapon(WEAPON_BIG_CANON);
         return;
@@ -499,8 +514,8 @@ void AI::changeAngle(double new_angle)
 
 void AI::changePower(double new_power)
 {
-    if (new_power < 0)
-        new_power = 0;
+    if (new_power < 10)
+        new_power = 10;
     if (new_power > 100)
         new_power = 100;
     this->lastPowerChange = new_power - this->targetPower;

@@ -13,17 +13,22 @@
 #ifndef EXPLOSION_H
 #define EXPLOSION_H
 
-#include "generic.h"
+#include "genericeffect.h"
 
 class TankBase;
 
-class Explosion : public Generic
+class Explosion : public GenericEffect
 {
     public:
+        static int ExplosionCounter;
+
         Explosion(TankBase *p, double size);
+        ~Explosion() override;
         void Update(qint64 time) override;
         void Render(PE::Renderer *r, PE::Camera *c) override;
         double Damage = 1000;
+        //! Higher = more damage on distance hit
+        double DistanceDamageRatio = 1;
         bool FallingRocks = true;
 
     protected:

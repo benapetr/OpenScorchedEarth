@@ -38,6 +38,7 @@ void MNRocket::on_Terrain(PE::Collider *collider)
     // Explode
     PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 90);
     explosion->Damage = 3000;
+    explosion->DistanceDamageRatio = 2;
     explosion->FallingRocks = false;
     explosion->Position = this->Position;
     Game::CurrentGame->GetWorld()->RegisterActor(explosion, 2);
@@ -45,5 +46,5 @@ void MNRocket::on_Terrain(PE::Collider *collider)
 
 void MNRocket::on_Vehicle(TankBase *tank)
 {
-    tank->TakeDamage(this->Owner, 300);
+    tank->TakeDamage(this->Owner, 350);
 }

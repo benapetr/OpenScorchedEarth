@@ -20,11 +20,21 @@
 #include "../tanks/tankbase.h"
 #include "../game.h"
 
+int Explosion::ExplosionCounter = 0;
+
 Explosion::Explosion(TankBase *p, double size)
 {
     this->owner = p;
     this->maxSize = size;
     this->untouchedTanks = TankBase::Players;
+    Explosion::ExplosionCounter++;
+}
+
+Explosion::~Explosion()
+{
+    Explosion::ExplosionCounter--;
+    if (Explosion::ExplosionCounter == 0)
+        TankBase::RotateIfPeace();
 }
 
 void Explosion::Update(qint64 time)
@@ -115,7 +125,7 @@ void Explosion::destroyTerrain()
             {
                 if (v->CheckCollision(p))
                 {
-                    v->TakeDamage(this->owner, this->Damage / this->currentSize);
+                    v->TakeDamage(this->owner, (this->Damage * this->DistanceDamageRatio) / this->currentSize);
                     this->untouchedTanks.removeOne(v);
                     // There seems to be some kind of bug in Qt? There are random crashes happening from this point
                     // I suspect that this change of container makes them

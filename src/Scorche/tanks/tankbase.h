@@ -41,6 +41,8 @@ enum ShieldType
 class TankBase : public PE::Pawn
 {
     public:
+        //! Rotate players if nothing is happening in game (no projectiles are flying and no explosions are happening)
+        static void RotateIfPeace();
         static void ResetPlayers();
         static int LivingPlayers();
         static TankBase *GetActivePlayer();

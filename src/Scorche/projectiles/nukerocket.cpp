@@ -39,6 +39,7 @@ void NukeRocket::on_Terrain(PE::Collider *collider)
     // Explode
     PE::Collectable_SmartPtr<Explosion> explosion = new Explosion(this->Owner, 260);
     explosion->Damage = 10000;
+    explosion->DistanceDamageRatio = 3;
     explosion->FallingRocks = false;
     explosion->Position = this->Position;
     Game::CurrentGame->GetWorld()->RegisterActor(explosion, 2);

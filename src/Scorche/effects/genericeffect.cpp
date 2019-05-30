@@ -10,26 +10,16 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef GENERIC_H
-#define GENERIC_H
+#include "genericeffect.h"
 
-#include <PixelEngine/actor.h>
-#include <PixelEngine/terrain.h>
+int GenericEffect::EffectCount = 0;
 
-namespace PE
+GenericEffect::GenericEffect()
 {
-    class Terrain;
+    EffectCount++;
 }
 
-class TankBase;
-
-class Generic : public PE::Actor
+GenericEffect::~GenericEffect()
 {
-    public:
-        static int EffectCount;
-
-        Generic();
-        ~Generic();
-};
-
-#endif // GENERIC_H
+    EffectCount--;
+}

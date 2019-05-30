@@ -28,7 +28,7 @@ void IntroScene::Render(PE::Renderer *r, PE::Camera *c)
 
     r->DrawText(r->GetWidth() / 2 - 200, r->GetHeight() / 2 + 200, "Open Scorched Earth", QColor("black"), 40);
     r->DrawText(r->GetWidth() / 2 - 100, r->GetHeight() / 2 + 160, "Mother of all games", QColor("black"), 20);
-    r->DrawBitmap(r->GetWidth() / 2 - 160, r->GetHeight() / 2 - 100, 280, 200, PE::Resources::GetPixmap(":/textures/ui/tank.png"));
+    r->DrawBitmap(r->GetWidth() / 2 - 200, r->GetHeight() / 2 - 100, 380, 200, PE::Resources::GetPixmap(":/textures/ui/tank.png"));
     r->DrawText(20, r->GetHeight() / 2 - 20, "Help:", QColor("black"), 20);
     r->DrawText(20, r->GetHeight() / 2 - 40, "Controls: arrows left and right to change angle, up and down to change power", QColor("black"), 12);
     r->DrawText(20, r->GetHeight() / 2 - 60, "Weapons: purchased weapons can be toggled using numbers (1, 2, 3...)", QColor("black"), 12);

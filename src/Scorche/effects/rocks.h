@@ -13,9 +13,9 @@
 #ifndef ROCKS_H
 #define ROCKS_H
 
-#include "generic.h"
+#include "genericeffect.h"
 
-class Rocks : public Generic
+class Rocks : public GenericEffect
 {
     public:
         Rocks();
