@@ -93,7 +93,7 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
         }
 
         r->DrawText(x + (width / 2) - 100, y + 40, "Press space to go to inventory screen", QColor("black"), 10);
-        r->DrawText(x + (width / 2) - 48, y + 20, "Press N to play next game", QColor("black"), 10);
+        r->DrawText(x + (width / 2) - 80, y + 20, "Press N to play next game", QColor("black"), 10);
     }
 }
 
