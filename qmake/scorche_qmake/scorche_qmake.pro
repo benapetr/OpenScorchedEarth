@@ -25,13 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 CONFIG += object_parallel_to_source
 
-INCLUDEPATH += ../../src/
+INCLUDEPATH += ../../src/PixelEngine/src/
 
 SOURCES += \
-        ../../src/PixelEngine/*.cpp \
-        ../../src/PixelEngine/GC/*.cpp \
-        ../../src/PixelEngine/Physics/*.cpp \
-        ../../src/PixelEngine/Graphics/*.cpp \
+        ../../src/PixelEngine/src/PixelEngine/*.cpp \
+        ../../src/PixelEngine/src/PixelEngine/GC/*.cpp \
+        ../../src/PixelEngine/src/PixelEngine/Physics/*.cpp \
+        ../../src/PixelEngine/src/PixelEngine/Graphics/*.cpp \
         ../../src/Scorche/bots/*.cpp \
         ../../src/Scorche/weapons/*.cpp \
         ../../src/Scorche/projectiles/*.cpp \
@@ -41,10 +41,10 @@ SOURCES += \
         ../../src/Scorche/*.cpp
 
 HEADERS += \
-        ../../src/PixelEngine/*.h \
-        ../../src/PixelEngine/GC/*.h \
-        ../../src/PixelEngine/Physics/*.h \
-        ../../src/PixelEngine/Graphics/*.h \
+        ../../src/PixelEngine/src/PixelEngine/*.h \
+        ../../src/PixelEngine/src/PixelEngine/GC/*.h \
+        ../../src/PixelEngine/src/PixelEngine/Physics/*.h \
+        ../../src/PixelEngine/src/PixelEngine/Graphics/*.h \
         ../../src/Scorche/bots/*.cpp \
         ../../src/Scorche/scenes/*.h \
         ../../src/Scorche/projectiles/*.h \

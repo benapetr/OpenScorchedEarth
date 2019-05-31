@@ -37,7 +37,7 @@ if (UNIT_TESTS)
 endif()
 
 # Libraries
-add_subdirectory (PixelEngine)
+add_subdirectory ("PixelEngine/src/PixelEngine")
 
 add_subdirectory (Scorche)
 
