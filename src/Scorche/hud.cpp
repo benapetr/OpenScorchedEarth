@@ -36,6 +36,7 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     (void)c;
 
     r->DrawText(10, r->GetHeight() - 20, "FPS: " + QString::number(MainWindow::Main->GetFPS()), Qt::black);
+    //r->DrawText(10, r->GetHeight() - 40, "FPS: " + QString::number(MainWindow::Main->GetRealFPS()) + " (excluding frames optimized out)", Qt::black);
 
     r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("white"), true);
     r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("black"));

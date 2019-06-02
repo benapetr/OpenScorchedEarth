@@ -82,14 +82,19 @@ void MainWindow::Render()
     qint64 current_time = QDateTime::currentDateTime().toMSecsSinceEpoch();
     if (current_time - fps_start > SAMPLE_RATE)
     {
-        this->fps = static_cast<double>(fps_current) / (SAMPLE_RATE / 1000);
+        this->fps = static_cast<double>(this->fps_current) / (SAMPLE_RATE / 1000);
+        this->real_fps = static_cast<double>(this->rc_fps) / (SAMPLE_RATE / 1000);
         this->fps_current = 0;
+        this->rc_fps = 0;
         this->fps_start = current_time;
     }
     this->fps_current++;
     this->game->GetWorld()->Render(this->se_renderer);
     if (this->se_renderer->HasUpdate)
+    {
+        this->rc_fps++;
         this->ui->viewPort->setPixmap(this->se_renderer->GetPixmap());
+    }
 }
 
 int MainWindow::GetWidth()
@@ -105,6 +110,11 @@ int MainWindow::GetHeight()
 double MainWindow::GetFPS()
 {
     return this->fps;
+}
+
+double MainWindow::GetRealFPS()
+{
+    return this->real_fps;
 }
 
 void MainWindow::OnRender()

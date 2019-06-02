@@ -43,6 +43,7 @@ class MainWindow : public QMainWindow
         int GetWidth();
         int GetHeight();
         double GetFPS();
+        double GetRealFPS();
 
     public slots:
         void OnRender();
@@ -64,6 +65,8 @@ class MainWindow : public QMainWindow
         double fps;
         int fps_current;
         qint64 fps_start;
+        double real_fps = 0;
+        int rc_fps = 0;
         QTimer *renderTimer;
         Game *game;
         QImage *qimage;
