@@ -41,6 +41,15 @@ void AI::Process()
         this->selectedEnemy = nullptr;
         this->state = AI_State_Undecided;
     }
+    if (this->tank->LastDamagedBy != nullptr && this->tank->LastDamagedBy != this->tank && this->tank->LastDamagedBy != this->selectedEnemy && this->tank->LastDamagedBy->IsAlive())
+    {
+        // Someone damaged us and it's not our current enemy, let's make them that!
+        this->selectedEnemy = this->tank->LastDamagedBy;
+        debug_log("changing enemy to " + this->selectedEnemy->PlayerName + " because they attacked us");
+        this->resetEnemy();
+        this->state = AI_State_Undecided;
+        this->tank->LastDamagedBy = nullptr;
+    }
     this->evaluateShield();
     this->evaluateWeapon();
     switch(this->state)
@@ -49,9 +58,12 @@ void AI::Process()
             this->traceEval();
             return;
         case AI_State_Undecided:
-            debug_log("is undecided, looking for a new enemy");
+            debug_log("is undecided - thinking what to do best next");
             if (this->selectedEnemy == nullptr)
+            {
+                debug_log("looking for a new enemy");
                 this->selectedEnemy = FindClosestEnemy();
+            }
 
             if (this->selectedEnemy == nullptr)
             {
@@ -61,7 +73,7 @@ void AI::Process()
             }
             else
             {
-                debug_log("new enemy found: " + this->selectedEnemy->PlayerName);
+                debug_log("enemy found: " + this->selectedEnemy->PlayerName);
                 this->resetEnemy();
                 this->getTargetAngle();
                 debug_log("new target angle calculated, sending tracers: " + QString::number(this->targetAngle));

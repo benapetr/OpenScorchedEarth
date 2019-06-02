@@ -94,6 +94,9 @@ class TankBase : public PE::Pawn
         QString PlayerName;
         Weapon *SelectedWeapon;
         bool IsPlayer = false;
+        TankBase *LastDamagedBy = nullptr;
+        double LastDamage = 0;
+        qint64 LastDamagedOn = 0;
         double Health = 100;
         double Power = 100;
         double Fuel = 100;

@@ -461,6 +461,10 @@ void TankBase::TakeDamage(TankBase *source, double damage)
     if (!this->IsAlive())
         return;
 
+    this->LastDamagedBy = source;
+    this->LastDamage = damage;
+    this->LastDamagedOn = QDateTime::currentDateTime().toMSecsSinceEpoch();
+
     if (this->ShieldPower > 0)
     {
         this->ShieldPower -= damage;
