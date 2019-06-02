@@ -13,6 +13,7 @@
 #include "hud.h"
 #include "tanks/tankbase.h"
 #include "console.h"
+#include "mainwindow.h"
 #include "game.h"
 #include "playerinfo.h"
 #include "weapons/weapon.h"
@@ -34,6 +35,8 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     // HUD is using absolute position
     (void)c;
 
+    r->DrawText(10, r->GetHeight() - 20, "FPS: " + QString::number(MainWindow::Main->GetFPS()), Qt::black);
+
     r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("white"), true);
     r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("black"));
 
@@ -47,18 +50,18 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
 
     if (!TankBase::PlayerTank)
         return;
-    r->DrawText(10, 6, "HP: " + QString::number(TankBase::PlayerTank->Health), QColor("black"));
-    r->DrawText(80, 6, "Angle: " + QString::number(TankBase::PlayerTank->GetCanonAngleDegree()), QColor("black"));
-    r->DrawText(160, 6, "Power: " + QString::number(TankBase::PlayerTank->Power), QColor("black"));
-    r->DrawText(230, 6, "Weapon: " + TankBase::PlayerTank->SelectedWeapon->GetName(), QColor("black"));
+    r->DrawText(10, 6, "HP: " + QString::number(TankBase::PlayerTank->Health), Qt::black);
+    r->DrawText(80, 6, "Angle: " + QString::number(TankBase::PlayerTank->GetCanonAngleDegree()), Qt::black);
+    r->DrawText(160, 6, "Power: " + QString::number(TankBase::PlayerTank->Power), Qt::black);
+    r->DrawText(230, 6, "Weapon: " + TankBase::PlayerTank->SelectedWeapon->GetName(), Qt::black);
     if (TankBase::PlayerTank->SelectedWeapon->GetWeaponType() != 0)
-        r->DrawText(340, 6, "Ammo: " + QString::number(TankBase::PlayerTank->SelectedWeapon->Ammo), QColor("black"));
-    r->DrawText(400, 6, "Cash: $" + QString::number(TankBase::PlayerTank->GetPlayer()->Cash), QColor("black"));
+        r->DrawText(340, 6, "Ammo: " + QString::number(TankBase::PlayerTank->SelectedWeapon->Ammo), Qt::black);
+    r->DrawText(400, 6, "Cash: $" + QString::number(TankBase::PlayerTank->GetPlayer()->Cash), Qt::black);
     TankBase *currentPlayer = TankBase::GetActivePlayer();
     if (currentPlayer != nullptr)
-        r->DrawText(500, 6, "Playing: " + currentPlayer->PlayerName, QColor("black"));
+        r->DrawText(500, 6, "Playing: " + currentPlayer->PlayerName, Qt::black);
     if (this->lastRefresh - Console::LastMessageTime < 8000)
-        r->DrawText(800, 6, Console::LastMessage, QColor("black"));
+        r->DrawText(800, 6, Console::LastMessage, Qt::black);
 
     if (Game::CurrentGame->IsPaused)
     {
@@ -67,8 +70,8 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
         int width = 300;
         int height = 80;
         r->DrawRect(x, y, width, height, 2, QColor("white"), true);
-        r->DrawRect(x, y, width, height, 2, QColor("black"), false);
-        r->DrawText(x + (width / 2) - 40, y + height - 30, "Paused", QColor("black"), 20);
+        r->DrawRect(x, y, width, height, 2, Qt::black, false);
+        r->DrawText(x + (width / 2) - 40, y + height - 30, "Paused", Qt::black, 20);
     }
 
     if (Explosion::ExplosionCounter == 0 && Game::CurrentGame->IsFinished)
@@ -79,11 +82,11 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
         int width = 600;
         int height = 600;
         r->DrawRect(x, y, width, height, 2, QColor("white"), true);
-        r->DrawRect(x, y, width, height, 2, QColor("black"), false);
-        r->DrawText(x + (width / 2) - 80, y + height - 20, "Round finished", QColor("black"), 20);
+        r->DrawRect(x, y, width, height, 2, Qt::black, false);
+        r->DrawText(x + (width / 2) - 80, y + height - 20, "Round finished", Qt::black, 20);
 
         int current_Y = y + height - 40;
-        r->DrawText(x + (width / 2) - 40, current_Y, "Scores:", QColor("black"), 12);
+        r->DrawText(x + (width / 2) - 40, current_Y, "Scores:", Qt::black, 12);
         foreach (TankBase *t, TankBase::Players)
         {
             current_Y -= 20;
@@ -92,8 +95,8 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
                         + QString::number(t->GetPlayer()->Cash) + " score: " + QString::number(t->GetPlayer()->Score), t->GetPlayer()->Color, 12);
         }
 
-        r->DrawText(x + (width / 2) - 100, y + 40, "Press space to go to inventory screen", QColor("black"), 10);
-        r->DrawText(x + (width / 2) - 80, y + 20, "Press N to play next game", QColor("black"), 10);
+        r->DrawText(x + (width / 2) - 100, y + 40, "Press space to go to inventory screen", Qt::black, 10);
+        r->DrawText(x + (width / 2) - 80, y + 20, "Press N to play next game", Qt::black, 10);
     }
 }
 

@@ -12,23 +12,30 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "projectiles/aitracer.h"
 #include "game.h"
 #include "staticassets.h"
 #include "console.h"
 #include <QKeyEvent>
+#include <QDateTime>
 #include <QImage>
 #include <QDesktopWidget>
-#include "projectiles/aitracer.h"
 #include <PixelEngine/engine.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/ringlog.h>
 #include <PixelEngine/ringlog_item.h>
 #include <PixelEngine/Graphics/qimagerenderer.h>
 
+MainWindow *MainWindow::Main = NULL;
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+    Main = this;
     PE::Engine::Initialize(false);
     ui->setupUi(this);
+    this->fps = 0;
+    this->fps_current = 0;
+    this->fps_start = QDateTime::currentDateTime().toMSecsSinceEpoch();
     this->showMaximized();
     StaticAssets::Instance = new StaticAssets();
     this->se_renderer = new PE::QImageRenderer(this->GetWidth(), this->GetHeight());
@@ -68,8 +75,18 @@ MainWindow::~MainWindow()
     StaticAssets::Instance = nullptr;
 }
 
+#define SAMPLE_RATE 2000
+
 void MainWindow::Render()
 {
+    qint64 current_time = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    if (current_time - fps_start > SAMPLE_RATE)
+    {
+        this->fps = static_cast<double>(fps_current) / (SAMPLE_RATE / 1000);
+        this->fps_current = 0;
+        this->fps_start = current_time;
+    }
+    this->fps_current++;
     this->game->GetWorld()->Render(this->se_renderer);
     if (this->se_renderer->HasUpdate)
         this->ui->viewPort->setPixmap(this->se_renderer->GetPixmap());
@@ -83,6 +100,11 @@ int MainWindow::GetWidth()
 int MainWindow::GetHeight()
 {
     return this->ui->viewPort->height();// * QApplication::desktop()->devicePixelRatio();
+}
+
+double MainWindow::GetFPS()
+{
+    return this->fps;
 }
 
 void MainWindow::OnRender()

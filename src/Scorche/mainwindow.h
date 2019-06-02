@@ -35,11 +35,14 @@ class MainWindow : public QMainWindow
         Q_OBJECT
 
     public:
+        static MainWindow *Main;
+
         explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow() override;
         void Render();
         int GetWidth();
         int GetHeight();
+        double GetFPS();
 
     public slots:
         void OnRender();
@@ -48,24 +51,19 @@ class MainWindow : public QMainWindow
 
     private slots:
         void on_actionRendering_triggered();
-
         void on_actionBots_enable_quick_aim_triggered();
-
         void on_actionNew_game_triggered();
-
         void on_actionExplosion_rocks_triggered();
-
         void on_actionFast_game_triggered();
-
         void on_actionShow_console_triggered();
-
         void on_actionDebug_AI_triggered();
-
         void on_actionFluid_terrain_triggered();
-
         void on_actionLow_FPS_triggered(bool checked);
 
     private:
+        double fps;
+        int fps_current;
+        qint64 fps_start;
         QTimer *renderTimer;
         Game *game;
         QImage *qimage;
