@@ -29,8 +29,8 @@ NukeRocket::NukeRocket(const PE::Vector &position) : Projectile (position)
 void NukeRocket::Render(PE::Renderer *r, PE::Camera *c)
 {
     PE::Vector position = c->ProjectedPosition(this->Position);
-    r->DrawEllipse(position.X2int(), position.Y2int(), 6, 6, QColor("black"), 3);
-    r->DrawEllipse(position.X2int() + 2, position.Y2int() + 2, 4, 4, QColor("red"), 3);
+    r->DrawEllipse(position.X2int() - 3, position.Y2int() - 3, 6, 6, QColor("black"), 3);
+    r->DrawEllipse(position.X2int(), position.Y2int(), 4, 4, QColor("red"), 3);
 }
 
 void NukeRocket::on_Terrain(PE::Collider *collider)

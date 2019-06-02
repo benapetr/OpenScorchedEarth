@@ -29,7 +29,7 @@ MNRocket::MNRocket(const PE::Vector &position) : Projectile (position)
 void MNRocket::Render(PE::Renderer *r, PE::Camera *c)
 {
     PE::Vector position = c->ProjectedPosition(this->Position);
-    r->DrawEllipse(position.X2int(), position.Y2int(), 3, 3, QColor("red"), 3);
+    r->DrawEllipse(position.X2int() - 1, position.Y2int() - 1, 3, 3, QColor("red"), 3);
 }
 
 void MNRocket::on_Terrain(PE::Collider *collider)

@@ -50,6 +50,10 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
     this->timer = new QTimer(this);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnUpdate()));
     this->timer->start(10);
+
+#ifdef PE_DEBUG
+    PE::Collider::Debug = true;
+#endif
 }
 
 Game::~Game()
@@ -103,8 +107,8 @@ void Game::startGame()
     this->WarmingTanks = PlayerInfo::Players.count();
 
     int step = 0;
-    if (PlayerInfo::Players.count() > 0)
-        step = (this->MapHeight / (PlayerInfo::Players.count() - 1)) + 80;
+    if (PlayerInfo::Players.count() > 1)
+        step = (this->MapHeight / (PlayerInfo::Players.count() - 1)) * 1.6;
     int player_id = 0;
 
     // Register players

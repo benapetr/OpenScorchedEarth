@@ -29,7 +29,7 @@ Rocket::Rocket(const PE::Vector &position) : Projectile (position)
 void Rocket::Render(PE::Renderer *r, PE::Camera *c)
 {
     PE::Vector position = c->ProjectedPosition(this->Position);
-    r->DrawEllipse(position.X2int(), position.Y2int(), 3, 3, QColor("black"), 3);
+    r->DrawEllipse(position.X2int() - 1, position.Y2int() - 1, 3, 3, QColor("black"), 3);
 }
 
 void Rocket::on_Terrain(PE::Collider *collider)

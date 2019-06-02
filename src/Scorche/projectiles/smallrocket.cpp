@@ -29,7 +29,7 @@ SmallRocket::SmallRocket(const PE::Vector &position) : Projectile (position)
 void SmallRocket::Render(PE::Renderer *r, PE::Camera *c)
 {
     PE::Vector position = c->ProjectedPosition(this->Position);
-    r->DrawEllipse(position.X2int(), position.Y2int(), 2, 2, QColor("black"), 2);
+    r->DrawEllipse(position.X2int() - 1, position.Y2int() - 1, 2, 2, QColor("black"), 2);
 }
 
 void SmallRocket::on_Terrain(PE::Collider *collider)
