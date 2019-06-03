@@ -33,6 +33,7 @@ void IntroScene::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawText(20, r->GetHeight() / 2 - 40, "Controls: arrows left and right to change angle, up and down to change power", QColor("black"), 12);
     r->DrawText(20, r->GetHeight() / 2 - 60, "Weapons: purchased weapons can be toggled using numbers (1, 2, 3...)", QColor("black"), 12);
     r->DrawText(20, r->GetHeight() / 2 - 80, "Shields: purchased shields can be activated using L and H keys", QColor("black"), 12);
+    r->DrawText(20, r->GetHeight() / 2 - 100, "Repair using repair kits (r key)", QColor("black"), 12);
     r->DrawText(20, r->GetHeight() / 2 - 160, "NOTE: for unknown reasons performance of this game sucks on UHD / retina displays, probably due Qt scaling poor implementation", QColor("black"), 12);
     r->DrawText(r->GetWidth() / 2 - 138, r->GetHeight() / 2 - 200, "Press space to start new game", QColor("black"), 20);
 

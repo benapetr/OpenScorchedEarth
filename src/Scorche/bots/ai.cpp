@@ -473,6 +473,12 @@ void AI::evaluateShield()
         this->tank->DeployShield(ShieldMini);
 }
 
+void AI::evaluateRepair()
+{
+    if (this->tank->Health < 80 && this->tank->GetPlayer()->ItemList[INVENTORY_REPAIR_KIT] > 0)
+        this->tank->Repair();
+}
+
 void AI::evaluateWeapon()
 {
     int current_weapon = this->tank->SelectedWeapon->GetWeaponType();

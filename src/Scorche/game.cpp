@@ -43,7 +43,6 @@ Game::Game(double w_width, double w_height)
     this->MapHeight = w_height;
     this->MapWidth = w_width;
 
-    //this->NewGame();
     this->showIntroScreen();
 
     this->timer = new QTimer(this);

@@ -345,6 +345,9 @@ void TankBase::Event_KeyPress(int key)
         case Qt::Key_5:
             this->SwitchWeapon(WEAPON_NUKE);
             break;
+        case Qt::Key_R:
+            this->Repair();
+            break;
     }
 }
 
@@ -402,7 +405,10 @@ void TankBase::Render(PE::Renderer *r, PE::Camera *c)
     if (!this->PlayerName.isEmpty())
     {
         // Render name information
-        r->DrawText(position.X2int(), position.Y2int(), this->PlayerName, QColor("black"));
+        int x = 0;
+        if (this->PlayerName.count() > 10)
+            x = this->PlayerName.count() + 6;
+        r->DrawText(position.X2int() - x, position.Y2int(), this->PlayerName, QColor("black"));
     }
 
     // Render HP information
@@ -559,6 +565,24 @@ void TankBase::SetCanonAdjustLeft()
 void TankBase::SetCanonAdjustRight()
 {
     this->canonAdjust = -0.006;
+}
+
+void TankBase::Repair()
+{
+    if (this->Health <= this->MaxHealth)
+        return;
+
+    if (this->playerInfo->ItemList[INVENTORY_REPAIR_KIT] <= 0)
+    {
+        Console::Append("Not enough kits to repair your tank");
+        return;
+    }
+
+    this->playerInfo->ItemList[INVENTORY_REPAIR_KIT]--;
+    this->Health += 10;
+
+    if (this->Health > this->MaxHealth)
+        this->Health = this->MaxHealth;
 }
 
 void TankBase::ResetCanonAdjust()

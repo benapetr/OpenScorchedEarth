@@ -34,6 +34,7 @@ void InventoryScene::Render(PE::Renderer *r, PE::Camera *c)
     this->insertItem(r, WEAPON_NUKE, 3);
     this->insertItem(r, INVENTORY_SHIELD, 4);
     this->insertItem(r, INVENTORY_HEAVY_SHIELD, 5);
+    this->insertItem(r, INVENTORY_REPAIR_KIT, 6);
     //this->insertItem(r, INVENTORY_PARACHUTE, 6);
 
     r->DrawBitmap(0, r->GetHeight() - 120 - (this->selectedItem * 20), 20, 20, StaticAssets::Instance->RightArrow);
@@ -85,8 +86,8 @@ void InventoryScene::SelectUp()
 void InventoryScene::SelectDown()
 {
     this->selectedItem++;
-    if (this->selectedItem > 5)
-        this->selectedItem = 5;
+    if (this->selectedItem > 6)
+        this->selectedItem = 6;
 }
 
 int InventoryScene::GetItemFromID()
@@ -106,7 +107,7 @@ int InventoryScene::GetItemFromID()
         case 5:
             return INVENTORY_HEAVY_SHIELD;
         case 6:
-            return INVENTORY_PARACHUTE;
+            return INVENTORY_REPAIR_KIT;
     }
 
     return WEAPON_CANON;

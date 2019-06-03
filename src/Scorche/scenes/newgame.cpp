@@ -28,7 +28,10 @@ void NewGame::Render(PE::Renderer *r, PE::Camera *c)
     (void)c;
     r->DrawText(r->GetWidth() / 2 - 120, r->GetHeight() - 60, "New game", QColor("black"), 40);
     r->DrawText(60, r->GetHeight() - 120, "How many bots you want to play with: " + QString::number(this->Bots), QColor("black"), 20);
-    r->DrawText(60, r->GetHeight() - 140, "Terrain falls down: " + PE::Generic::Bool2String(this->DynamicTerrain), QColor("black"), 20);
+    r->DrawText(60, r->GetHeight() - 140, "Number of bots (terminator level): " + QString::number(this->Terminators), QColor("black"), 20);
+    r->DrawText(60, r->GetHeight() - 160, "Terrain falls down: " + PE::Generic::Bool2String(this->DynamicTerrain), QColor("black"), 20);
+
+    r->DrawText(60, r->GetHeight() - 400, "Rest of bots will be filled up with default AI level", QColor("black"), 20);
 
     r->DrawBitmap(470, r->GetHeight() - 120 - (this->SelectedItem * 20), 40, 20, StaticAssets::Instance->LeftArrow);
     r->DrawBitmap(512, r->GetHeight() - 120 - (this->SelectedItem * 20), 40, 20, StaticAssets::Instance->RightArrow);
@@ -66,12 +69,14 @@ void NewGame::Event_KeyPress(int key)
             int botc = this->Bots;
             while(botc-- > 0)
             {
-                PlayerInfo *bot = new PlayerInfo("Bot " + QString::number(bot_id), colors[bot_id-1], true);
-                if (bot_id++ == 1)
+                PlayerInfo *bot = new PlayerInfo("Bot (easy) " + QString::number(bot_id), colors[bot_id-1], true);
+                if (this->Terminators-- > 0)
+                {
+                    bot->PlayerName = "Bot (terminator) " + QString::number(bot_id);
                     bot->AI = "terminator";
+                }
                 PlayerInfo::Players.append(bot);
-                // Doesn't work
-                //PlayerInfo::Players.append(new PlayerInfo("Bot " + QString::number(bot_id++), PlayerInfo::GetRandomUnusedColor(), true));
+                bot_id++;
             }
             Game::CurrentGame->DynamicTerrain = this->DynamicTerrain;
             Game::CurrentGame->RequestScene(Scene_Inventory);
@@ -83,7 +88,7 @@ void NewGame::Event_KeyPress(int key)
                 this->SelectedItem--;
             return;
         case Qt::Key::Key_Down:
-            if (this->SelectedItem < 1)
+            if (this->SelectedItem < 2)
                 this->SelectedItem++;
             return;
         case Qt::Key::Key_Left:
@@ -94,6 +99,10 @@ void NewGame::Event_KeyPress(int key)
                         this->Bots--;
                     break;
                 case 1:
+                    if (this->Terminators > 0)
+                        this->Terminators--;
+                    break;
+                case 2:
                     this->DynamicTerrain = true;
                     break;
             }
@@ -107,6 +116,10 @@ void NewGame::Event_KeyPress(int key)
                         this->Bots++;
                     break;
                 case 1:
+                    if (this->Terminators < 8)
+                        this->Terminators++;
+                    break;
+                case 2:
                     this->DynamicTerrain = false;
                     break;
             }

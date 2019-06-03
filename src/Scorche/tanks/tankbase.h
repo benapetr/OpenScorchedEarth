@@ -73,6 +73,7 @@ class TankBase : public PE::Pawn
         void InitializeBot();
         void SetCanonAdjustLeft();
         void SetCanonAdjustRight();
+        void Repair();
         void ResetCanonAdjust();
         void SetPower(double p);
         void SetAngle(double a);
@@ -97,6 +98,7 @@ class TankBase : public PE::Pawn
         TankBase *LastDamagedBy = nullptr;
         double LastDamage = 0;
         qint64 LastDamagedOn = 0;
+        double MaxHealth = 100;
         double Health = 100;
         double Power = 100;
         double Fuel = 100;

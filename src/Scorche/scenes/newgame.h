@@ -24,6 +24,7 @@ class NewGame : public PE::Actor
         int SelectedItem = 0;
         bool DynamicTerrain = true;
         int Bots = 1;
+        int Terminators = 1;
 };
 
 #endif // NEWGAME_H

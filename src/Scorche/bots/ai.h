@@ -83,6 +83,7 @@ class AI
         virtual void postEvaluateFire();
         bool hasWeapon(int id);
         virtual void evaluateShield();
+        virtual void evaluateRepair();
         virtual void evaluateWeapon();
         virtual void changeWeapon();
         void changeAngle(double new_angle);
