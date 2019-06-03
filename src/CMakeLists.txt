@@ -18,6 +18,7 @@ else()
 endif()
 
 #ADD_DEFINITIONS(-DPE_DEBUG)
+ADD_DEFINITIONS(-DSCORCHE_GL)
 
 # Settings
 option(QT5_BUILD "Build with Qt5" true)

@@ -24,7 +24,12 @@
 #include <PixelEngine/world.h>
 #include <PixelEngine/ringlog.h>
 #include <PixelEngine/ringlog_item.h>
+#ifdef SCORCHE_GL
+#include <PixelEngine/Graphics/peglwidget.h>
+#include <PixelEngine/Graphics/qglrenderer.h>
+#else
 #include <PixelEngine/Graphics/qimagerenderer.h>
+#endif
 
 MainWindow *MainWindow::Main = NULL;
 
@@ -33,15 +38,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     Main = this;
     PE::Engine::Initialize(false);
     ui->setupUi(this);
+    this->showMaximized();
+    StaticAssets::Instance = new StaticAssets();
+#ifndef SCORCHE_GL
     this->fps = 0;
     this->fps_current = 0;
     this->fps_start = QDateTime::currentDateTime().toMSecsSinceEpoch();
-    this->showMaximized();
-    StaticAssets::Instance = new StaticAssets();
     this->se_renderer = new PE::QImageRenderer(this->GetWidth(), this->GetHeight());
     this->qimage = this->se_renderer->GetImage();
-    this->game = new Game(this->GetWidth(), this->GetHeight(), this->se_renderer);
-    this->Render();
+#else
+    this->viewPort = new PE::PEGLWidget(this, nullptr);
+    this->layout()->removeWidget(this->ui->viewPort);
+    delete this->ui->viewPort;
+    this->ui->viewPort = nullptr;
+    this->layout()->addWidget(this->viewPort);
+#endif
+    this->game = new Game(this->GetWidth(), this->GetHeight());
+    //this->Render();
     this->renderTimer = new QTimer(this);
     connect(this->renderTimer, SIGNAL(timeout()), this, SLOT(OnRender()));
     // this timer speed defines FPS, smaller means higher FPS, but also more CPU usage
@@ -69,7 +82,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow()
 {
     delete this->game;
+#ifndef SCORCHE_GL
     delete this->se_renderer;
+#endif
     delete ui;
     delete StaticAssets::Instance;
     StaticAssets::Instance = nullptr;
@@ -79,6 +94,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::Render()
 {
+#ifndef SCORCHE_GL
     qint64 current_time = QDateTime::currentDateTime().toMSecsSinceEpoch();
     if (current_time - fps_start > SAMPLE_RATE)
     {
@@ -95,33 +111,59 @@ void MainWindow::Render()
         this->rc_fps++;
         this->ui->viewPort->setPixmap(this->se_renderer->GetPixmap());
     }
+#endif
 }
 
 int MainWindow::GetWidth()
 {
+#ifndef SCORCHE_GL
     return this->ui->viewPort->width();// * QApplication::desktop()->devicePixelRatio();
+#else
+    return this->viewPort->width();
+#endif
 }
 
 int MainWindow::GetHeight()
 {
+#ifndef SCORCHE_GL
     return this->ui->viewPort->height();// * QApplication::desktop()->devicePixelRatio();
+#else
+    return this->viewPort->height();
+#endif
 }
 
 double MainWindow::GetFPS()
 {
+#ifdef SCORCHE_GL
+   return this->viewPort->GetFPS();
+#else
     return this->fps;
+#endif
 }
 
-double MainWindow::GetRealFPS()
+void MainWindow::InstallWorld(PE::World *w)
 {
-    return this->real_fps;
+#ifdef SCORCHE_GL
+    this->viewPort->SetWorld(w);
+#endif
+}
+
+void MainWindow::UninstallWorld()
+{
+#ifdef SCORCHE_GL
+    this->viewPort->SetWorld(nullptr);
+#endif
 }
 
 void MainWindow::OnRender()
 {
     if (!this->ui->actionRendering->isChecked())
         return;
+#ifndef SCORCHE_GL
     this->Render();
+#else
+    this->viewPort->update();
+#endif
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -136,7 +178,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent *e)
 
 void MainWindow::on_actionRendering_triggered()
 {
+#ifndef SCORCHE_GL
     this->se_renderer->Enabled = !this->se_renderer->Enabled;
+#endif
 }
 
 void MainWindow::on_actionBots_enable_quick_aim_triggered()

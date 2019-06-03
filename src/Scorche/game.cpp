@@ -21,6 +21,7 @@
 #include "console.h"
 #include "playerinfo.h"
 #include "shop.h"
+#include "mainwindow.h"
 #include "scenes/introscene.h"
 #include "scenes/inventoryscene.h"
 #include "scenes/newgame.h"
@@ -35,14 +36,12 @@ bool  Game::SuperFast = true;
 bool  Game::Tracing = false;
 bool  Game::FastTerrainUpdates = true;
 
-Game::Game(double w_width, double w_height, PE::Renderer *r)
+Game::Game(double w_width, double w_height)
 {
     Game::CurrentGame = this;
     Shop::DefaultShop = new Shop();
-    this->renderer = r;
     this->MapHeight = w_height;
     this->MapWidth = w_width;
-    this->renderer->ManualUpdate = true;
 
     //this->NewGame();
     this->showIntroScreen();
@@ -59,6 +58,7 @@ Game::Game(double w_width, double w_height, PE::Renderer *r)
 Game::~Game()
 {
     this->timer->stop();
+    MainWindow::Main->UninstallWorld();
     delete this->world;
 }
 
@@ -280,4 +280,5 @@ void Game::resetWorld()
     delete this->world;
     this->world = new PE::World(this->MapWidth, this->MapHeight);
     this->world->BackgroundColor = QColor(204, 221, 255);
+    MainWindow::Main->InstallWorld(this->world);
 }

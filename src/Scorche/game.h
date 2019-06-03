@@ -48,7 +48,7 @@ class Game : public QObject
         static bool Tracing;
         static bool FastTerrainUpdates;
 
-        Game(double w_width, double w_height, PE::Renderer *r);
+        Game(double w_width, double w_height);
         ~Game() override;
         void RequestScene(Scene s);
 

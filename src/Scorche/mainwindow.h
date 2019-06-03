@@ -25,7 +25,9 @@ class QImage;
 
 namespace PE
 {
+    class PEGLWidget;
     class QImageRenderer;
+    class World;
 }
 
 class Game;
@@ -43,7 +45,8 @@ class MainWindow : public QMainWindow
         int GetWidth();
         int GetHeight();
         double GetFPS();
-        double GetRealFPS();
+        void InstallWorld(PE::World *w);
+        void UninstallWorld();
 
     public slots:
         void OnRender();
@@ -62,15 +65,20 @@ class MainWindow : public QMainWindow
         void on_actionLow_FPS_triggered(bool checked);
 
     private:
+#ifdef SCORCHE_GL
+        PE::PEGLWidget *viewPort;
+#endif
+        QTimer *renderTimer;
+        Game *game;
+        QImage *qimage;
+#ifndef SCORCHE_GL
         double fps;
         int fps_current;
         qint64 fps_start;
         double real_fps = 0;
         int rc_fps = 0;
-        QTimer *renderTimer;
-        Game *game;
-        QImage *qimage;
         PE::QImageRenderer *se_renderer;
+#endif
         Ui::MainWindow *ui;
 };
 
