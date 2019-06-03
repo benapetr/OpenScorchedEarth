@@ -17,14 +17,11 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11")
 endif()
 
-#ADD_DEFINITIONS(-DPE_DEBUG)
-ADD_DEFINITIONS(-DSCORCHE_GL)
-
 # Settings
 option(QT5_BUILD "Build with Qt5" true)
 option(EXTREME_DEBUG "Enable some resource expensive and slowing debug info" false)
 option(UNIT_TESTS "Enable unit tests" false)
-option(SQLITE "Support sqlite backend storage" true)
+option(OPENGL "Use OpenGL as default rendering engine" true)
 
 # Configuration
 if (UNIT_TESTS)
@@ -35,6 +32,14 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 # Unit test
 if (UNIT_TESTS)
     add_subdirectory (tests)
+endif()
+
+if (OPENGL)
+    ADD_DEFINITIONS(-DSCORCHE_GL)
+endif()
+
+if (EXTREME_DEBUG)
+    ADD_DEFINITIONS(-DPE_DEBUG)
 endif()
 
 # Libraries

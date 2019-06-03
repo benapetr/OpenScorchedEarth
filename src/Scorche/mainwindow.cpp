@@ -31,7 +31,7 @@
 #include <PixelEngine/Graphics/qimagerenderer.h>
 #endif
 
-MainWindow *MainWindow::Main = NULL;
+MainWindow *MainWindow::Main = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->fps_current = 0;
     this->fps_start = QDateTime::currentDateTime().toMSecsSinceEpoch();
     this->se_renderer = new PE::QImageRenderer(this->GetWidth(), this->GetHeight());
+    this->se_renderer->ManualUpdate = true;
     this->qimage = this->se_renderer->GetImage();
 #else
     this->viewPort = new PE::PEGLWidget(this, nullptr);
@@ -84,6 +85,8 @@ MainWindow::~MainWindow()
     delete this->game;
 #ifndef SCORCHE_GL
     delete this->se_renderer;
+#else
+    delete this->viewPort;
 #endif
     delete ui;
     delete StaticAssets::Instance;
