@@ -35,11 +35,14 @@ void InventoryScene::Render(PE::Renderer *r, PE::Camera *c)
     this->insertItem(r, INVENTORY_SHIELD, 4);
     this->insertItem(r, INVENTORY_HEAVY_SHIELD, 5);
     this->insertItem(r, INVENTORY_REPAIR_KIT, 6);
-    //this->insertItem(r, INVENTORY_PARACHUTE, 6);
+    this->insertItem(r, WEAPON_HEAVY_RIOT_BOMB, 7);
+    this->insertItem(r, WEAPON_RIOT_BOMB, 8);
+    this->insertItem(r, WEAPON_SONIC_BOMB, 9);
+    this->insertItem(r, WEAPON_HEAVY_SONIC_BOMB, 10);
 
     r->DrawBitmap(0, r->GetHeight() - 120 - (this->selectedItem * 20), 20, 20, StaticAssets::Instance->RightArrow);
-    r->DrawBitmap(300, r->GetHeight() - 120 - (this->selectedItem * 20), 20, 20, StaticAssets::Instance->LeftArrow);
-    r->DrawBitmap(320, r->GetHeight() - 120 - (this->selectedItem * 20), 20, 20, StaticAssets::Instance->RightArrow);
+    r->DrawBitmap(360, r->GetHeight() - 120 - (this->selectedItem * 20), 20, 20, StaticAssets::Instance->LeftArrow);
+    r->DrawBitmap(380, r->GetHeight() - 120 - (this->selectedItem * 20), 20, 20, StaticAssets::Instance->RightArrow);
 
 
     //r->DrawBitmap(420, r->GetHeight() / 2 + 100, 40, 20, StaticAssets::Instance->RightArrow);
@@ -73,7 +76,7 @@ void InventoryScene::Event_KeyPress(int key)
 void InventoryScene::insertItem(PE::Renderer *r, int id, int position)
 {
     r->DrawText(20, r->GetHeight() - 120 - (position * 20), Shop::DefaultShop->ItemString(id) +  "($" + QString::number(Shop::DefaultShop->PriceList[id]) + "): ", QColor("black"), 20);
-    r->DrawText(220, r->GetHeight() - 120 - (position * 20), QString::number(PlayerInfo::Players[0]->ItemList[id]), QColor("black"), 20);
+    r->DrawText(310, r->GetHeight() - 120 - (position * 20), QString::number(PlayerInfo::Players[0]->ItemList[id]), QColor("black"), 20);
 }
 
 void InventoryScene::SelectUp()
@@ -86,8 +89,8 @@ void InventoryScene::SelectUp()
 void InventoryScene::SelectDown()
 {
     this->selectedItem++;
-    if (this->selectedItem > 6)
-        this->selectedItem = 6;
+    if (this->selectedItem > 10)
+        this->selectedItem = 10;
 }
 
 int InventoryScene::GetItemFromID()
@@ -108,6 +111,14 @@ int InventoryScene::GetItemFromID()
             return INVENTORY_HEAVY_SHIELD;
         case 6:
             return INVENTORY_REPAIR_KIT;
+        case 7:
+            return WEAPON_HEAVY_RIOT_BOMB;
+        case 8:
+            return WEAPON_RIOT_BOMB;
+        case 9:
+            return WEAPON_SONIC_BOMB;
+        case 10:
+            return WEAPON_HEAVY_SONIC_BOMB;
     }
 
     return WEAPON_CANON;

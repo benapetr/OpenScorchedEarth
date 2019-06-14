@@ -29,6 +29,8 @@ class Explosion : public GenericEffect
         double Damage = 1000;
         //! Higher = more damage on distance hit
         double DistanceDamageRatio = 1;
+        bool TerrainCreating = false;
+        bool Sonic = false;
         bool FallingRocks = true;
 
     protected:

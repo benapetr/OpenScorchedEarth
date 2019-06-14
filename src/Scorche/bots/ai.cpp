@@ -57,6 +57,9 @@ void AI::Process()
         case AI_State_Trace_Wait:
             this->traceEval();
             return;
+        case AI_State_Obstructed:
+            this->Fire();
+            return;
         case AI_State_Undecided:
             debug_log("is undecided - thinking what to do best next");
             if (this->selectedEnemy == nullptr)
@@ -155,6 +158,11 @@ void AI::ProcessInventory()
         if (info->Cash > 3500 && info->ItemList[INVENTORY_HEAVY_SHIELD] < 2)
         {
             Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
+            needs_more = true;
+        }
+        if (info->Cash > 100 && info->ItemList[WEAPON_SONIC_BOMB] < 2)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_SONIC_BOMB);
             needs_more = true;
         }
         if (info->Cash > 10000 && info->ItemList[WEAPON_NUKE] < 2)
@@ -341,6 +349,8 @@ void AI::evaluateFire()
 
     double distance_last = lastHit.DistanceTo(this->selectedEnemy->Position);
     double distance_prev = this->previousHit.DistanceTo(this->selectedEnemy->Position);
+    double distance_self = lastHit.DistanceTo(this->tank->Position);
+    this->lastDistanceFromSelf = distance_self;
     this->unknownDataCounter = 0;
 
     if (distance_last < this->bestDistance)
@@ -489,6 +499,9 @@ void AI::evaluateWeapon()
         return;
     }
 
+    if (this->evaluateSonic())
+        return;
+
     if (!this->firstShot && this->bestDistance < 400 && this->hasWeapon(WEAPON_NUKE))
     {
         this->tank->SwitchWeapon(WEAPON_NUKE);
@@ -592,6 +605,7 @@ void AI::traceEval()
     Game::Tracing = false;
 
     double original_best_dist = this->bestDistance;
+    double original_best_dist_self = this->bestDistance_DistanceToSelf;
 
     // Evaluate all tracers
     int tracer_id = 0;
@@ -609,6 +623,7 @@ void AI::traceEval()
                 this->bestAngle = t->Angle;
                 this->bestPower = t->Power;
                 this->bestDistance = t->PositionFinal.DistanceTo(this->selectedEnemy->Position);
+                this->bestDistance_DistanceToSelf = t->PositionFinal.DistanceTo(this->tank->Position);
                 this->targetAngle = this->bestAngle;
                 this->targetPower = this->bestPower;
                 debug_log("Tracer found enemy: " + t->target->PlayerName);
@@ -641,9 +656,28 @@ void AI::traceEval()
     {
         this->targetAngle = this->bestAngle;
         this->targetPower = this->bestPower;
+        this->lastDistanceFromSelf = this->bestDistance_DistanceToSelf;
         this->state = AI_State_Waiting_Angle;
     }
     this->tracers.clear();
+}
+
+bool AI::evaluateSonic()
+{
+    // There is too much terrain close to us
+    if (this->lastDistanceFromSelf < 120 && this->hasWeapon(WEAPON_HEAVY_SONIC_BOMB))
+    {
+        this->tank->SwitchWeapon(WEAPON_HEAVY_SONIC_BOMB);
+        this->state = AI_State_Obstructed;
+        return true;
+    }
+    if (this->lastDistanceFromSelf < 80 && this->hasWeapon(WEAPON_SONIC_BOMB))
+    {
+        this->tank->SwitchWeapon(WEAPON_SONIC_BOMB);
+        this->state = AI_State_Obstructed;
+        return true;
+    }
+    return false;
 }
 
 void AI::debug_log(const QString &text)

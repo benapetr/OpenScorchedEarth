@@ -28,6 +28,10 @@ Shop::Shop()
     this->PriceList.insert(WEAPON_MINI_NUKE, 500);
     this->PriceList.insert(WEAPON_TRIPLE_CANON, 20);
     this->PriceList.insert(WEAPON_BIG_CANON, 10);
+    this->PriceList.insert(WEAPON_RIOT_BOMB, 100);
+    this->PriceList.insert(WEAPON_HEAVY_RIOT_BOMB, 300);
+    this->PriceList.insert(WEAPON_SONIC_BOMB, 50);
+    this->PriceList.insert(WEAPON_HEAVY_SONIC_BOMB, 200);
 }
 
 bool Shop::BuyItem(PlayerInfo *player, int item_id)
@@ -81,6 +85,14 @@ QString Shop::ItemString(int i)
             return "Repair kit";
         case INVENTORY_PARACHUTE:
             return "Parachute";
+        case WEAPON_HEAVY_SONIC_BOMB:
+            return "Heavy Sonic Bomb";
+        case WEAPON_SONIC_BOMB:
+            return "Sonic Bomb";
+        case WEAPON_HEAVY_RIOT_BOMB:
+            return "Heavy Riot Bomb";
+        case WEAPON_RIOT_BOMB:
+            return "Riot Bomb";
 
 
     }

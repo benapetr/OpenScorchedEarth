@@ -65,6 +65,16 @@ PlayerInfo::PlayerInfo(const QString &name, const QColor &color, bool bot)
     this->ItemList.insert(INVENTORY_PARACHUTE, 0);
     this->ItemList.insert(INVENTORY_REPAIR_KIT, 0);
     this->ItemList.insert(INVENTORY_HEAVY_SHIELD, 0);
+    this->ItemList.insert(WEAPON_PIERCER, 0);
+    this->ItemList.insert(WEAPON_RIOT_BOMB, 0);
+    this->ItemList.insert(WEAPON_FUNKY_BOMB, 0);
+    this->ItemList.insert(WEAPON_SONIC_BOMB, 0);
+    this->ItemList.insert(WEAPON_SONIC_WAVE, 0);
+    this->ItemList.insert(WEAPON_HEAVY_RIOT_BOMB, 0);
+    this->ItemList.insert(WEAPON_HEAVY_SONIC_BOMB, 0);
+    this->ItemList.insert(WEAPON_HEAVY_SONIC_WAVE, 0);
+    this->ItemList.insert(WEAPON_DEFENSE_PILLAR_BOMB, 0);
+    this->ItemList.insert(WEAPON_DEFENSE_MEGA_PILLAR_BOMB, 0);
 }
 
 void PlayerInfo::IncreaseMoney(int value)

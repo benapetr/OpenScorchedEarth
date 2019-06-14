@@ -10,28 +10,21 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef RIOTBOMB_H
+#define RIOTBOMB_H
 
-#include <QString>
-#include <PixelEngine/GC/collectable_smartptr.h>
-#include <PixelEngine/vector.h>
-#include "../weaponlist.h"
+#include "projectile.h"
 
-class TankBase;
-
-class Weapon
+class RiotBomb : public Projectile
 {
     public:
-        Weapon(TankBase *owner);
-        virtual ~Weapon();
-        virtual QString GetName();
-        virtual int GetWeaponType()=0;
-        virtual void Fire(const PE::Vector &source, double angle, double power)=0;
-        PE::Collectable_SmartPtr<TankBase> Owner;
-        int Ammo = 0;
+        RiotBomb(bool heavy, const PE::Vector &position);
+        void Render(PE::Renderer *r, PE::Camera *c) override;
     protected:
-        bool reduceAmmo();
+        void on_Terrain(PE::Collider *collider) override;
+        void on_Vehicle(TankBase *tank) override;
+        void explode();
+        bool IsHeavy;
 };
 
-#endif // WEAPON_H
+#endif // RIOTBOMB_H

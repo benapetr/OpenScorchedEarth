@@ -32,11 +32,8 @@ int Nuke::GetWeaponType()
 
 void Nuke::Fire(const PE::Vector &source, double angle, double power)
 {
-    if (this->Ammo <= 0)
+    if (!this->reduceAmmo())
         return;
-
-    this->Owner->GetPlayer()->ItemList[WEAPON_NUKE]--;
-    this->Ammo = this->Owner->GetPlayer()->ItemList[WEAPON_NUKE];
 
     PE::Vector position = source;
     PE::Vector spawn_position = source;

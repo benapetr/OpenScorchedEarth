@@ -15,10 +15,13 @@
 #include <PixelEngine/GC/gc.h>
 #include <PixelEngine/Graphics/renderer.h>
 #include <PixelEngine/pemath.h>
+#include <PixelEngine/Physics/collisionignorematrix.h>
 #include <PixelEngine/Physics/boxcollider.h>
 #include <PixelEngine/world.h>
 #include <PixelEngine/worldgenerator.h>
+#include <PixelEngine/Physics/bitmapcollider.h>
 #include "console.h"
+#include "definitions.h"
 #include "playerinfo.h"
 #include "shop.h"
 #include "mainwindow.h"
@@ -94,14 +97,15 @@ void Game::startGame()
     PE::Vector terrain_position = this->Terrain->Position;
     terrain_position.Y += 20;
     this->Terrain->SetPosition(terrain_position);
+    this->Terrain->Collider->Layer = COLLISION_LAYER_ID_TERRAIN;
     this->world->RegisterTerrain(this->Terrain);
     this->world->BorderColor = QColor("blue");
 
     // Create floor
-    this->world->RegisterCollider(new PE::BoxCollider(-1000, -100, 4000, 120));
-    this->world->RegisterCollider(new PE::BoxCollider(-100, -100, 100, 2000));
-    this->world->RegisterCollider(new PE::BoxCollider(this->MapWidth, -100, 100, 2000));
-    this->world->RegisterCollider(new PE::BoxCollider(-1000, this->MapHeight + 800, 4000, 100));
+    this->world->RegisterCollider(new PE::BoxCollider(-1000, -100, 4000, 130, nullptr, COLLISION_LAYER_ID_TERRAIN));
+    this->world->RegisterCollider(new PE::BoxCollider(-100, -100, 100, 2000, nullptr, COLLISION_LAYER_ID_TERRAIN));
+    this->world->RegisterCollider(new PE::BoxCollider(this->MapWidth, -100, 100, 2000, nullptr, COLLISION_LAYER_ID_TERRAIN));
+    this->world->RegisterCollider(new PE::BoxCollider(-1000, this->MapHeight + 800, 4000, 100, nullptr, COLLISION_LAYER_ID_TERRAIN));
 
     this->WarmingTanks = PlayerInfo::Players.count();
 
@@ -280,4 +284,5 @@ void Game::resetWorld()
     this->world = new PE::World(this->MapWidth, this->MapHeight);
     this->world->BackgroundColor = QColor(204, 221, 255);
     MainWindow::Main->InstallWorld(this->world);
+    this->world->GetCollisionIgnoreMatrix()->SetMutualIgnoreShip(COLLISION_LAYER_ID_SHIELDS, COLLISION_LAYER_ID_TERRAIN);
 }

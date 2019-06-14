@@ -10,33 +10,34 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "mininuke.h"
+#include "riotcannon.h"
 #include "../weaponlist.h"
 #include "../tanks/tankbase.h"
 #include "../playerinfo.h"
-#include "../projectiles/mnrocket.h"
+#include "../projectiles/riotbomb.h"
 #include "../game.h"
 #include <cmath>
 #include <PixelEngine/Physics/rigidbody.h>
 #include <PixelEngine/world.h>
 
-MiniNuke::MiniNuke(TankBase *pawn) : Weapon (pawn)
+RiotCannon::RiotCannon(bool heavy, TankBase *pawn) : Weapon(pawn)
 {
+    this->IsHeavy = heavy;
     this->Ammo = pawn->GetPlayer()->ItemList[this->GetWeaponType()];
 }
 
-int MiniNuke::GetWeaponType()
+int RiotCannon::GetWeaponType()
 {
-    return WEAPON_MINI_NUKE;
+    if (this->IsHeavy)
+        return WEAPON_HEAVY_RIOT_BOMB;
+    else
+        return WEAPON_RIOT_BOMB;
 }
 
-void MiniNuke::Fire(const PE::Vector &source, double angle, double power)
+void RiotCannon::Fire(const PE::Vector &source, double angle, double power)
 {
-    if (this->Ammo <= 0)
+    if (!this->reduceAmmo())
         return;
-
-    this->Owner->GetPlayer()->ItemList[WEAPON_MINI_NUKE]--;
-    this->Ammo = this->Owner->GetPlayer()->ItemList[WEAPON_MINI_NUKE];
 
     PE::Vector position = source;
     PE::Vector spawn_position = source;
@@ -49,12 +50,9 @@ void MiniNuke::Fire(const PE::Vector &source, double angle, double power)
     spawn_position.Y += (1 * std::sin(radians));
 
     PE::Vector force = (position - source) * (power / 15);
-
-    // Instantiate a projectile in front of cannon
-    PE::Collectable_SmartPtr<MNRocket> rocket = new MNRocket(spawn_position);
+    PE::Collectable_SmartPtr<RiotBomb> rocket = new RiotBomb(this->IsHeavy, spawn_position);
     rocket->Owner = this->Owner;
     rocket->Destroy(8000);
     rocket->RigidBody->AddForce(force);
     Game::CurrentGame->GetWorld()->RegisterActor(rocket);
 }
-

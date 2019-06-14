@@ -29,7 +29,7 @@ class GenericEffect : public PE::Actor
         static int EffectCount;
 
         GenericEffect();
-        ~GenericEffect();
+        ~GenericEffect() override;
 };
 
 #endif // GENERIC_H

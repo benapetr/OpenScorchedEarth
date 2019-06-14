@@ -48,6 +48,16 @@ void Terminator::ProcessInventory()
             Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
             needs_more = true;
         }
+        if (info->Cash > 100 && info->ItemList[WEAPON_SONIC_BOMB] < 2)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_SONIC_BOMB);
+            needs_more = true;
+        }
+        if (info->Cash > 500 && info->ItemList[WEAPON_HEAVY_SONIC_BOMB] < 1)
+        {
+            Shop::DefaultShop->BuyItem(info, WEAPON_HEAVY_SONIC_BOMB);
+            needs_more = true;
+        }
         if (info->Cash > 5000)
         {
             //Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
@@ -83,7 +93,7 @@ void Terminator::ProcessInventory()
             Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
             needs_more = true;
         }
-        if (info->Cash > 5500 && info->ItemList[WEAPON_NUKE] < 3)
+        if (info->Cash > 5500 && info->ItemList[WEAPON_NUKE] < 4)
         {
             Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
             needs_more = true;
@@ -110,6 +120,8 @@ void Terminator::evaluateWeapon()
         this->changeWeapon();
         return;
     }
+    if (this->evaluateSonic())
+        return;
     if (!this->firstShot && this->bestDistance < 260 && this->hasWeapon(WEAPON_NUKE))
     {
         this->tank->SwitchWeapon(WEAPON_NUKE);

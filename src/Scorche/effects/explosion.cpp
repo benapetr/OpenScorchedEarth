@@ -81,11 +81,22 @@ void Explosion::Render(PE::Renderer *r, PE::Camera *c)
     // Get position to render on
     PE::Vector position = c->ProjectedPosition(this->Position);
     int shift = static_cast<int>(this->currentSize / 2);
-    int color_shift = static_cast<int>(this->currentSize * 2);
-    int red = 255 - color_shift;
-    int gr = 100 - color_shift * 4;
-    int bl = 100 - color_shift * 2;
-    QColor color(normalize(red, 80), normalize(gr, 50), normalize(bl, 50));
+    QColor color;
+    if (this->Sonic)
+    {
+        color = QColor(0, 255, 0);
+    } else if (this->TerrainCreating)
+    {
+        color = Qt::yellow;
+    }
+    else
+    {
+        int color_shift = static_cast<int>(this->currentSize * 2);
+        int red = 255 - color_shift;
+        int gr = 100 - color_shift * 4;
+        int bl = 100 - color_shift * 2;
+        color = QColor(normalize(red, 80), normalize(gr, 50), normalize(bl, 50));
+    }
     r->DrawEllipse(position.X2int() - shift, position.Y2int() - shift, static_cast<int>(this->currentSize), static_cast<int>(this->currentSize), color, this->currentSize);
 }
 
@@ -115,21 +126,30 @@ void Explosion::destroyTerrain()
         old_x = circle_x;
         old_y = circle_y;
 
-        Game::CurrentGame->Terrain->DestroyPixel(circle_x, circle_y);
-        // These functions are expensive - only check them for every 4th pixel
-        if (pixel_id > 4)
+        if (this->TerrainCreating)
         {
-            pixel_id = 0;
-            PE::Vector p(circle_x, circle_y);
-            foreach (TankBase *v, this->untouchedTanks)
+            Game::CurrentGame->Terrain->CreatePixel(circle_x, circle_y);
+        } else
+        {
+            Game::CurrentGame->Terrain->DestroyPixel(circle_x, circle_y);
+            if (this->Damage > 0)
             {
-                if (v->CheckCollision(p))
+                // These functions are expensive - only check them for every 4th pixel
+                if (pixel_id > 4)
                 {
-                    v->TakeDamage(this->owner, (this->Damage * this->DistanceDamageRatio) / this->currentSize);
-                    this->untouchedTanks.removeOne(v);
-                    // There seems to be some kind of bug in Qt? There are random crashes happening from this point
-                    // I suspect that this change of container makes them
-                    break;
+                    pixel_id = 0;
+                    PE::Vector p(circle_x, circle_y);
+                    foreach (TankBase *v, this->untouchedTanks)
+                    {
+                        if (v->CheckCollision(p))
+                        {
+                            v->TakeDamage(this->owner, (this->Damage * this->DistanceDamageRatio) / this->currentSize);
+                            this->untouchedTanks.removeOne(v);
+                            // There seems to be some kind of bug in Qt? There are random crashes happening from this point
+                            // I suspect that this change of container makes them
+                            break;
+                        }
+                    }
                 }
             }
         }

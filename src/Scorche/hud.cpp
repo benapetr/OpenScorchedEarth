@@ -38,8 +38,8 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
     r->DrawText(10, r->GetHeight() - 20, "FPS: " + QString::number(MainWindow::Main->GetFPS()), Qt::black);
     //r->DrawText(10, r->GetHeight() - 40, "FPS: " + QString::number(MainWindow::Main->GetRealFPS()) + " (excluding frames optimized out)", Qt::black);
 
-    r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("white"), true);
-    r->DrawRect(0, 0, r->GetWidth(), 20, 2, QColor("black"));
+    r->DrawRect(0, 0, r->GetWidth(), 28, 2, QColor("white"), true);
+    r->DrawRect(0, 0, r->GetWidth(), 28, 2, QColor("black"));
 
     if (Game::CurrentGame->WarmingTanks > 0)
     {
@@ -51,18 +51,18 @@ void HUD::Render(PE::Renderer *r, PE::Camera *c)
 
     if (!TankBase::PlayerTank)
         return;
-    r->DrawText(10, 6, "HP: " + QString::number(TankBase::PlayerTank->Health), Qt::black);
-    r->DrawText(80, 6, "Angle: " + QString::number(TankBase::PlayerTank->GetCanonAngleDegree()), Qt::black);
-    r->DrawText(160, 6, "Power: " + QString::number(TankBase::PlayerTank->Power), Qt::black);
-    r->DrawText(230, 6, "Weapon: " + TankBase::PlayerTank->SelectedWeapon->GetName(), Qt::black);
+    r->DrawText(10, 16, "HP: " + QString::number(TankBase::PlayerTank->Health), Qt::black);
+    r->DrawText(80, 16, "Angle: " + QString::number(TankBase::PlayerTank->GetCanonAngleDegree()), Qt::black);
+    r->DrawText(160, 16, "Power: " + QString::number(TankBase::PlayerTank->Power), Qt::black);
+    r->DrawText(230, 16, "Weapon: " + TankBase::PlayerTank->SelectedWeapon->GetName(), Qt::black);
     if (TankBase::PlayerTank->SelectedWeapon->GetWeaponType() != 0)
-        r->DrawText(340, 6, "Ammo: " + QString::number(TankBase::PlayerTank->SelectedWeapon->Ammo), Qt::black);
-    r->DrawText(400, 6, "Cash: $" + QString::number(TankBase::PlayerTank->GetPlayer()->Cash), Qt::black);
+        r->DrawText(340, 16, "Ammo: " + QString::number(TankBase::PlayerTank->SelectedWeapon->Ammo), Qt::black);
+    r->DrawText(400, 16, "Cash: $" + QString::number(TankBase::PlayerTank->GetPlayer()->Cash), Qt::black);
     TankBase *currentPlayer = TankBase::GetActivePlayer();
     if (currentPlayer != nullptr)
-        r->DrawText(500, 6, "Playing: " + currentPlayer->PlayerName, Qt::black);
+        r->DrawText(500, 16, "Playing: " + currentPlayer->PlayerName, Qt::black);
     if (this->lastRefresh - Console::LastMessageTime < 8000)
-        r->DrawText(800, 6, Console::LastMessage, Qt::black);
+        r->DrawText(10, 6, Console::LastMessage, Qt::black);
 
     if (Game::CurrentGame->IsPaused)
     {

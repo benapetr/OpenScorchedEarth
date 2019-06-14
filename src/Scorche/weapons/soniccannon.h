@@ -10,28 +10,18 @@
 
 // Copyright (c) Petr Bena 2019
 
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef SONICCANNON_H
+#define SONICCANNON_H
 
-#include <QString>
-#include <PixelEngine/GC/collectable_smartptr.h>
-#include <PixelEngine/vector.h>
-#include "../weaponlist.h"
+#include "weapon.h"
 
-class TankBase;
-
-class Weapon
+class SonicCannon : public Weapon
 {
     public:
-        Weapon(TankBase *owner);
-        virtual ~Weapon();
-        virtual QString GetName();
-        virtual int GetWeaponType()=0;
-        virtual void Fire(const PE::Vector &source, double angle, double power)=0;
-        PE::Collectable_SmartPtr<TankBase> Owner;
-        int Ammo = 0;
-    protected:
-        bool reduceAmmo();
+        SonicCannon(bool heavy, TankBase *pawn);
+        int GetWeaponType() override;
+        void Fire(const PE::Vector &source, double angle, double power) override;
+        bool IsHeavy;
 };
 
-#endif // WEAPON_H
+#endif // SONICCANNON_H

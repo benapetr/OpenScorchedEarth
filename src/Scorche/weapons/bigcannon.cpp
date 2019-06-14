@@ -22,7 +22,7 @@
 
 BigCannon::BigCannon(TankBase *pawn) : Weapon (pawn)
 {
-    this->Ammo = pawn->GetPlayer()->ItemList[WEAPON_BIG_CANON];
+    this->Ammo = pawn->GetPlayer()->ItemList[this->GetWeaponType()];
 }
 
 int BigCannon::GetWeaponType()

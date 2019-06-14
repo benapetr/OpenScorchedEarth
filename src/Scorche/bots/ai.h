@@ -40,6 +40,7 @@ class AI
             AI_State_Waiting_Angle,
             AI_State_Fired,
             AI_State_Trace_Wait,
+            AI_State_Obstructed,
             AI_State_Nothing_To_Do
         };
 
@@ -56,6 +57,7 @@ class AI
             AI_PreviousHitEvaluation_Average,
             AI_PreviousHitEvaluation_Bad,
             AI_PreviousHitEvaluation_Horrible,
+            AI_PreviousHitEvaluation_Obstructed,
             AI_PreviousHitEvaluation_Unknown
         };
 
@@ -91,6 +93,7 @@ class AI
         void increasePower(double p);
         virtual void trace();
         virtual void traceEval();
+        virtual bool evaluateSonic();
         void debug_log(const QString &text);
         QList<AI_HitMetrics*> metrics;
         QList<PE::Collectable_SmartPtr<AITracer>> tracers;
@@ -107,8 +110,10 @@ class AI
         double bestAngle = 0;
         double bestPower = 0;
         double bestDistance = 9999;
+        double bestDistance_DistanceToSelf = 9999;
         double lastAngleChange = 0;
         double lastPowerChange = 0;
+        double lastDistanceFromSelf = 9999;
         AI_Side enemySide = AI_Right;
         TankBase *selectedEnemy = nullptr;
         double previousEnemyHP = 0;

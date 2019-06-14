@@ -10,32 +10,10 @@
 
 // Copyright (c) Petr Bena 2019
 
-#include "../shop.h"
-#include "weapon.h"
-#include "../playerinfo.h"
-#include "../tanks/tankbase.h"
+#ifndef DEFINITIONS_SCORCHE_H
+#define DEFINITIONS_SCORCHE_H
 
-Weapon::Weapon(TankBase *owner)
-{
-    this->Owner = owner;
-}
+#define COLLISION_LAYER_ID_TERRAIN 1
+#define COLLISION_LAYER_ID_SHIELDS 2
 
-Weapon::~Weapon()
-{
-
-}
-
-QString Weapon::GetName()
-{
-    return Shop::DefaultShop->ItemString(this->GetWeaponType());
-}
-
-bool Weapon::reduceAmmo()
-{
-    if (this->Ammo <= 0)
-        return false;
-
-    this->Owner->GetPlayer()->ItemList[this->GetWeaponType()]--;
-    this->Ammo = this->Owner->GetPlayer()->ItemList[this->GetWeaponType()];
-    return true;
-}
+#endif //

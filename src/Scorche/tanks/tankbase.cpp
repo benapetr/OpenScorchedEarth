@@ -19,10 +19,13 @@
 #include "../weapons/mininuke.h"
 #include "../weapons/nuke.h"
 #include "../weapons/triplecanon.h"
+#include "../weapons/soniccannon.h"
+#include "../weapons/riotcannon.h"
 #include "../projectiles/projectile.h"
 #include "../playerinfo.h"
 #include "../effects/explosion.h"
 #include "../weaponlist.h"
+#include "../definitions.h"
 #include "../game.h"
 #include <cmath>
 #include <PixelEngine/camera.h>
@@ -323,6 +326,9 @@ void TankBase::Event_KeyPress(int key)
         case Qt::Key_W:
             this->powerAdjust = 1;
             return;
+        case Qt::Key_N:
+            this->Pass();
+            return;
         case Qt::Key_S:
         case Qt::Key_Down:
             this->powerAdjust = -1;
@@ -344,6 +350,18 @@ void TankBase::Event_KeyPress(int key)
             break;
         case Qt::Key_5:
             this->SwitchWeapon(WEAPON_NUKE);
+            break;
+        case Qt::Key_6:
+            this->SwitchWeapon(WEAPON_RIOT_BOMB);
+            break;
+        case Qt::Key_7:
+            this->SwitchWeapon(WEAPON_HEAVY_RIOT_BOMB);
+            break;
+        case Qt::Key_8:
+            this->SwitchWeapon(WEAPON_SONIC_BOMB);
+            break;
+        case Qt::Key_9:
+            this->SwitchWeapon(WEAPON_HEAVY_SONIC_BOMB);
             break;
         case Qt::Key_R:
             this->Repair();
@@ -641,6 +659,22 @@ void TankBase::SwitchWeapon(int id)
             delete this->SelectedWeapon;
             this->SelectedWeapon = new TripleCanon(this);
             break;
+        case WEAPON_RIOT_BOMB:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new RiotCannon(false, this);
+            break;
+        case WEAPON_HEAVY_SONIC_BOMB:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new SonicCannon(true, this);
+            break;
+        case WEAPON_SONIC_BOMB:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new SonicCannon(false, this);
+            break;
+        case WEAPON_HEAVY_RIOT_BOMB:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new RiotCannon(true, this);
+            break;
     }
 
     this->RedrawNeeded = true;
@@ -669,6 +703,7 @@ void TankBase::DeployShield(ShieldType shield)
         this->RemoveChildren(this->shieldCollider);
     PE::Vector position = this->GetCanonRoot(this->Position);
     this->shieldCollider = new PE::CircleCollider(position.X, position.Y, SHIELD_RADIUS);
+    this->shieldCollider->Layer = COLLISION_LAYER_ID_SHIELDS;
     this->AddChildren(this->shieldCollider);
     this->RedrawNeeded = true;
     this->playerInfo->ItemList[shield_type]--;
