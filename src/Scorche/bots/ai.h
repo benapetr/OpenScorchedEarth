@@ -38,6 +38,8 @@ class AI
         {
             AI_State_Undecided,
             AI_State_Waiting_Angle,
+            AI_State_PreFire_Trace_Wait, // Waiting for pre-fire tracer that will tell us if projectile hits ground too close to us or not
+            AI_State_PreFire_Trace_Analyze,
             AI_State_Fired,
             AI_State_Trace_Wait,
             AI_State_Obstructed,

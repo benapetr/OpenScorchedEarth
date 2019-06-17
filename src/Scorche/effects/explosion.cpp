@@ -80,24 +80,35 @@ void Explosion::Render(PE::Renderer *r, PE::Camera *c)
 {
     // Get position to render on
     PE::Vector position = c->ProjectedPosition(this->Position);
-    int shift = static_cast<int>(this->currentSize / 2);
+    int shift;
     QColor color;
     if (this->Sonic)
     {
         color = QColor(0, 255, 0);
-    } else if (this->TerrainCreating)
+        int size = 1;
+        while ((size / 2) <= static_cast<int>(this->currentSize))
+        {
+            shift = size / 2;
+            r->DrawEllipse(position.X2int() - shift, position.Y2int() - shift, size, size, color, 1);
+            size += 3;
+        }
+    } else
     {
-        color = Qt::yellow;
+        shift = static_cast<int>(this->currentSize / 2);
+        if (this->TerrainCreating)
+        {
+            color = Qt::yellow;
+        }
+        else
+        {
+            int color_shift = static_cast<int>(this->currentSize * 2);
+            int red = 255 - color_shift;
+            int gr = 100 - color_shift * 4;
+            int bl = 100 - color_shift * 2;
+            color = QColor(normalize(red, 80), normalize(gr, 50), normalize(bl, 50));
+        }
+        r->DrawEllipse(position.X2int() - shift, position.Y2int() - shift, static_cast<int>(this->currentSize), static_cast<int>(this->currentSize), color, this->currentSize);
     }
-    else
-    {
-        int color_shift = static_cast<int>(this->currentSize * 2);
-        int red = 255 - color_shift;
-        int gr = 100 - color_shift * 4;
-        int bl = 100 - color_shift * 2;
-        color = QColor(normalize(red, 80), normalize(gr, 50), normalize(bl, 50));
-    }
-    r->DrawEllipse(position.X2int() - shift, position.Y2int() - shift, static_cast<int>(this->currentSize), static_cast<int>(this->currentSize), color, this->currentSize);
 }
 
 void Explosion::destroyTerrain()
