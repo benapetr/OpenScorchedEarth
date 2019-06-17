@@ -16,6 +16,7 @@
 #include <PixelEngine/pawn.h>
 #include <PixelEngine/vector.h>
 #include <QList>
+#include <QImage>
 #include <QColor>
 #include "../weaponlist.h"
 
@@ -108,6 +109,7 @@ class TankBase : public PE::Pawn
 
     protected:
         void fireTracer();
+        QImage snapshot;
         virtual PE::Vector getCanonB(const PE::Vector &source);
         bool tracerFired = false;
         PE::Collectable_SmartPtr<PE::CircleCollider> shieldCollider;

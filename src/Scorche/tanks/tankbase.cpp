@@ -193,6 +193,9 @@ void TankBase::Fire()
     if (this->SelectedWeapon == nullptr)
         return;
 
+    if (Projectile::ActiveProjectiles > 0)
+        return;
+
     this->DisableShield();
     this->ResetCanonAdjust();
 
@@ -200,6 +203,12 @@ void TankBase::Fire()
     {
         this->fireTracer();
         return;
+    }
+
+    if (this->tracerFired)
+    {
+        Game::CurrentGame->Terrain->SetSourceImage(this->snapshot);
+        Game::CurrentGame->Terrain->RefreshPixmap();
     }
 
     TankBase::ControlsFrozen = true;
@@ -783,6 +792,10 @@ void TankBase::Warm()
 
 void TankBase::fireTracer()
 {
+    if (!this->tracerFired)
+    {
+        this->snapshot = Game::CurrentGame->Terrain->GetSourceImage();
+    }
     if (this->tracerFired)
     {
         Console::Append("You can't fire more tracers this round");

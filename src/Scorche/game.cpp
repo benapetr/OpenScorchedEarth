@@ -35,7 +35,7 @@
 Game *Game::CurrentGame = nullptr;
 bool  Game::AIQuickAim = true;
 bool  Game::ExplosionEffects = true;
-bool  Game::SuperFast = true;
+bool  Game::SuperFast = false;
 bool  Game::Tracing = false;
 bool  Game::FastTerrainUpdates = true;
 
