@@ -32,6 +32,7 @@ Shop::Shop()
     this->PriceList.insert(WEAPON_HEAVY_RIOT_BOMB, 300);
     this->PriceList.insert(WEAPON_SONIC_BOMB, 50);
     this->PriceList.insert(WEAPON_HEAVY_SONIC_BOMB, 200);
+    this->PriceList.insert(WEAPON_TRACER, 20);
 }
 
 bool Shop::BuyItem(PlayerInfo *player, int item_id)
@@ -93,8 +94,8 @@ QString Shop::ItemString(int i)
             return "Heavy Riot Bomb";
         case WEAPON_RIOT_BOMB:
             return "Riot Bomb";
-
-
+        case WEAPON_TRACER:
+            return "Tracer";
     }
     return QString::number(i);
 }

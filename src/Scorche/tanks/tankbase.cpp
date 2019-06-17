@@ -21,6 +21,7 @@
 #include "../weapons/triplecanon.h"
 #include "../weapons/soniccannon.h"
 #include "../weapons/riotcannon.h"
+#include "../weapons/tracinggun.h"
 #include "../projectiles/projectile.h"
 #include "../playerinfo.h"
 #include "../effects/explosion.h"
@@ -118,6 +119,7 @@ TankBase *TankBase::RotatePlayers()
         if (activePlayer->IsAlive())
         {
             ActivePlayer = activePlayer;
+            activePlayer->MakeActive();
             return activePlayer;
         }
     }
@@ -191,15 +193,22 @@ void TankBase::Fire()
     if (this->SelectedWeapon == nullptr)
         return;
 
-    TankBase::ControlsFrozen = true;
-
     this->DisableShield();
-    this->SelectedWeapon->Fire(this->getCanonB(this->Position), this->GetCanonAngle(), this->Power);
     this->ResetCanonAdjust();
+
+    if (this->SelectedWeapon->GetWeaponType() == WEAPON_TRACER)
+    {
+        this->fireTracer();
+        return;
+    }
+
+    TankBase::ControlsFrozen = true;
+    this->SelectedWeapon->Fire(this->getCanonB(this->Position), this->GetCanonAngle(), this->Power);
 }
 
 void TankBase::Pass()
 {
+    this->RestoreShield();
     this->ResetCanonAdjust();
     RotatePlayers();
 }
@@ -362,6 +371,9 @@ void TankBase::Event_KeyPress(int key)
             break;
         case Qt::Key_9:
             this->SwitchWeapon(WEAPON_HEAVY_SONIC_BOMB);
+            break;
+        case Qt::Key_0:
+            this->SwitchWeapon(WEAPON_TRACER);
             break;
         case Qt::Key_R:
             this->Repair();
@@ -585,6 +597,11 @@ void TankBase::SetCanonAdjustRight()
     this->canonAdjust = -0.006;
 }
 
+void TankBase::MakeActive()
+{
+    this->tracerFired = false;
+}
+
 void TankBase::Repair()
 {
     if (this->Health <= this->MaxHealth)
@@ -675,6 +692,10 @@ void TankBase::SwitchWeapon(int id)
             delete this->SelectedWeapon;
             this->SelectedWeapon = new RiotCannon(true, this);
             break;
+        case WEAPON_TRACER:
+            delete this->SelectedWeapon;
+            this->SelectedWeapon = new TracingGun(this);
+            break;
     }
 
     this->RedrawNeeded = true;
@@ -758,6 +779,17 @@ void TankBase::Warm()
     this->WarmingUp = false;
     Game::CurrentGame->WarmingTanks--;
     this->RedrawNeeded = true;
+}
+
+void TankBase::fireTracer()
+{
+    if (this->tracerFired)
+    {
+        Console::Append("You can't fire more tracers this round");
+        return;
+    }
+    this->tracerFired = true;
+    this->SelectedWeapon->Fire(this->getCanonB(this->Position), this->GetCanonAngle(), this->Power);
 }
 
 PE::Vector TankBase::getCanonB(const PE::Vector &source)

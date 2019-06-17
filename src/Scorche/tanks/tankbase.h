@@ -73,6 +73,7 @@ class TankBase : public PE::Pawn
         void InitializeBot();
         void SetCanonAdjustLeft();
         void SetCanonAdjustRight();
+        void MakeActive();
         void Repair();
         void ResetCanonAdjust();
         void SetPower(double p);
@@ -106,7 +107,9 @@ class TankBase : public PE::Pawn
         PE::Vector LastHit_Velocity;
 
     protected:
+        void fireTracer();
         virtual PE::Vector getCanonB(const PE::Vector &source);
+        bool tracerFired = false;
         PE::Collectable_SmartPtr<PE::CircleCollider> shieldCollider;
         PlayerInfo *playerInfo;
         AI *ai = nullptr;
