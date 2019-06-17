@@ -47,5 +47,7 @@ void NukeRocket::on_Terrain(PE::Collider *collider)
 
 void NukeRocket::on_Vehicle(TankBase *tank)
 {
-    tank->TakeDamage(this->Owner, 1000);
+    tank->TakeDamage(this->Owner, 100);
+    // Explode anyway
+    this->on_Terrain(nullptr);
 }

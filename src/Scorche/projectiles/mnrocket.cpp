@@ -46,5 +46,6 @@ void MNRocket::on_Terrain(PE::Collider *collider)
 
 void MNRocket::on_Vehicle(TankBase *tank)
 {
-    tank->TakeDamage(this->Owner, 350);
+    tank->TakeDamage(this->Owner, 20);
+    this->on_Terrain(nullptr);
 }
