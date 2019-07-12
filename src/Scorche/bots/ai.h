@@ -64,6 +64,8 @@ class AI
         };
 
     public:
+        static QString AIStateToString(AI_State State);
+
         AI(TankBase *t);
         virtual ~AI();
         virtual void Process();
@@ -96,6 +98,7 @@ class AI
         virtual void trace();
         virtual void traceEval();
         virtual bool evaluateSonic();
+        void changeState(AI_State s);
         void debug_log(const QString &text);
         QList<AI_HitMetrics*> metrics;
         QList<PE::Collectable_SmartPtr<AITracer>> tracers;

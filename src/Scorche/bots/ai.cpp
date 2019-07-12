@@ -23,6 +23,30 @@
 #include <PixelEngine/pemath.h>
 #include <PixelEngine/vector.h>
 
+QString AI::AIStateToString(AI::AI_State State)
+{
+    switch(State)
+    {
+        case AI_State_Fired:
+            return "fired";
+        case AI_State_Undecided:
+            return "undecided";
+        case AI_State_Obstructed:
+            return "obstructed";
+        case AI_State_Trace_Wait:
+            return "trace-wait";
+        case AI_State_Nothing_To_Do:
+            return "nothing-to-do";
+        case AI_State_Waiting_Angle:
+            return "waiting-angle";
+        case AI_State_PreFire_Trace_Wait:
+            return "pre-fire-trace-wait";
+        case AI_State_PreFire_Trace_Analyze:
+            return "pre-fire-trace-analyze";
+    }
+    return "unknown";
+}
+
 AI::AI(TankBase *t)
 {
     this->tank = t;
@@ -39,7 +63,7 @@ void AI::Process()
     {
         debug_log("enemy was killed, looking for a new one");
         this->selectedEnemy = nullptr;
-        this->state = AI_State_Undecided;
+        this->changeState(AI_State_Undecided);
     }
     if (this->tank->LastDamagedBy != nullptr && this->tank->LastDamagedBy != this->tank && this->tank->LastDamagedBy != this->selectedEnemy && this->tank->LastDamagedBy->IsAlive())
     {
@@ -47,7 +71,7 @@ void AI::Process()
         this->selectedEnemy = this->tank->LastDamagedBy;
         debug_log("changing enemy to " + this->selectedEnemy->PlayerName + " because they attacked us");
         this->resetEnemy();
-        this->state = AI_State_Undecided;
+        this->changeState(AI_State_Undecided);
         this->tank->LastDamagedBy = nullptr;
     }
     this->evaluateShield();
@@ -71,7 +95,7 @@ void AI::Process()
             if (this->selectedEnemy == nullptr)
             {
                 debug_log("impossible to find enemy");
-                this->state = AI_State_Nothing_To_Do;
+                this->changeState(AI_State_Nothing_To_Do);
                 return;
             }
             else
@@ -195,7 +219,7 @@ QString AI::GetAIModelName()
 void AI::Fire()
 {
     this->firstShot = false;
-    this->state = AI_State_Fired;
+    this->changeState(AI_State_Fired);
     this->tank->Fire();
 }
 
@@ -314,7 +338,7 @@ void AI::evaluateFire()
         {
             debug_log("too many times got unknown hit results, trying random angle");
             this->improveAngle(0.6);
-            this->state = AI_State_Waiting_Angle;
+            this->changeState(AI_State_Waiting_Angle);
             return;
         }
         debug_log("unable to evaluate last hit success - not enough data");
@@ -337,7 +361,7 @@ void AI::evaluateFire()
         {
             debug_log("too many times got unknown hit results, trying random angle");
             this->improveAngle(0.6);
-            this->state = AI_State_Waiting_Angle;
+            this->changeState(AI_State_Waiting_Angle);
             return;
         }
         this->previousHit = this->tank->LastHit;
@@ -374,7 +398,7 @@ void AI::evaluateFire()
         this->tank->IncreasePower(PE::PEMath::GetRandom(2, 20));
         this->targetPower = this->tank->Power;
         this->improveAngle(0.1);
-        this->state = AI_State_Waiting_Angle;
+        this->changeState(AI_State_Waiting_Angle);
         return;
     }
 
@@ -385,7 +409,7 @@ void AI::evaluateFire()
         this->tank->IncreasePower(PE::PEMath::GetRandom(2, 20) * -1);
         this->targetPower = this->tank->Power;
         this->improveAngle(0.1);
-        this->state = AI_State_Waiting_Angle;
+        this->changeState(AI_State_Waiting_Angle);
         return;
     }
 
@@ -413,7 +437,7 @@ void AI::evaluateFire()
         this->lastEvaluation = AI_PreviousHitEvaluation_Bad;
         this->tank->IncreasePower(PE::PEMath::GetRandom(5, 40));
         this->targetPower = this->tank->Power;
-        this->state = AI_State_Waiting_Angle;
+        this->changeState(AI_State_Waiting_Angle);
         return;
     }
 
@@ -495,7 +519,9 @@ void AI::evaluateWeapon()
     if (current_weapon != 0 && this->tank->SelectedWeapon->Ammo <= 0)
     {
         // Current weapon is out of ammo, we have to change
+        debug_log("current weapon is out of ammo, finding alternative weapon");
         this->changeWeapon();
+        debug_log("alternative weapon chosen: " + Shop::DefaultShop->ItemString(this->tank->SelectedWeapon->GetWeaponType()));
         return;
     }
 
@@ -540,7 +566,7 @@ void AI::changeAngle(double new_angle)
 {
     this->lastAngleChange = new_angle - this->targetAngle;
     this->targetAngle = new_angle;
-    this->state = AI_State_Waiting_Angle;
+    this->changeState(AI_State_Waiting_Angle);
 }
 
 void AI::changePower(double new_power)
@@ -562,7 +588,7 @@ void AI::increasePower(double p)
 void AI::trace()
 {
     this->untracedCounter = 0;
-    this->state = AI_State_Trace_Wait;
+    this->changeState(AI_State_Trace_Wait);
     // Fire couple of tracers
     int trace_count = 4;
     double original_angle = this->targetAngle;
@@ -627,7 +653,7 @@ void AI::traceEval()
                 this->targetAngle = this->bestAngle;
                 this->targetPower = this->bestPower;
                 debug_log("Tracer found enemy: " + t->target->PlayerName);
-                this->state = AI_State_Waiting_Angle;
+                this->changeState(AI_State_Waiting_Angle);
                 this->tracers.clear();
                 return;
             }
@@ -649,15 +675,17 @@ void AI::traceEval()
         }
     }
 
+    debug_log("Tracer results: best distance " + QString::number(this->bestDistance) + " best angle " + QString::number(this->bestAngle) + " best power " + QString::number(this->bestPower));
+
     if (this->bestAngle == original_best_dist)
     {
-        debug_log("Tracers didn't find any better state");
+        debug_log("Tracers didn't find any better state than we already have");
     } else
     {
         this->targetAngle = this->bestAngle;
         this->targetPower = this->bestPower;
         this->lastDistanceFromSelf = this->bestDistance_DistanceToSelf;
-        this->state = AI_State_Waiting_Angle;
+        this->changeState(AI_State_Waiting_Angle);
     }
     this->tracers.clear();
 }
@@ -667,17 +695,29 @@ bool AI::evaluateSonic()
     // There is too much terrain close to us
     if (this->lastDistanceFromSelf < 120 && this->hasWeapon(WEAPON_HEAVY_SONIC_BOMB))
     {
+        debug_log("last hit distance from myself is less than 120 and I have heavy sonic bomb, let's use it");
         this->tank->SwitchWeapon(WEAPON_HEAVY_SONIC_BOMB);
-        this->state = AI_State_Obstructed;
+        this->changeState(AI_State_Obstructed);
         return true;
     }
     if (this->lastDistanceFromSelf < 80 && this->hasWeapon(WEAPON_SONIC_BOMB))
     {
+        debug_log("last hit distance from myself is less than 80 and I have sonic bomb, let's use it");
         this->tank->SwitchWeapon(WEAPON_SONIC_BOMB);
-        this->state = AI_State_Obstructed;
+        this->changeState(AI_State_Obstructed);
         return true;
     }
     return false;
+}
+
+void AI::changeState(AI::AI_State s)
+{
+    // If there is state change print it to logs
+    if (this->state != s)
+        debug_log("AI state: " + AI::AIStateToString(this->state) + " >> " + AI::AIStateToString(s));
+
+    // Change current state
+    this->state = s;
 }
 
 void AI::debug_log(const QString &text)

@@ -20,25 +20,24 @@ QString Console::LastMessage = "";
 qint64 Console::LastMessageTime = 0;
 Console *Console::ActiveConsole = nullptr;
 
-void Console::Append(QString text, bool debug)
+void Console::Append(const QString& text, bool debug)
 {
     LastMessageTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    QString time = QTime::currentTime().toString() + ": ";
     Console::LastMessage = text;
-    Console::Items.append(text);
+    Console::Items.append(time + text);
     if (Console::ActiveConsole != nullptr)
     {
-        Console::ActiveConsole->ui->plainTextEdit->appendPlainText(text + "\n");
+        Console::ActiveConsole->ui->plainTextEdit->appendPlainText(time + text);
     }
 }
 
-Console::Console(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::Console)
+Console::Console(QWidget *parent) : QDialog(parent), ui(new Ui::Console)
 {
     ui->setupUi(this);
     Console::ActiveConsole = this;
     foreach (QString line, Items)
-        this->ui->plainTextEdit->appendPlainText(line + "\n");
+        this->ui->plainTextEdit->appendPlainText(line);
 }
 
 Console::~Console()

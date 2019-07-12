@@ -25,7 +25,7 @@ class Console : public QDialog
         Q_OBJECT
 
     public:
-        static void Append(QString text, bool debug = false);
+        static void Append(const QString& text, bool debug = false);
         static qint64 LastMessageTime;
         static QString LastMessage;
         static QList<QString> Items;
