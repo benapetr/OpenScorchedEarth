@@ -537,6 +537,11 @@ void TankBase::TakeDamage(TankBase *source, double damage)
         this->Kill(source);
 }
 
+double TankBase::GetMaxPower()
+{
+    return 100;
+}
+
 void TankBase::Kill(TankBase *source)
 {
     //this->playerInfo->IncreaseMoney(-200);

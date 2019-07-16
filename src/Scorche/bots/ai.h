@@ -17,6 +17,8 @@
 #include <QString>
 #include "../projectiles/aitracer.h"
 
+#define AI_WORST_DISTANCE 99999
+
 class TankBase;
 
 class AI_HitMetrics
@@ -99,6 +101,7 @@ class AI
         virtual void traceEval();
         virtual bool evaluateSonic();
         void changeState(AI_State s);
+        void print_debug_stats();
         void debug_log(const QString &text);
         QList<AI_HitMetrics*> metrics;
         QList<PE::Collectable_SmartPtr<AITracer>> tracers;

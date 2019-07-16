@@ -68,6 +68,7 @@ class TankBase : public PE::Pawn
         double GetCanonAngle();
         void Render(PE::Renderer *r, PE::Camera *c) override;
         virtual void TakeDamage(TankBase *source, double damage);
+        virtual double GetMaxPower();
         virtual void Kill(TankBase *source);
         virtual bool IsAlive();
         bool CheckCollision(const PE::Vector &point);

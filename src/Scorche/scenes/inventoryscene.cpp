@@ -48,6 +48,7 @@ void InventoryScene::Render(PE::Renderer *r, PE::Camera *c)
 
     //r->DrawBitmap(420, r->GetHeight() / 2 + 100, 40, 20, StaticAssets::Instance->RightArrow);
     //r->DrawBitmap(462, r->GetHeight() / 2 + 100, 40, 20, StaticAssets::Instance->LeftArrow);
+    r->DrawText(r->GetWidth() / 2 - 280, r->GetHeight() / 2 - 160, "Press A to automatically spend your money for recommended items", QColor("black"), 20);
     r->DrawText(r->GetWidth() / 2 - 138, r->GetHeight() / 2 - 200, "Press space to start game", QColor("black"), 20);
 }
 
@@ -70,6 +71,66 @@ void InventoryScene::Event_KeyPress(int key)
             break;
         case Qt::Key::Key_Up:
             this->SelectUp();
+            break;
+        case Qt::Key::Key_A:
+            // Auto - shop
+        {
+            PlayerInfo *info = PlayerInfo::Players[0];
+            bool needs_more = true;
+            while(needs_more)
+            {
+                needs_more = false;
+                // We always need shields
+                if (info->Cash > 600 && info->ItemList[INVENTORY_SHIELD] < 2)
+                {
+                    Shop::DefaultShop->BuyItem(info, INVENTORY_SHIELD);
+                    needs_more = true;
+                }
+                if (info->Cash > 3500 && info->ItemList[INVENTORY_HEAVY_SHIELD] < 2)
+                {
+                    Shop::DefaultShop->BuyItem(info, INVENTORY_HEAVY_SHIELD);
+                    needs_more = true;
+                }
+                if (info->Cash > 100 && info->ItemList[WEAPON_SONIC_BOMB] < 2)
+                {
+                    Shop::DefaultShop->BuyItem(info, WEAPON_SONIC_BOMB);
+                    needs_more = true;
+                }
+                if (info->Cash > 10000 && info->ItemList[WEAPON_NUKE] < 2)
+                {
+                    Shop::DefaultShop->BuyItem(info, WEAPON_NUKE);
+                    needs_more = true;
+                }
+                if (info->Cash > 2000 && info->ItemList[WEAPON_MINI_NUKE] < 2)
+                {
+                    Shop::DefaultShop->BuyItem(info, WEAPON_MINI_NUKE);
+                    needs_more = true;
+                }
+                if (info->Cash > 300 && info->ItemList[WEAPON_HEAVY_RIOT_BOMB] < 1)
+                {
+                    Shop::DefaultShop->BuyItem(info, WEAPON_HEAVY_RIOT_BOMB);
+                    needs_more = true;
+                }
+                if (info->Cash > 100 && info->ItemList[WEAPON_RIOT_BOMB] < 1)
+                {
+                    Shop::DefaultShop->BuyItem(info, WEAPON_RIOT_BOMB);
+                    needs_more = true;
+                }
+                if (info->Cash > 10 && info->ItemList[WEAPON_BIG_CANON] < 20)
+                {
+                    Shop::DefaultShop->BuyItem(info, WEAPON_BIG_CANON);
+                    needs_more = true;
+                }
+                if (info->Cash > 20 && info->ItemList[WEAPON_TRIPLE_CANON] < 10)
+                {
+                    Shop::DefaultShop->BuyItem(info, WEAPON_TRIPLE_CANON);
+                }
+                if (info->Cash > 20 && info->ItemList[WEAPON_TRACER] < 10)
+                {
+                    Shop::DefaultShop->BuyItem(info, WEAPON_TRACER);
+                }
+            }
+        }
             break;
     }
 }

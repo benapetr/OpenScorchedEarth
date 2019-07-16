@@ -145,7 +145,7 @@ void AI::Process()
 
 TankBase *AI::FindClosestEnemy()
 {
-    double best = 99999;
+    double best = AI_WORST_DISTANCE;
     TankBase *tank = nullptr;
     // Just find the most close one
     foreach (TankBase *p, TankBase::Players)
@@ -218,6 +218,7 @@ QString AI::GetAIModelName()
 
 void AI::Fire()
 {
+    this->print_debug_stats();
     this->firstShot = false;
     this->changeState(AI_State_Fired);
     this->tank->Fire();
@@ -265,7 +266,8 @@ void AI::resetEnemy()
     qDeleteAll(this->metrics);
     this->metrics.clear();
     this->firstShot = true;
-    this->bestDistance = 99999;
+    this->bestPower = this->tank->GetMaxPower();
+    this->bestDistance = AI_WORST_DISTANCE;
     this->previousEnemyHP = this->selectedEnemy->Health + this->selectedEnemy->ShieldPower;
     this->unknownDataCounter = 0;
     double distance = this->tank->Position.DistanceTo(this->selectedEnemy->Position);
@@ -631,6 +633,8 @@ void AI::traceEval()
     Game::Tracing = false;
 
     double original_best_dist = this->bestDistance;
+    double original_best_angle = this->bestAngle;
+    double original_best_power = this->bestPower;
     double original_best_dist_self = this->bestDistance_DistanceToSelf;
 
     // Evaluate all tracers
@@ -680,6 +684,20 @@ void AI::traceEval()
     if (this->bestDistance == original_best_dist)
     {
         debug_log("Tracers didn't find any better state than we already have");
+        // Reset back to previous values to avoid doing something stupid
+        this->bestAngle = original_best_angle;
+        this->bestPower = original_best_power;
+        this->bestDistance_DistanceToSelf = original_best_dist_self;
+        if (this->bestDistance >= AI_WORST_DISTANCE)
+        {
+            this->getTargetAngle();
+            this->targetPower = this->tank->GetMaxPower();
+            this->improvePower(this->tank->GetMaxPower());
+        } else
+        {
+            this->targetAngle = this->bestAngle;
+            this->targetPower = this->bestPower;
+        }
         this->changeState(AI_State_Waiting_Angle);
     } else
     {
@@ -719,6 +737,20 @@ void AI::changeState(AI::AI_State s)
 
     // Change current state
     this->state = s;
+
+    if (s == AI_State_Obstructed)
+    {
+        // Obstructed - let's send tracers next time
+        this->untracedCounter = 999999;
+    }
+}
+
+void AI::print_debug_stats()
+{
+    this->debug_log("Best angle: " + QString::number(this->bestAngle) +
+                    " best power: " + QString::number(this->bestPower) +
+                    " target angle: " + QString::number(this->targetAngle) +
+                    " target power: " + QString::number(this->targetPower));
 }
 
 void AI::debug_log(const QString &text)
