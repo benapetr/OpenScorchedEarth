@@ -333,6 +333,11 @@ bool AI::flewAway(double X)
 
 void AI::evaluateFire()
 {
+    PE::Vector lastHit = this->tank->LastHit;
+    double distance_last = lastHit.DistanceTo(this->selectedEnemy->Position);
+    double distance_prev = this->previousHit.DistanceTo(this->selectedEnemy->Position);
+    double distance_self = lastHit.DistanceTo(this->tank->Position);
+    this->lastDistanceFromSelf = distance_self;
     this->untracedCounter++;
     if (this->tank->LastHit == PE::Vector(0, 0))
     {
@@ -356,7 +361,7 @@ void AI::evaluateFire()
         this->Fire();
         return;
     }
-    PE::Vector lastHit = this->tank->LastHit;
+
     if (this->previousHit == PE::Vector(0, 0))
     {
         if (this->unknownDataCounter > 1)
@@ -373,10 +378,6 @@ void AI::evaluateFire()
         return;
     }
 
-    double distance_last = lastHit.DistanceTo(this->selectedEnemy->Position);
-    double distance_prev = this->previousHit.DistanceTo(this->selectedEnemy->Position);
-    double distance_self = lastHit.DistanceTo(this->tank->Position);
-    this->lastDistanceFromSelf = distance_self;
     this->unknownDataCounter = 0;
 
     if (distance_last < this->bestDistance)
@@ -692,7 +693,7 @@ void AI::traceEval()
         {
             this->getTargetAngle();
             this->targetPower = this->tank->GetMaxPower();
-            this->improvePower(this->tank->GetMaxPower());
+            this->improvePower(20);
         } else
         {
             this->targetAngle = this->bestAngle;
@@ -703,7 +704,6 @@ void AI::traceEval()
     {
         this->targetAngle = this->bestAngle;
         this->targetPower = this->bestPower;
-        this->lastDistanceFromSelf = this->bestDistance_DistanceToSelf;
         this->changeState(AI_State_Waiting_Angle);
     }
     this->tracers.clear();
