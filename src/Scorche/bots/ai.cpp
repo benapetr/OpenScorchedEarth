@@ -526,7 +526,6 @@ void AI::evaluateRepair()
 
 void AI::evaluateWeapon()
 {
-    debug_log("evaluating best weapon to use");
     int current_weapon = this->tank->SelectedWeapon->GetWeaponType();
     if (current_weapon != 0 && this->tank->SelectedWeapon->Ammo <= 0)
     {
@@ -558,9 +557,6 @@ void AI::evaluateWeapon()
         this->tank->SwitchWeapon(WEAPON_TRIPLE_CANON);
         return;
     }
-
-    // There is nothing else left
-    this->tank->SwitchWeapon(WEAPON_CANON);
 }
 
 void AI::changeWeapon()

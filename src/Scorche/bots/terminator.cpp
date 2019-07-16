@@ -120,8 +120,6 @@ void Terminator::evaluateWeapon()
         this->changeWeapon();
         return;
     }
-    if (this->evaluateSonic())
-        return;
     if (!this->firstShot && this->bestDistance < 160 && this->hasWeapon(WEAPON_NUKE))
     {
         this->tank->SwitchWeapon(WEAPON_NUKE);
@@ -139,7 +137,6 @@ void Terminator::evaluateWeapon()
         this->tank->SwitchWeapon(WEAPON_BIG_CANON);
         return;
     }
-    this->tank->SwitchWeapon(WEAPON_CANON);
 }
 
 void Terminator::evaluateFire()
