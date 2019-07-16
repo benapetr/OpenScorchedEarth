@@ -71,11 +71,13 @@ void AI::Process()
         this->selectedEnemy = this->tank->LastDamagedBy;
         debug_log("changing enemy to " + this->selectedEnemy->PlayerName + " because they attacked us");
         this->resetEnemy();
+        this->evaluateWeapon();
         this->changeState(AI_State_Undecided);
         this->tank->LastDamagedBy = nullptr;
     }
     this->evaluateShield();
-    this->evaluateWeapon();
+    this->evaluateSonic();
+    this->evaluateRepair();
     switch(this->state)
     {
         case AI_State_Trace_Wait:
@@ -137,6 +139,7 @@ void AI::Process()
             break;
         case AI_State_Fired:
             this->prevEvaluation = this->lastEvaluation;
+            this->evaluateWeapon();
             this->evaluateFire();
             this->postEvaluateFire();
             break;
@@ -263,7 +266,11 @@ void AI::improvePower(double max)
 
 void AI::resetEnemy()
 {
+    debug_log("resetting metrics and evaluation history data");
     qDeleteAll(this->metrics);
+    // Last hit is irrelevant
+    this->tank->LastHit = PE::Vector::Zero;
+    this->lastDistanceFromSelf = AI_WORST_DISTANCE;
     this->metrics.clear();
     this->firstShot = true;
     this->bestPower = this->tank->GetMaxPower();
@@ -337,9 +344,16 @@ void AI::evaluateFire()
     double distance_last = lastHit.DistanceTo(this->selectedEnemy->Position);
     double distance_prev = this->previousHit.DistanceTo(this->selectedEnemy->Position);
     double distance_self = lastHit.DistanceTo(this->tank->Position);
-    this->lastDistanceFromSelf = distance_self;
+    if (lastHit != PE::Vector::Zero)
+        this->lastDistanceFromSelf = distance_self;
     this->untracedCounter++;
-    if (this->tank->LastHit == PE::Vector(0, 0))
+    if (this->untracedCounter > 4)
+    {
+        debug_log("more than 5 times didn't suceed, sending tracers");
+        this->trace();
+        return;
+    }
+    if (this->tank->LastHit == PE::Vector::Zero)
     {
         if (this->unknownDataCounter > 1)
         {
@@ -387,12 +401,6 @@ void AI::evaluateFire()
         this->bestAngle = this->targetAngle;
         this->bestPower = this->tank->Power;
         this->bestDistance = distance_last;
-    }
-    if (this->untracedCounter > 4)
-    {
-        debug_log("more than 5 times didn't suceed, sending tracers");
-        this->trace();
-        return;
     }
 
     if (this->flewOver(this->tank->LastHit.X) && this->tank->LastHit.Y < this->selectedEnemy->Position.Y && this->tank->LastHit_Velocity.Y < 0)
@@ -518,6 +526,7 @@ void AI::evaluateRepair()
 
 void AI::evaluateWeapon()
 {
+    debug_log("evaluating best weapon to use");
     int current_weapon = this->tank->SelectedWeapon->GetWeaponType();
     if (current_weapon != 0 && this->tank->SelectedWeapon->Ammo <= 0)
     {
@@ -528,8 +537,9 @@ void AI::evaluateWeapon()
         return;
     }
 
-    if (this->evaluateSonic())
-        return;
+    // This leads to problems as there is lots of post processing later which we need to skip in case we decided to use sonic bomb
+    // if (this->evaluateSonic())
+    //    return;
 
     if (!this->firstShot && this->bestDistance < 400 && this->hasWeapon(WEAPON_NUKE))
     {
@@ -548,6 +558,9 @@ void AI::evaluateWeapon()
         this->tank->SwitchWeapon(WEAPON_TRIPLE_CANON);
         return;
     }
+
+    // There is nothing else left
+    this->tank->SwitchWeapon(WEAPON_CANON);
 }
 
 void AI::changeWeapon()

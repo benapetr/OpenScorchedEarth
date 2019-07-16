@@ -117,11 +117,11 @@ class AI
         double targetPower = 0;
         double bestAngle = 0;
         double bestPower = 0;
-        double bestDistance = 9999;
-        double bestDistance_DistanceToSelf = 9999;
+        double bestDistance = AI_WORST_DISTANCE;
+        double bestDistance_DistanceToSelf = AI_WORST_DISTANCE;
         double lastAngleChange = 0;
         double lastPowerChange = 0;
-        double lastDistanceFromSelf = 9999;
+        double lastDistanceFromSelf = AI_WORST_DISTANCE;
         AI_Side enemySide = AI_Right;
         TankBase *selectedEnemy = nullptr;
         double previousEnemyHP = 0;

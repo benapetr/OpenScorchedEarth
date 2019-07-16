@@ -139,6 +139,7 @@ void Terminator::evaluateWeapon()
         this->tank->SwitchWeapon(WEAPON_BIG_CANON);
         return;
     }
+    this->tank->SwitchWeapon(WEAPON_CANON);
 }
 
 void Terminator::evaluateFire()
