@@ -196,6 +196,8 @@ void TankBase::Fire()
     if (Projectile::ActiveProjectiles > 0)
         return;
 
+    Console::Append(this->PlayerName + " fired weapon " + this->SelectedWeapon->GetName());
+
     this->DisableShield();
     this->ResetCanonAdjust();
 
@@ -217,6 +219,7 @@ void TankBase::Fire()
 
 void TankBase::Pass()
 {
+    Console::Append(this->PlayerName + " decided to skip this round");
     this->RestoreShield();
     this->ResetCanonAdjust();
     RotatePlayers();

@@ -677,9 +677,10 @@ void AI::traceEval()
 
     debug_log("Tracer results: best distance " + QString::number(this->bestDistance) + " best angle " + QString::number(this->bestAngle) + " best power " + QString::number(this->bestPower));
 
-    if (this->bestAngle == original_best_dist)
+    if (this->bestDistance == original_best_dist)
     {
         debug_log("Tracers didn't find any better state than we already have");
+        this->changeState(AI_State_Waiting_Angle);
     } else
     {
         this->targetAngle = this->bestAngle;
@@ -726,7 +727,7 @@ void AI::debug_log(const QString &text)
         Console::Append("DEBUG " + this->tank->PlayerName + ": " + text);
 }
 
-AI_HitMetrics::AI_HitMetrics(double a, double p, PE::Vector pos)
+AI_HitMetrics::AI_HitMetrics(double a, double p, const PE::Vector& pos)
 {
     this->Power = p;
     this->Source = pos;

@@ -22,7 +22,7 @@ class TankBase;
 class AI_HitMetrics
 {
     public:
-        AI_HitMetrics(double a, double p, PE::Vector pos);
+        AI_HitMetrics(double a, double p, const PE::Vector& pos);
         PE::Vector Source;
         double Angle;
         double Power;
