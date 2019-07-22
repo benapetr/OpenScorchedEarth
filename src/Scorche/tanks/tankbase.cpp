@@ -220,6 +220,11 @@ void TankBase::Fire()
 void TankBase::Pass()
 {
     Console::Append(this->PlayerName + " decided to skip this round");
+    if (this->tracerFired)
+    {
+        Game::CurrentGame->Terrain->SetSourceImage(this->snapshot);
+        Game::CurrentGame->Terrain->RefreshPixmap();
+    }
     this->RestoreShield();
     this->ResetCanonAdjust();
     RotatePlayers();

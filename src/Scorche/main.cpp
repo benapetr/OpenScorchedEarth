@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
     MainWindow w;
     w.show();
+    //w.showFullScreen();
 
     return QApplication::exec();
 }
