@@ -104,6 +104,7 @@ void AI::Process()
             {
                 debug_log("enemy found: " + this->selectedEnemy->PlayerName);
                 this->resetEnemy();
+                this->evaluateWeapon();
                 this->getTargetAngle();
                 debug_log("new target angle calculated, sending tracers: " + QString::number(this->targetAngle));
                 this->trace();
@@ -721,16 +722,16 @@ void AI::traceEval()
 bool AI::evaluateSonic()
 {
     // There is too much terrain close to us
-    if (this->lastDistanceFromSelf < 120 && this->hasWeapon(WEAPON_HEAVY_SONIC_BOMB))
+    if (this->lastDistanceFromSelf < 80 && this->hasWeapon(WEAPON_HEAVY_SONIC_BOMB))
     {
-        debug_log("last hit distance from myself is less than 120 and I have heavy sonic bomb, let's use it");
+        debug_log("last hit distance from myself is less than 80 and I have heavy sonic bomb, let's use it");
         this->tank->SwitchWeapon(WEAPON_HEAVY_SONIC_BOMB);
         this->changeState(AI_State_Obstructed);
         return true;
     }
-    if (this->lastDistanceFromSelf < 80 && this->hasWeapon(WEAPON_SONIC_BOMB))
+    if (this->lastDistanceFromSelf < 60 && this->hasWeapon(WEAPON_SONIC_BOMB))
     {
-        debug_log("last hit distance from myself is less than 80 and I have sonic bomb, let's use it");
+        debug_log("last hit distance from myself is less than 60 and I have sonic bomb, let's use it");
         this->tank->SwitchWeapon(WEAPON_SONIC_BOMB);
         this->changeState(AI_State_Obstructed);
         return true;
