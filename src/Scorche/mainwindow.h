@@ -13,13 +13,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QTimer>
+#include <PixelEngine/Graphics/peglwindow.h>
 
-namespace Ui
+/*namespace Ui
 {
     class MainWindow;
-}
+}*/
 
 class QImage;
 
@@ -32,29 +31,25 @@ namespace PE
 
 class Game;
 
-class MainWindow : public QMainWindow
+class MainWindow : public PE::PEGLWindow
 {
         Q_OBJECT
 
     public:
         static MainWindow *Main;
 
-        explicit MainWindow(QWidget *parent = nullptr);
+        MainWindow();
         ~MainWindow() override;
-        void Render();
         int GetWidth();
         int GetHeight();
-        double GetFPS();
         void InstallWorld(PE::World *w);
         void UninstallWorld();
 
     public slots:
-        void OnRender();
         void keyPressEvent(QKeyEvent* e) override;
         void keyReleaseEvent(QKeyEvent* e) override;
 
     private slots:
-        void on_actionRendering_triggered();
         void on_actionBots_enable_quick_aim_triggered();
         void on_actionNew_game_triggered();
         void on_actionExplosion_rocks_triggered();
@@ -62,24 +57,9 @@ class MainWindow : public QMainWindow
         void on_actionShow_console_triggered();
         void on_actionDebug_AI_triggered();
         void on_actionFluid_terrain_triggered();
-        void on_actionLow_FPS_triggered(bool checked);
 
     private:
-#ifdef SCORCHE_GL
-        PE::PEGLWidget *viewPort;
-#endif
-        QTimer *renderTimer;
         Game *game;
-        QImage *qimage;
-#ifndef SCORCHE_GL
-        double fps;
-        int fps_current;
-        qint64 fps_start;
-        double real_fps = 0;
-        int rc_fps = 0;
-        PE::QImageRenderer *se_renderer;
-#endif
-        Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

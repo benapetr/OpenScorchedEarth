@@ -31,7 +31,7 @@ class Console : public QDialog
         static QList<QString> Items;
         static Console *ActiveConsole;
         explicit Console(QWidget *parent = nullptr);
-        ~Console();
+        ~Console() override;
 
     private:
         Ui::Console *ui;

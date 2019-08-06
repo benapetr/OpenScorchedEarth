@@ -48,3 +48,8 @@ void IntroScene::Event_KeyPress(int key)
     if (key == Qt::Key::Key_Space)
         Game::CurrentGame->RequestScene(Scene_NewGame);
 }
+
+void IntroScene::Update(qint64 time)
+{
+    //this->RedrawNeeded = true;
+}

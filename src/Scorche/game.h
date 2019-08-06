@@ -23,7 +23,6 @@ namespace PE
 {
     class World;
     class WorldGenerator;
-    class Renderer;
 }
 
 class TankBase;
@@ -79,7 +78,6 @@ class Game : public QObject
         Scene requestedScene = Scene_Nothing;
         QTimer *timer;
         PE::World *world = nullptr;
-        PE::Renderer *renderer = nullptr;
 };
 
 #endif // GAME_H

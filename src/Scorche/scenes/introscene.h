@@ -21,6 +21,7 @@ class IntroScene : public PE::Actor
         IntroScene();
         void Render(PE::Renderer *r, PE::Camera *c) override;
         void Event_KeyPress(int key) override;
+        void Update(qint64 time = 0) override;
 };
 
 #endif // INTROSCENE_H
