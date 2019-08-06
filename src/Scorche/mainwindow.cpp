@@ -37,7 +37,11 @@ MainWindow::MainWindow()
 {
     MainWindow::Main = this;
     this->setWidth(QApplication::desktop()->screenGeometry().width());
+#ifdef __EMSCRIPTEN__
+    this->setHeight(QApplication::desktop()->screenGeometry().height());
+#else
     this->setHeight(QApplication::desktop()->screenGeometry().height() - 120);
+#endif
     PE::Engine::Initialize(false);
     this->setTitle("Open Scorched Earth");
     //this->showMaximized();
@@ -96,6 +100,11 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     } else if (e->key() == Qt::Key_C && e->modifiers() & Qt::ShiftModifier)
     {
         this->on_actionShow_console_triggered();
+        return;
+    }
+    else if (e->key() == Qt::Key_S && e->modifiers() & Qt::ShiftModifier)
+    {
+        this->on_actionFast_game_triggered();
         return;
     }
 
