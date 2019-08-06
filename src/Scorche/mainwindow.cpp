@@ -55,9 +55,6 @@ MainWindow::MainWindow()
     //this->ui->actionFast_game->setChecked(Game::SuperFast);
 
     new Console(nullptr);
-#ifdef __EMSCRIPTEN__
-    setWindowFlags(Qt::FramelessWindowHint| Qt::WindowSystemMenuHint);
-#endif
 }
 
 MainWindow::~MainWindow()
